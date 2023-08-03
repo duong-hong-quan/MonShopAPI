@@ -28,8 +28,7 @@ namespace MonShopLibrary.DAO
 
         public async Task UpdateCategory(CategoryDTO dto)
         {
-            Category category = await this.Categories.FindAsync(dto.CategoryId);
-             category = new Category { CategoryId = dto.CategoryId, CategoryName = dto.CategoryName };
+            Category category = new Category { CategoryId = dto.CategoryId, CategoryName = dto.CategoryName };
              this.Categories.Update(category);
             await this.SaveChangesAsync();
         }
