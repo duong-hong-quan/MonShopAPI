@@ -73,9 +73,9 @@ namespace PaymentGateway.Momo
             string connection = "";
 
             string endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
-            string partnerCode = "MOMO5RGX20191128";
-            string accessKey = "M8brj9K6E22vXoDB";
-            string serectkey = "nqQiVSgDMy809JoPF6OzP5OdBUB550Y4";
+            string partnerCode = "MOMO";
+            string accessKey = "F8BBA842ECF85";
+            string serectkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
             string orderInfo = $"Khach hang: {momo.CustomerName} thanh toan hoa don {momo.OrderID}";
             string redirectUrl = config["Momo:RedirectUrl"];
             string ipnUrl = config["Momo:IPNUrl"];
