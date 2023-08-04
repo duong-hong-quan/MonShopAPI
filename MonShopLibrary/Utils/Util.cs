@@ -45,5 +45,30 @@ namespace MonShopLibrary.Utils
             return vietnamTime.Date;
         }
 
+        private static HashSet<int> generatedNumbers = new HashSet<int>();
+
+        public static int GenerateUniqueNumber()
+        {
+            while (true)
+            {
+                // Lấy thời gian hiện tại dưới dạng timestamp
+                long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+                // Tạo số ngẫu nhiên
+                Random random = new Random();
+                int randomNumber = random.Next(1000, 10000);
+
+                // Kết hợp thời gian và số ngẫu nhiên để tạo số nguyên dương
+                int uniqueNumber = (int)(timestamp + randomNumber);
+
+                // Kiểm tra xem số đã tồn tại chưa
+                if (!generatedNumbers.Contains(uniqueNumber))
+                {
+                    generatedNumbers.Add(uniqueNumber);
+                    return uniqueNumber;
+                }
+            }
+        }
+
     }
 }

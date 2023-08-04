@@ -38,8 +38,8 @@ namespace MonShopLibrary.DAO
             double total = 0;
             Order order = new Order
             {
-                OrderId = Guid.NewGuid().GetHashCode(),
-                OrderDate = dto.Order.OrderDate,
+                OrderId = Util.GenerateUniqueNumber(),
+                OrderDate = Util.getInstance().GetCurrentDateTimeInTimeZone(),
                 Total = total,
                 OrderStatusId = Constant.Order.PENDING_PAY,
                 BuyerAccountId = dto.Order.BuyerAccountId

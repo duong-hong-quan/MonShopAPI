@@ -30,6 +30,24 @@ namespace MonShopAPI.Controller
             _vnPayServices = new VNPayServices();  
         }
 
+
+
+        [HttpGet]
+        [Route("GellAllPaymentMomo")]
+        public async Task<IActionResult> GetAllPaymentMomo()
+        {
+            var list = await _paymentRepository.GetAllPaymentMomo();
+            return Ok(list);
+        }
+
+        [HttpGet]
+        [Route("GellAllPaymentVNPay")]
+        public async Task<IActionResult> GellAllPaymentVNPay()
+        {
+            var list = await _paymentRepository.GetAllPaymenVNPay();
+            return Ok(list);
+        }
+
         [HttpPost]
         [Route("GetPaymentURLMomo")]
         public async Task<IActionResult> GetPaymentURLMomo(int OrderID)
@@ -39,7 +57,7 @@ namespace MonShopAPI.Controller
             Momo momo = null;
             if (order != null && account !=null)
             {
-                 momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName};
+                 momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName, OrderID = OrderID};
               
                 string endpoint = _momoServices.CreatePaymentString(momo);
 
@@ -83,7 +101,8 @@ namespace MonShopAPI.Controller
                     PaymentResponseId =(long) momo.transId,
                     OrderId = int.Parse( momo.orderId),
                     Amount = momo.amount.ToString(), 
-                    OrderInfo = momo.orderInfo 
+                    OrderInfo = momo.orderInfo ,
+                    Success = true
                 };
                 await _orderRepository.UpdateStatusForOrder(int.Parse(momo.orderId), Constant.Order.SUCCESS_PAY);
                 await _paymentRepository.AddPaymentMomo(dto);
@@ -121,8 +140,10 @@ namespace MonShopAPI.Controller
                     PaymentResponseId = Convert.ToInt32( response.PaymentId),
                     OrderId = int.Parse(response.OrderId),
                     Amount = response.Amount.ToString(),
-                    OrderInfo = response.OrderDescription
-                };
+                    OrderInfo = response.OrderDescription,
+                     Success = true
+
+                 };
                 await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
                 await _paymentRepository.AddPaymentVNPay(dto);
             }
