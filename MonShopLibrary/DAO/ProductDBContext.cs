@@ -13,6 +13,12 @@ namespace MonShopLibrary.DAO
     {
         public ProductDBContext() { }
 
+
+        public async Task<List<Category>> GetAllCategory()
+        {
+            List<Category> list = await this.Categories.ToListAsync();
+            return list;
+        }
         public async Task<List<Product>> GetAllProduct()
         {
             List<Product> list = await this.Products.ToListAsync();
@@ -34,13 +40,13 @@ namespace MonShopLibrary.DAO
             };
             await this.Products.AddAsync(product);
             await this.SaveChangesAsync();
-        } 
+        }
 
         public async Task UpdateProduct(ProductDTO dto)
         {
             Product product = new Product
             {
-                ProductId = dto.ProductId,  
+                ProductId = dto.ProductId,
                 ProductName = dto.ProductName,
                 ImageUrl = dto.ImageUrl,
                 Price = dto.Price,
@@ -59,7 +65,7 @@ namespace MonShopLibrary.DAO
         {
             Product product = await this.Products.FindAsync(dto.ProductId);
             product.IsDeleted = true;
-            await this.SaveChangesAsync();  
+            await this.SaveChangesAsync();
         }
 
     }

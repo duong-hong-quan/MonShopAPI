@@ -16,7 +16,8 @@ namespace MonShopLibrary.Repository
         public async Task AddProduct(ProductDTO dto) => await db.AddProduct(dto);
         public async Task UpdateProduct(ProductDTO dto)=> await db.UpdateProduct(dto);
         public async Task DeleteProduct(ProductDTO dto)=> await db.DeleteProduct(dto);
-       
+        public async Task<List<Category>> GetAllCategory() => await db.GetAllCategory();
+
 
     }
 }

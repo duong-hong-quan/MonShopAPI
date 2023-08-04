@@ -15,7 +15,13 @@ namespace MonShopAPI.Controller
         {
             _productRepository = new ProductRepository();
         }
-
+        [HttpGet]
+        [Route("GetAllCategory")]
+        public async Task<IActionResult> GetAllCategory()
+        {
+            var list = await _productRepository.GetAllCategory();
+            return Ok(list);
+        }
         [HttpGet]
         [Route("GetAllProduct")]
         public async Task<IActionResult> GetAllProduct()
