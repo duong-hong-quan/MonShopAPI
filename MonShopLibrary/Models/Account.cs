@@ -21,9 +21,9 @@ namespace MonShopLibrary.Models
         public bool? IsDeleted { get; set; }
         public int RoleId { get; set; }
         [JsonIgnore]
-
         public virtual Role Role { get; set; } = null!;
         [JsonIgnore]
+
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

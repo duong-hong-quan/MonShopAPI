@@ -38,6 +38,7 @@ namespace MonShopLibrary.DAO
             double total = 0;
             Order order = new Order
             {
+                OrderId = Guid.NewGuid().GetHashCode(),
                 Email = dto.Order.Email,
                 OrderDate = dto.Order.OrderDate,
                 Total = total,

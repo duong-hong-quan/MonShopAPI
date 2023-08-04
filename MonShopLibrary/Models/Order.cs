@@ -9,7 +9,6 @@ namespace MonShopLibrary.Models
         public Order()
         {
             MomoPaymentResponses = new HashSet<MomoPaymentResponse>();
-            OrderItems = new HashSet<OrderItem>();
             PayPalPaymentResponses = new HashSet<PayPalPaymentResponse>();
             VnpayPaymentResponses = new HashSet<VnpayPaymentResponse>();
         }
@@ -25,15 +24,12 @@ namespace MonShopLibrary.Models
         public virtual Account BuyerAccount { get; set; } = null!;
         [JsonIgnore]
 
+        
         public virtual OrderStatus OrderStatus { get; set; } = null!;
         [JsonIgnore]
 
         public virtual ICollection<MomoPaymentResponse> MomoPaymentResponses { get; set; }
         [JsonIgnore]
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
-        [JsonIgnore]
-
 
         public virtual ICollection<PayPalPaymentResponse> PayPalPaymentResponses { get; set; }
         [JsonIgnore]

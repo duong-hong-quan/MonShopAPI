@@ -14,9 +14,6 @@ namespace MonShopLibrary.Models
         public double Subtotal { get; set; }
         [JsonIgnore]
 
-        public virtual Order Order { get; set; } = null!;
-        [JsonIgnore]
-
         public virtual Product Product { get; set; } = null!;
     }
 }
