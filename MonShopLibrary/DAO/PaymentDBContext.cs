@@ -23,6 +23,7 @@ namespace MonShopLibrary.DAO
             List<MomoPaymentResponse> list = await this.MomoPaymentResponses.ToListAsync();
             return list;
         }
+
         public async Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO)
         {
             await this.VnpayPaymentResponses.AddAsync(vnpayDTO);

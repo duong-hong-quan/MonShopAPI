@@ -32,7 +32,7 @@ namespace PaymentGateway.VNPay
             pay.AddRequestData("vnp_Version", config["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", config["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", config["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)model.Amount).ToString());
+            pay.AddRequestData("vnp_Amount", ((int)model.Amount * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
 
             pay.AddRequestData("vnp_CurrCode", config["Vnpay:CurrCode"]);
