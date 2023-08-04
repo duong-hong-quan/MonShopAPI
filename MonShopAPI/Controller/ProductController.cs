@@ -31,12 +31,16 @@ namespace MonShopAPI.Controller
             return Ok();
         }
         [HttpPut]
+        [Route("UpdateProduct")]
+
         public async Task<IActionResult> UpdateProduct(ProductDTO dto)
         {
             await _productRepository.UpdateProduct(dto);
             return Ok();
         }
         [HttpDelete]
+        [Route("DeleteProduct")]
+
         public async Task<IActionResult> DeleteProduct(ProductDTO dto)
         {
             await _productRepository.DeleteProduct(dto);    

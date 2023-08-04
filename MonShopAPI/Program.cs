@@ -1,4 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
+using MonShopLibrary.Models;
+
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -9,13 +11,14 @@ builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "Yoga Center API",
+        Title = "MonShop API",
         Description = "@Copyright: Hồng Quân",
         TermsOfService = new Uri("https://example.com/terms"),
         Contact = new OpenApiContact
@@ -33,14 +36,6 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-app.UseHttpsRedirection();
-app.UseCors(MyAllowSpecificOrigins);
-
-app.UseAuthorization();
-app.MapControllers();
-
-// Configure Swagger
 app.UseSwagger(options => {
     options.SerializeAsV2 = true;
 });
@@ -48,5 +43,15 @@ app.UseSwaggerUI(options => {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     options.RoutePrefix = string.Empty;
 });
+//}
 
+
+
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseHttpsRedirection();
+app.UseCors(MyAllowSpecificOrigins);
+
+app.UseAuthorization();
+app.MapControllers();
 app.Run();
