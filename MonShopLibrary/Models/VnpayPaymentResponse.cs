@@ -6,14 +6,11 @@ namespace MonShopLibrary.Models
 {
     public partial class VnpayPaymentResponse
     {
-        public int PaymentResponseId { get; set; }
+        public long PaymentResponseId { get; set; }
         public int OrderId { get; set; }
-        public string? OrderDescription { get; set; }
-        public string? TransactionId { get; set; }
-        public string? PaymentId { get; set; }
-        public bool? Success { get; set; }
-        public string? Token { get; set; }
-        public string? VnPayResponseCode { get; set; }
+        public string? Amount { get; set; }
+        public string? OrderInfo { get; set; }
+        public bool Success { get; set; }
         [JsonIgnore]
 
         public virtual Order Order { get; set; } = null!;

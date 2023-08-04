@@ -15,7 +15,11 @@ namespace MonShopLibrary.Repository
         public async Task AddPaymentMomo(MomoPaymentResponse momo) => await db.AddPaymentMomo(momo);
        
         public async Task<List<MomoPaymentResponse>> GetAllPaymentMomo() => await db.GetAllPaymentMomo();
+        public async Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO) => await db.AddPaymentVNPay(vnpayDTO);
        
+
+        public async Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay()=> await db.GetAllPaymenVNPay();   
+        
 
     }
 }

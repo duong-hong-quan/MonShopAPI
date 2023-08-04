@@ -17,9 +17,21 @@ namespace MonShopLibrary.DAO
             await this.MomoPaymentResponses.AddAsync(momo);
             await this.SaveChangesAsync();
         }
+
         public async Task<List<MomoPaymentResponse>> GetAllPaymentMomo()
         {
             List<MomoPaymentResponse> list = await this.MomoPaymentResponses.ToListAsync();
+            return list;
+        }
+        public async Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO)
+        {
+            await this.VnpayPaymentResponses.AddAsync(vnpayDTO);
+            await this.SaveChangesAsync();
+        }
+      
+        public async Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay()
+        {
+            List<VnpayPaymentResponse> list = await this.VnpayPaymentResponses.ToListAsync();
             return list;
         }
 

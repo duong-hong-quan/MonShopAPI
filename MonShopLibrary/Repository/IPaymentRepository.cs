@@ -12,5 +12,9 @@ namespace MonShopLibrary.Repository
         public  Task AddPaymentMomo(MomoPaymentResponse momo) ;
 
         public  Task<List<MomoPaymentResponse>> GetAllPaymentMomo();
+        public  Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO);
+
+
+        public  Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay() ;
     }
 }

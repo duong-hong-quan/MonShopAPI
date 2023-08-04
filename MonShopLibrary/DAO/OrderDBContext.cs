@@ -39,7 +39,6 @@ namespace MonShopLibrary.DAO
             Order order = new Order
             {
                 OrderId = Guid.NewGuid().GetHashCode(),
-                Email = dto.Order.Email,
                 OrderDate = dto.Order.OrderDate,
                 Total = total,
                 OrderStatusId = Constant.Order.PENDING_PAY,

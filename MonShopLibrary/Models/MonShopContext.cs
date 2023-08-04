@@ -74,7 +74,7 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<MomoPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__MomoPaym__766E687ACB54DB4C");
+                    .HasName("PK__MomoPaym__766E687A24CCC942");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
@@ -93,8 +93,6 @@ namespace MonShopLibrary.Models
             {
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
-                entity.Property(e => e.Email).HasMaxLength(255);
-
                 entity.Property(e => e.OrderDate).HasColumnType("date");
 
                 entity.HasOne(d => d.BuyerAccount)
@@ -112,6 +110,12 @@ namespace MonShopLibrary.Models
 
             modelBuilder.Entity<OrderItem>(entity =>
             {
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderItems)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__OrderItem__Order__49C3F6B7");
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.ProductId)
@@ -131,15 +135,13 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<PayPalPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__PayPalPa__766E687AF3668493");
+                    .HasName("PK__PayPalPa__766E687A233B5991");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
-                entity.Property(e => e.OrderDescription).HasMaxLength(255);
+                entity.Property(e => e.Amount).HasMaxLength(50);
 
-                entity.Property(e => e.PaymentId).HasMaxLength(50);
-
-                entity.Property(e => e.TransactionId).HasMaxLength(50);
+                entity.Property(e => e.OrderInfo).HasMaxLength(255);
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.PayPalPaymentResponses)
@@ -172,21 +174,15 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<VnpayPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__VNPayPay__766E687A8951372B");
+                    .HasName("PK__VNPayPay__766E687A6432937A");
 
                 entity.ToTable("VNPayPaymentResponses");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
-                entity.Property(e => e.OrderDescription).HasMaxLength(255);
+                entity.Property(e => e.Amount).HasMaxLength(50);
 
-                entity.Property(e => e.PaymentId).HasMaxLength(50);
-
-                entity.Property(e => e.Token).HasMaxLength(255);
-
-                entity.Property(e => e.TransactionId).HasMaxLength(50);
-
-                entity.Property(e => e.VnPayResponseCode).HasMaxLength(50);
+                entity.Property(e => e.OrderInfo).HasMaxLength(255);
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.VnpayPaymentResponses)
