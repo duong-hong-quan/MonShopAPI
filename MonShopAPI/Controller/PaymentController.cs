@@ -27,42 +27,44 @@ namespace MonShopAPI.Controller
 
         [HttpPost]
         [Route("Momo")]
-        public async Task<IActionResult> GetPaymentURLMomo(Momo momo)
+        public async Task<IActionResult> GetPaymentURLMomo(int OrderID)
         {
-            Order order = await _orderRepository.GetOrderByID(momo.OrderID);
-            Account account = await _accountRepository.GetAccountByID(momo.AccountID);
+            Order order = await _orderRepository.GetOrderByID(OrderID);
+            Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+            Momo momo = null;
             if (order != null && account !=null)
             {
-                momo.CustomerName = account.FullName;
-                momo.Amount = (double)order.Total;
+                 momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName};
+              
                 string endpoint = _momoServices.CreatePaymentString(momo);
 
                 return Content(endpoint);
             }
-            return BadRequest($"Not found Order with ID :{momo.OrderID} OR Account with ID:{momo.AccountID}");
+            return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");
 
         }
         [HttpPost]
         [Route("MomoIPN")]
         public async Task MomoIPN(MomoResponeModel momo)
         {
-            Order order = await _orderRepository.GetOrderByID(Convert.ToInt32(momo.orderId));
+            
+            Order order = await _orderRepository.GetOrderByID(int.Parse(momo.orderId));
 
             if (momo.resultCode == 0)
             {
                 MomoPaymentResponse dto = new MomoPaymentResponse 
                 {
-                    PaymentResponseId = Convert.ToInt32(momo.transId) ,
-                    OrderId = Convert.ToInt32(momo.orderId),
+                    PaymentResponseId =(int) momo.transId,
+                    OrderId = int.Parse( momo.orderId),
                     Amount = momo.amount.ToString(), 
                     OrderInfo = momo.orderInfo 
                 };
-                await _orderRepository.UpdateStatusForOrder(Convert.ToInt32(momo.orderId), Constant.Order.SUCCESS_PAY);
+                await _orderRepository.UpdateStatusForOrder(int.Parse(momo.orderId), Constant.Order.SUCCESS_PAY);
                 await _paymentRepository.AddPaymentMomo(dto);
             }
             else
             {
-                await _orderRepository.UpdateStatusForOrder(Convert.ToInt32(momo.orderId), Constant.Order.FAILURE_PAY);
+                await _orderRepository.UpdateStatusForOrder(int.Parse(momo.orderId), Constant.Order.FAILURE_PAY);
 
             }
 
