@@ -40,6 +40,7 @@ namespace MonShopLibrary.DAO
         {
             Product product = new Product
             {
+                ProductId = dto.ProductId,  
                 ProductName = dto.ProductName,
                 ImageUrl = dto.ImageUrl,
                 Price = dto.Price,
