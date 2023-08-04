@@ -10,15 +10,17 @@ namespace MonShopLibrary.Repository
 {
     public interface IOrderRepository
     {
-        public  Task<List<OrderStatus>> GetAllOrderStatus() ;
+        public Task<List<OrderStatus>> GetAllOrderStatus();
 
-        public  Task AddOrderStatus(OrderStatusDTO dto);
+        public Task AddOrderStatus(OrderStatusDTO dto);
 
-        public  Task UpdateOrderStatus(OrderStatusDTO dto);
+        public Task UpdateOrderStatus(OrderStatusDTO dto);
 
-        public  Task AddOrderRequest(OrderRequest dto);
+        public Task AddOrderRequest(OrderRequest dto);
 
 
-        public  Task UpdateStatusForOrder(int OrderID, int status);
+        public Task UpdateStatusForOrder(int OrderID, int status);
+        public Task<Order> GetOrderByID(int OrderID);
+        public Task<List<Order>> GetAllOrder();
     }
 }

@@ -20,6 +20,6 @@ namespace MonShopLibrary.Repository
         public Task DeleteAccount(AccountDTO dto);
         public  Task<List<Role>> GetAllRole();
 
-
+        public Task<Account> GetAccountByID(int id);
     }
 }

@@ -65,5 +65,11 @@ namespace MonShopLibrary.DAO
             var list = await this.Roles.ToListAsync();
             return list;
         }
+
+        public async Task<Account> GetAccountByID(int id)
+        {
+            Account account = await this.Accounts.FindAsync(id);
+            return account;
+        }
     }
 }

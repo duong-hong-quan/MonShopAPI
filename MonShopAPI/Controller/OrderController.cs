@@ -16,6 +16,15 @@ namespace MonShopAPI.Controller
         {
             _orderRepository = new OrderRepository();
         }
+
+        [HttpGet]
+        [Route("GetAllOrder")]
+        public async Task<IActionResult> GetAllOrder()
+        {
+            var list = await _orderRepository.GetAllOrder();
+            return Ok(list);
+        }
+
         [HttpGet]
         [Route("GetAllOrderStatus")]
         public async Task<IActionResult> GetAllOrderStatus()
@@ -53,6 +62,8 @@ namespace MonShopAPI.Controller
             await _orderRepository.UpdateStatusForOrder(OrderID, status);
             return Ok();
         }
+
+
 
     }
 }

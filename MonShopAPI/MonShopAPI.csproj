@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonShopLibrary\MonShopLibrary.csproj" />
+    <ProjectReference Include="..\PaymentGateway\PaymentGateway.csproj" />
   </ItemGroup>
 
 </Project>

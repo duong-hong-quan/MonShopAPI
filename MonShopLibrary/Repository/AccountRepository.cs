@@ -18,6 +18,8 @@ namespace MonShopLibrary.Repository
         public async Task<List<Account>> GetAllAccount() => await db.GetAllAccount();
         public async Task UpdateAccount(AccountDTO dto)=> await db.UpdateAccount(dto);
         public async Task<List<Role>> GetAllRole()=> await db.GetAllRole();
+        public async Task<Account> GetAccountByID(int id) => await db.GetAccountByID(id);
+
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MonShopLibrary.DTO;
 using MonShopLibrary.Models;
+using MonShopLibrary.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace MonShopLibrary.DAO
             this.OrderStatuses.Update(status);
             await this.SaveChangesAsync();
         }
-     
+
         public async Task AddOrderRequest(OrderRequest dto)
         {
             double total = 0;
@@ -40,7 +41,7 @@ namespace MonShopLibrary.DAO
                 Email = dto.Order.Email,
                 OrderDate = dto.Order.OrderDate,
                 Total = total,
-                OrderStatusId = dto.Order.OrderStatusId,
+                OrderStatusId = Constant.Order.PENDING_PAY,
                 BuyerAccountId = dto.Order.BuyerAccountId
             };
             await this.Orders.AddAsync(order);
@@ -73,5 +74,17 @@ namespace MonShopLibrary.DAO
             order.OrderStatusId = status;
             await this.SaveChangesAsync();
         }
+
+        public async Task<Order> GetOrderByID(int OrderID)
+        {
+            Order order = await this.Orders.FindAsync(OrderID);
+            return order;
+        }
+        public async Task<List<Order>> GetAllOrder()
+        {
+            List<Order> order = await this.Orders.ToListAsync();
+            return order;
+        }
+
     }
 }
