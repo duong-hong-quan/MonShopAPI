@@ -34,7 +34,7 @@ namespace MonShopAPI.Controller
             if (order != null && account !=null)
             {
                 momo.CustomerName = account.FullName;
-
+                momo.Amount = (double)order.Total;
                 string endpoint = _momoServices.CreatePaymentString(momo);
 
                 return Content(endpoint);
@@ -48,13 +48,13 @@ namespace MonShopAPI.Controller
         {
             Order order = await _orderRepository.GetOrderByID(Convert.ToInt32(momo.orderId));
 
-            if (momo.resultCode == "0")
+            if (momo.resultCode == 0)
             {
                 MomoPaymentResponse dto = new MomoPaymentResponse 
                 {
                     PaymentResponseId = Convert.ToInt32(momo.transId) ,
                     OrderId = Convert.ToInt32(momo.orderId),
-                    Amount = momo.amount, 
+                    Amount = momo.amount.ToString(), 
                     OrderInfo = momo.orderInfo 
                 };
                 await _orderRepository.UpdateStatusForOrder(Convert.ToInt32(momo.orderId), Constant.Order.SUCCESS_PAY);
