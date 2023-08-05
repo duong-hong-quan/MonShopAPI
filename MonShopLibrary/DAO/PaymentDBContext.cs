@@ -29,10 +29,20 @@ namespace MonShopLibrary.DAO
             await this.VnpayPaymentResponses.AddAsync(vnpayDTO);
             await this.SaveChangesAsync();
         }
-      
-        public async Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay()
+     
+        public async Task<List<VnpayPaymentResponse>> GetAllPaymentVNPay()
         {
             List<VnpayPaymentResponse> list = await this.VnpayPaymentResponses.ToListAsync();
+            return list;
+        }
+        public async Task AddPaymentPaypal(PayPalPaymentResponse paypalDTO)
+        {
+            await this.PayPalPaymentResponses.AddAsync(paypalDTO);
+            await this.SaveChangesAsync();
+        }
+        public async Task<List<PayPalPaymentResponse>> GetAllPaymentPayPal()
+        {
+            List<PayPalPaymentResponse> list = await this.PayPalPaymentResponses.ToListAsync();
             return list;
         }
 

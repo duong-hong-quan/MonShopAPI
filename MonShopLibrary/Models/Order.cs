@@ -19,7 +19,6 @@ namespace MonShopLibrary.Models
         public double? Total { get; set; }
         public int OrderStatusId { get; set; }
         public int BuyerAccountId { get; set; }
-        public bool? Success { get; set; }
         [JsonIgnore]
 
         public virtual Account BuyerAccount { get; set; } = null!;

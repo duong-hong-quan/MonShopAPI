@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace MonShopLibrary.DTO
 {
-    public class OrderDTO
+    public class AppSettingDTO
     {
-     
-        public int BuyerAccountId { get; set; }
+        public string Section { get; set; }
+
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

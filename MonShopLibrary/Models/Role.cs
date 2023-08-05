@@ -13,8 +13,8 @@ namespace MonShopLibrary.Models
 
         public int RoleId { get; set; }
         public string RoleName { get; set; } = null!;
-        [JsonIgnore]
 
+        [JsonIgnore]
         public virtual ICollection<Account> Accounts { get; set; }
     }
 }

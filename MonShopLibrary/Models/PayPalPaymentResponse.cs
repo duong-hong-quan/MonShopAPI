@@ -6,7 +6,7 @@ namespace MonShopLibrary.Models
 {
     public partial class PayPalPaymentResponse
     {
-        public long PaymentResponseId { get; set; }
+        public string PaymentResponseId { get; set; } = null!;
         public int OrderId { get; set; }
         public string? Amount { get; set; }
         public string? OrderInfo { get; set; }

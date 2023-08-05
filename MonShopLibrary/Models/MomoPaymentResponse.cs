@@ -11,8 +11,8 @@ namespace MonShopLibrary.Models
         public string? Amount { get; set; }
         public string? OrderInfo { get; set; }
         public bool Success { get; set; }
-
         [JsonIgnore]
+
         public virtual Order Order { get; set; } = null!;
     }
 }

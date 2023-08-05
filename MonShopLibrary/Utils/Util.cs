@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MonShopLibrary.Utils
 {
     public class Util
     {
 
-        private static Util instance;
+        private static Util Instance;
         private Util() { }
         public static Util getInstance()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = new Util();
+                Instance = new Util();
             }
-            return instance;
+            return Instance;
         }
         public DateTime GetCurrentDateTimeInTimeZone()
         {
@@ -69,6 +73,29 @@ namespace MonShopLibrary.Utils
                 }
             }
         }
+
+        public string ReadAppSettingsJson()
+        {
+            var appSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            return File.ReadAllText(appSettingsPath);
+        }
+        public void UpdateAppSettingValue(string section, string key, string value)
+        {
+            var appSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            var json = File.ReadAllText(appSettingsPath);
+            var settings = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+            if (settings.ContainsKey(section) && settings[section] is JObject sectionObject)
+            {
+                if (sectionObject.ContainsKey(key))
+                {
+                    sectionObject[key] = value;
+                    var updatedJson = JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
+                    File.WriteAllText(appSettingsPath, updatedJson);
+                }
+            }
+        }
+
 
     }
 }

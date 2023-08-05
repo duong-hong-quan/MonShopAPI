@@ -25,6 +25,20 @@ namespace MonShopLibrary.Utils
             public static int PENDING_PAY = 1;
             public static int SUCCESS_PAY = 2;
             public static int FAILURE_PAY = 3;
+            public static int SHIPPED = 4;
+            public static int DELIVERED = 5;
+            public static int CANCELLED = 6;
+
+
+        }
+
+        public class Category
+        {
+            public static int PANTS = 1;
+            public static int SHIRTS = 2;
+            public static int SHOES = 3;
+            public static int ACCESSORIES = 4;
+
 
         }
     }

@@ -31,9 +31,9 @@ namespace MonShopLibrary.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfiguration config = new ConfigurationBuilder()
-                       .SetBasePath(Directory.GetCurrentDirectory())
-                       .AddJsonFile("appsettings.json", true, true)
-                       .Build();
+                         .SetBasePath(Directory.GetCurrentDirectory())
+                         .AddJsonFile("appsettings.json", true, true)
+                         .Build();
             string cs = config["ConnectionStrings:Host"];
             if (!optionsBuilder.IsConfigured)
             {
@@ -74,7 +74,7 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<MomoPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__MomoPaym__766E687A24CCC942");
+                    .HasName("PK__MomoPaym__766E687A7D9326F2");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
@@ -93,7 +93,7 @@ namespace MonShopLibrary.Models
             {
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
-                entity.Property(e => e.OrderDate).HasColumnType("date");
+                entity.Property(e => e.OrderDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.BuyerAccount)
                     .WithMany(p => p.Orders)
@@ -135,9 +135,9 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<PayPalPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__PayPalPa__766E687A233B5991");
+                    .HasName("PK__PayPalPa__766E687A2500E197");
 
-                entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
+                entity.Property(e => e.PaymentResponseId).HasMaxLength(255);
 
                 entity.Property(e => e.Amount).HasMaxLength(50);
 
@@ -174,7 +174,7 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<VnpayPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__VNPayPay__766E687A6432937A");
+                    .HasName("PK__VNPayPay__766E687AC47FBCBF");
 
                 entity.ToTable("VNPayPaymentResponses");
 

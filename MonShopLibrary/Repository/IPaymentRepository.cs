@@ -9,12 +9,11 @@ namespace MonShopLibrary.Repository
 {
     public interface IPaymentRepository
     {
-        public  Task AddPaymentMomo(MomoPaymentResponse momo) ;
-
-        public  Task<List<MomoPaymentResponse>> GetAllPaymentMomo();
-        public  Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO);
-
-
-        public  Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay() ;
+        public Task AddPaymentMomo(MomoPaymentResponse momo);
+        public Task<List<MomoPaymentResponse>> GetAllPaymentMomo();
+        public Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO);
+        public Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay();
+        public Task AddPaymentPaypal(PayPalPaymentResponse paypalDTO);
+        public Task<List<PayPalPaymentResponse>> GetAllPaymentPayPal();
     }
 }
