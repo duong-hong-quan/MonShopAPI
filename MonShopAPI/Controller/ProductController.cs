@@ -29,6 +29,14 @@ namespace MonShopAPI.Controller
          var list =   await _productRepository.GetAllProduct();
             return Ok(list);
         }
+
+        [HttpGet]
+        [Route("GetProductByID")]
+        public async Task<IActionResult> GetProductByID(int id)
+        {
+            var product = await _productRepository.GetProductByID(id);
+            return Ok(product);
+        }
         [HttpPost]
         [Route("AddProduct")]
         public async Task<IActionResult> AddProduct(ProductDTO dto)

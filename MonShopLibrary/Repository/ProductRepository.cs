@@ -18,6 +18,7 @@ namespace MonShopLibrary.Repository
         public async Task DeleteProduct(ProductDTO dto)=> await db.DeleteProduct(dto);
         public async Task<List<Category>> GetAllCategory() => await db.GetAllCategory();
 
+        public async Task<Product> GetProductByID(int id) => await db.GetProductByID(id);
 
     }
 }

@@ -68,5 +68,11 @@ namespace MonShopLibrary.DAO
             await this.SaveChangesAsync();
         }
 
+        public async Task<Product> GetProductByID(int id)
+        {
+            Product product = await this.Products.FindAsync(id);
+            return product;
+        }
+
     }
 }

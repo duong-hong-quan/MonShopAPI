@@ -15,5 +15,6 @@ namespace MonShopLibrary.Repository
         public Task UpdateProduct(ProductDTO dto);
         public Task DeleteProduct(ProductDTO dto);
         public Task<List<Category>> GetAllCategory();
+        public Task<Product> GetProductByID(int id);
     }
 }
