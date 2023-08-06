@@ -33,7 +33,7 @@ namespace MonShopLibrary.DAO
             await this.SaveChangesAsync();
         }
 
-        public async Task AddOrderRequest(OrderRequest dto)
+        public async Task<int> AddOrderRequest(OrderRequest dto)
         {
             double total = 0;
             Order order = new Order
@@ -66,6 +66,7 @@ namespace MonShopLibrary.DAO
             order.Total = total;
 
             await this.SaveChangesAsync();
+            return orderID;
         }
 
         public async Task UpdateStatusForOrder(int OrderID, int status)

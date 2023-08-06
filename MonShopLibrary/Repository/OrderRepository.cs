@@ -17,8 +17,8 @@ namespace MonShopLibrary.Repository
         public async Task AddOrderStatus(OrderStatusDTO dto)=> await db.AddOrderStatus(dto);
        
         public async Task UpdateOrderStatus(OrderStatusDTO dto)=> await db.UpdateOrderStatus(dto);
-       
-        public async Task AddOrderRequest(OrderRequest dto)=> await db.AddOrderRequest(dto);
+
+        public async Task<int> AddOrderRequest(OrderRequest dto) => await db.AddOrderRequest(dto);
 
 
         public async Task UpdateStatusForOrder(int OrderID, int status) => await db.UpdateStatusForOrder(OrderID, status);

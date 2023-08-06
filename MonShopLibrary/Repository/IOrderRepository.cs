@@ -16,7 +16,7 @@ namespace MonShopLibrary.Repository
 
         public Task UpdateOrderStatus(OrderStatusDTO dto);
 
-        public Task AddOrderRequest(OrderRequest dto);
+        public  Task<int> AddOrderRequest(OrderRequest dto)
 
 
         public Task UpdateStatusForOrder(int OrderID, int status);

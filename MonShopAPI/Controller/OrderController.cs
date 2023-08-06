@@ -51,8 +51,8 @@ namespace MonShopAPI.Controller
         [Route("AddOrderRequest")]
         public async Task<IActionResult> AddOrderRequest(OrderRequest dto)
         {
-            await _orderRepository.AddOrderRequest(dto);
-            return Ok();
+            int OrderID = await _orderRepository.AddOrderRequest(dto);
+            return Ok(OrderID);
         }
         [HttpPut]
         [Route("UpdateStatusForOrder")]
