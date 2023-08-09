@@ -4,12 +4,14 @@ using Microsoft.Extensions.Caching.Memory;
 using MonShopLibrary.Models;
 using MonShopLibrary.Repository;
 using MonShopLibrary.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PaymentGateway.Momo;
 using PaymentGateway.Paypal;
 using PaymentGateway.VNPay;
 using VNPay.Models;
 using VNPay.Services;
+using static PaymentGateway.Paypal.PayPalResponeModel;
 
 namespace MonShopAPI.Controller
 {
@@ -66,13 +68,13 @@ namespace MonShopAPI.Controller
         {
             Order order = await _orderRepository.GetOrderByID(OrderID);
 
-         
+
             Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
             Momo momo = null;
-            if (order != null && account !=null)
+            if (order != null && account != null)
             {
-                 momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName, OrderID = OrderID};
-              
+                momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName, OrderID = OrderID };
+
                 string endpoint = _momoServices.CreatePaymentString(momo);
                 return Content(endpoint);
             }
@@ -116,7 +118,7 @@ namespace MonShopAPI.Controller
             return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");
 
         }
-     
+
 
 
 
@@ -124,7 +126,7 @@ namespace MonShopAPI.Controller
         [Route("MomoIPN")]
         public async Task MomoIPN(MomoResponeModel momo)
         {
-            
+
             Order order = await _orderRepository.GetOrderByID(int.Parse(momo.orderId));
 
             if (momo.resultCode == 0)
@@ -146,7 +148,7 @@ namespace MonShopAPI.Controller
                 {
                     return;
                 }
-                  
+
             }
             else
             {
@@ -154,6 +156,7 @@ namespace MonShopAPI.Controller
 
             }
         }
+        /*
 
         [HttpGet]
         [Route("PayPalIPN")]
@@ -195,7 +198,7 @@ namespace MonShopAPI.Controller
             else
             {
                 await _orderRepository.UpdateStatusForOrder(int.Parse(response.OrderId), Constant.Order.FAILURE_PAY);
-            return    Redirect(returnURL);
+                return Redirect(returnURL);
 
 
             }
@@ -203,6 +206,53 @@ namespace MonShopAPI.Controller
 
 
         }
+        */
+
+        [HttpPost]
+        [Route("PayPalIPN")]
+        public async Task<IActionResult> PayPalIPN()
+        {
+            IConfiguration config = new ConfigurationBuilder()
+           .SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json", true, true)
+           .Build();
+            string returnURL = config["Paypal:RedirectUrl"];
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(Request.Body))
+                {
+                    string requestBody = await reader.ReadToEndAsync();
+                    PayPalEventData eventData = JsonConvert.DeserializeObject<PayPalEventData>(requestBody);
+
+                    if (eventData.resource.payer.status == "VERIFIED")
+                    {
+
+                        Order order = await _orderRepository.GetOrderByID(int.Parse(eventData.resource.transactions[0].invoice_number));
+                        PayPalPaymentResponse dto = new PayPalPaymentResponse
+                        {
+                            PaymentResponseId = eventData.resource.id,
+                            OrderId = int.Parse(eventData.resource.transactions[0].invoice_number),
+                            Amount = eventData.resource.transactions[0].amount.total,
+                            OrderInfo = eventData.resource.transactions[0].description,
+                            Success = true
+                        };
+                        await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
+                        await _paymentRepository.AddPaymentPaypal(dto);
+                        return Redirect(returnURL);
+                    };
+                   
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message); 
+            }
+        }
+
+
 
         [HttpGet]
         [Route("VNPayIPN")]
@@ -219,12 +269,12 @@ namespace MonShopAPI.Controller
                 VnPayResponseCode = Request.Query["vnp_ResponseCode"],
                 PayDate = Request.Query["vnp_PayDate"],
                 Amount = Request.Query["vnp_Amount"],
-                Success = true 
+                Success = true
             };
             VnpayPaymentResponse dto = null;
             Order order = await _orderRepository.GetOrderByID(int.Parse(response.OrderId));
 
-            if (response.VnPayResponseCode == "00" )
+            if (response.VnPayResponseCode == "00")
             {
                 if (order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
@@ -244,7 +294,7 @@ namespace MonShopAPI.Controller
                 {
                     return;
                 }
-               
+
             }
             else
             {
@@ -253,6 +303,7 @@ namespace MonShopAPI.Controller
             }
 
         }
+
 
     }
 }
