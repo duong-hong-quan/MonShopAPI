@@ -32,8 +32,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddMemoryCache();
-
 var app = builder.Build();
 
 app.UseSwagger(options => {

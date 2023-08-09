@@ -23,9 +23,8 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly IMemoryCache _memoryCache;
 
-        public PaymentController(IMemoryCache memoryCache)
+        public PaymentController()
         {
             _momoServices = new MomoServices();
             _payPalServices = new PayPalServices();
@@ -33,7 +32,6 @@ namespace MonShopAPI.Controller
             _accountRepository = new AccountRepository();
             _paymentRepository = new PaymentRepository();
             _vnPayServices = new VNPayServices();
-            _memoryCache = memoryCache;
 
         }
 
@@ -68,11 +66,7 @@ namespace MonShopAPI.Controller
         {
             Order order = await _orderRepository.GetOrderByID(OrderID);
 
-            if (_memoryCache.TryGetValue($"PaymentURL_{OrderID}", out string cachedPaymentUrl) && order.OrderStatusId != Constant.Order.SUCCESS_PAY)
-            {
-                return Content(cachedPaymentUrl);
-            }
-
+         
             Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
             Momo momo = null;
             if (order != null && account !=null)
@@ -80,7 +74,6 @@ namespace MonShopAPI.Controller
                  momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName, OrderID = OrderID};
               
                 string endpoint = _momoServices.CreatePaymentString(momo);
-                _memoryCache.Set($"PaymentURL_{OrderID}", endpoint, TimeSpan.FromMinutes(30));
                 return Content(endpoint);
             }
             return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");
@@ -141,12 +134,12 @@ namespace MonShopAPI.Controller
                     MomoPaymentResponse dto = new MomoPaymentResponse
                     {
                         PaymentResponseId = (long)momo.transId,
-                        OrderId = int.Parse(momo.orderId),
+                        OrderId = int.Parse(momo.extraData),
                         Amount = momo.amount.ToString(),
                         OrderInfo = momo.orderInfo,
                         Success = true
                     };
-                    await _orderRepository.UpdateStatusForOrder(int.Parse(momo.orderId), Constant.Order.SUCCESS_PAY);
+                    await _orderRepository.UpdateStatusForOrder(int.Parse(momo.extraData), Constant.Order.SUCCESS_PAY);
                     await _paymentRepository.AddPaymentMomo(dto);
                 }
                 else

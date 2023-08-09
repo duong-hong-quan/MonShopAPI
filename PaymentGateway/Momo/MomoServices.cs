@@ -14,9 +14,9 @@ namespace PaymentGateway.Momo
 {
     public class MomoServices : IMomoServices
     {
-      
 
-        public  string SendPaymentRequest(string endpoint, string postJsonString)
+
+        public string SendPaymentRequest(string endpoint, string postJsonString)
         {
 
             try
@@ -63,13 +63,13 @@ namespace PaymentGateway.Momo
                 return e.Message;
             }
         }
-        public  string CreatePaymentString(Momo momo)
+        public string CreatePaymentString(Momo momo)
         {
             IConfiguration config = new ConfigurationBuilder()
                    .SetBasePath(Directory.GetCurrentDirectory())
                    .AddJsonFile("appsettings.json", true, true)
                    .Build();
-       
+
             string connection = "";
 
             string endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -79,13 +79,13 @@ namespace PaymentGateway.Momo
             string orderInfo = $"Khach hang: {momo.CustomerName} thanh toan hoa don {momo.OrderID}";
             string redirectUrl = config["Momo:RedirectUrl"];
             string ipnUrl = config["Momo:IPNUrl"];
-           
+
             string requestType = "captureWallet";
 
             string amount = momo.Amount.ToString();
-            string orderId = momo.OrderID.ToString();
+            string orderId = Guid.NewGuid().ToString();
             string requestId = Guid.NewGuid().ToString();
-            string extraData = "";
+            string extraData = $"{momo.OrderID}";
 
             //Before sign HMAC SHA256 signature
             string rawHash = "accessKey=" + accessKey +
