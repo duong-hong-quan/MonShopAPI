@@ -24,6 +24,11 @@ namespace MonShopLibrary.Repository
        
         public async Task<List<PayPalPaymentResponse>> GetAllPaymentPayPal()=> await db.GetAllPaymentPayPal();
 
+        public async Task UpdateStatusPaymentPayPal(string PaymentResponseId, bool success) => await db.UpdateStatusPaymentPayPal(PaymentResponseId, success);  
+       
+        public async Task UpdateStatusPaymentMomo(long PaymentResponseId, bool success) => await db.UpdateStatusPaymentMomo(PaymentResponseId, success);
+
+        public async Task UpdateStatusPaymentVNPay(long PaymentResponseId, bool success) => await db.UpdateStatusPaymentVNPay(PaymentResponseId, success);
 
     }
 }

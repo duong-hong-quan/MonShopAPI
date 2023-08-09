@@ -15,5 +15,11 @@ namespace MonShopLibrary.Repository
         public Task<List<VnpayPaymentResponse>> GetAllPaymenVNPay();
         public Task AddPaymentPaypal(PayPalPaymentResponse paypalDTO);
         public Task<List<PayPalPaymentResponse>> GetAllPaymentPayPal();
+
+        public  Task UpdateStatusPaymentPayPal(string PaymentResponseId, bool success) ;
+
+        public  Task UpdateStatusPaymentMomo(long PaymentResponseId, bool success);
+
+        public  Task UpdateStatusPaymentVNPay(long PaymentResponseId, bool success);
     }
 }

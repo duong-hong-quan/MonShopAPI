@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace PaymentGateway.Paypal
 {
-    public class PayPalServices: IPayPalServices
+    public class PayPalServices : IPayPalServices
     {
         private const double ExchangeRate = 22_863.0;
 
@@ -39,7 +39,7 @@ namespace PaymentGateway.Paypal
               .Build();
             var envSandbox = new SandboxEnvironment(config["Paypal:ClientId"], config["Paypal:SecretKey"]);
             var client = new PayPalHttpClient(envSandbox);
-            var paypalOrderId =model.OrderID;
+            var paypalOrderId = model.OrderID;
             var urlCallBack = config["Paypal:CallbackUrl"];
             string price = ConvertVndToDollar(model.Amount).ToString();
 
@@ -54,19 +54,17 @@ namespace PaymentGateway.Paypal
                         {
                             Total = price,
                             Currency = "USD"
-                            
+
                         },
-                       
+
                         Description = $"Customer pays bill #{model.OrderID}",
                         InvoiceNumber = paypalOrderId.ToString()
                     }
                 },
                 RedirectUrls = new RedirectUrls()
                 {
-                    ReturnUrl =
-                        $"{urlCallBack}?payment_method=PayPal&amount={price}&success=1&order_description=Customer_pays_bill_{model.OrderID}&order_id={paypalOrderId}",
-                    CancelUrl =
-                        $"{urlCallBack}?payment_method=PayPal&amount={price}&success=0&order_description=Customer_pays_bill_{model.OrderID}&order_id={paypalOrderId}"
+                    ReturnUrl = urlCallBack,
+                    CancelUrl = urlCallBack
                 },
                 Payer = new Payer()
                 {

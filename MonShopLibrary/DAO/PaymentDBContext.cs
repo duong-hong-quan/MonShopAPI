@@ -46,6 +46,25 @@ namespace MonShopLibrary.DAO
             return list;
         }
 
+        public async Task UpdateStatusPaymentPayPal(string PaymentResponseId, bool success)
+        {
+            PayPalPaymentResponse payment = await this.PayPalPaymentResponses.FindAsync(PaymentResponseId);
+            payment.Success = success;
+            await this.SaveChangesAsync();
+        }
+        public async Task UpdateStatusPaymentMomo(long PaymentResponseId, bool success)
+        {
+            MomoPaymentResponse payment = await this.MomoPaymentResponses.FindAsync(PaymentResponseId);
+            payment.Success = success;
+            await this.SaveChangesAsync();
+        }
+        public async Task UpdateStatusPaymentVNPay(long PaymentResponseId, bool success)
+        {
+            VnpayPaymentResponse payment = await this.VnpayPaymentResponses.FindAsync(PaymentResponseId);
+            payment.Success = success;
+            await this.SaveChangesAsync();
+        }
+
     }
 }
 
