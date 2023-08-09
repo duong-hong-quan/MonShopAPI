@@ -128,7 +128,7 @@ namespace MonShopAPI.Controller
         {
 
 
-            Order order = await _orderRepository.GetOrderByID(int.Parse(momo.orderId));
+            Order order = await _orderRepository.GetOrderByID(int.Parse(momo.extraData));
             MomoPaymentResponse dto = new MomoPaymentResponse
             {
                 PaymentResponseId = (long)momo.transId,
