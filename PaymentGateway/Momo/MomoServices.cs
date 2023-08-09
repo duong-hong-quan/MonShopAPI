@@ -78,14 +78,15 @@ namespace PaymentGateway.Momo
             string serectkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
             string orderInfo = $"Khach hang: {momo.CustomerName} thanh toan hoa don {momo.OrderID}";
             string redirectUrl = config["Momo:RedirectUrl"];
-            string ipnUrl = config["Momo:IPNUrl"];
+           string ipnUrl = config["Momo:IPNUrl"];
+          //  string ipnUrl = "https://webhook.site/3399b42a-eee3-4e2d-8925-c2f893737de9";
 
             string requestType = "captureWallet";
 
             string amount = momo.Amount.ToString();
             string orderId = Guid.NewGuid().ToString();
             string requestId = Guid.NewGuid().ToString();
-            string extraData = $"{momo.OrderID}";
+            string extraData = momo.OrderID.ToString();
 
             //Before sign HMAC SHA256 signature
             string rawHash = "accessKey=" + accessKey +
