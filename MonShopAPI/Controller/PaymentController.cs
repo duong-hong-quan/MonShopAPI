@@ -124,40 +124,37 @@ namespace MonShopAPI.Controller
 
         [HttpPost]
         [Route("MomoIPN")]
-        public async Task<IActionResult> MomoIPN(MomoResponeModel momo)
+        public async Task MomoIPN(MomoResponeModel momo)
         {
-            try
-            {
-                Order order = await _orderRepository.GetOrderByID(int.Parse(momo.orderId));
-                MomoPaymentResponse dto = new MomoPaymentResponse
-                {
-                    PaymentResponseId = (long)momo.transId,
-                    OrderId = int.Parse(momo.extraData),
-                    Amount = momo.amount.ToString(),
-                    OrderInfo = momo.orderInfo,
-                    Success = true
-                };
-                if (momo.resultCode == 0)
-                {
-                    if (order.OrderStatusId == Constant.Order.PENDING_PAY)
-                    {
 
-                        await _orderRepository.UpdateStatusForOrder(int.Parse(momo.extraData), Constant.Order.SUCCESS_PAY);
-                        await _paymentRepository.AddPaymentMomo(dto);
-                    }
-                }
-                else
-                {
-                    await _paymentRepository.UpdateStatusPaymentMomo(int.Parse(momo.extraData), false);
-                    await _orderRepository.UpdateStatusForOrder(int.Parse(momo.orderId), Constant.Order.PENDING_PAY);
 
-                }
-                return Ok();
-            }
-            catch (Exception ex)
+            Order order = await _orderRepository.GetOrderByID(int.Parse(momo.orderId));
+            MomoPaymentResponse dto = new MomoPaymentResponse
             {
-                return StatusCode(500, ex.Message);
+                PaymentResponseId = (long)momo.transId,
+                OrderId = int.Parse(momo.extraData),
+                Amount = momo.amount.ToString(),
+                OrderInfo = momo.orderInfo,
+                Success = true
+            };
+            if (momo.resultCode == 0)
+            {
+                if (order.OrderStatusId == Constant.Order.PENDING_PAY)
+                {
+
+                    await _orderRepository.UpdateStatusForOrder(int.Parse(momo.extraData), Constant.Order.SUCCESS_PAY);
+                    await _paymentRepository.AddPaymentMomo(dto);
+                }
             }
+            else
+            {
+                await _paymentRepository.UpdateStatusPaymentMomo(int.Parse(momo.extraData), false);
+                await _orderRepository.UpdateStatusForOrder(int.Parse(momo.orderId), Constant.Order.PENDING_PAY);
+
+            }
+
+
+
         }
 
 
