@@ -198,7 +198,7 @@ namespace MonShopAPI.Controller
                     else
                     {
                         await _paymentRepository.UpdateStatusPaymentPayPal(dto.OrderId.ToString(), false);
-                        await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.FAILURE_PAY);
+                        await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.PENDING_PAY);
 
                     }
 
@@ -258,7 +258,7 @@ namespace MonShopAPI.Controller
                 else
                 {
                     await _paymentRepository.UpdateStatusPaymentVNPay(dto.OrderId, false);
-                    await _orderRepository.UpdateStatusForOrder(int.Parse(response.OrderId), Constant.Order.FAILURE_PAY);
+                    await _orderRepository.UpdateStatusForOrder(int.Parse(response.OrderId), Constant.Order.PENDING_PAY);
                 }
                 return Ok();
             }
