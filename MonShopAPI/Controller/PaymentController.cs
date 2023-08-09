@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using MonShopLibrary.Models;
 using MonShopLibrary.Repository;
 using MonShopLibrary.Utils;
@@ -22,15 +23,18 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IMemoryCache _memoryCache;
 
-        public PaymentController()
+        public PaymentController(IMemoryCache memoryCache)
         {
             _momoServices = new MomoServices();
             _payPalServices = new PayPalServices();
             _orderRepository = new OrderRepository();
             _accountRepository = new AccountRepository();
             _paymentRepository = new PaymentRepository();
-            _vnPayServices = new VNPayServices();  
+            _vnPayServices = new VNPayServices();
+            _memoryCache = memoryCache;
+
         }
 
 
@@ -63,6 +67,12 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> GetPaymentURLMomo(int OrderID)
         {
             Order order = await _orderRepository.GetOrderByID(OrderID);
+
+            if (_memoryCache.TryGetValue($"PaymentURL_{OrderID}", out string cachedPaymentUrl) && order.OrderStatusId != Constant.Order.SUCCESS_PAY)
+            {
+                return Content(cachedPaymentUrl);
+            }
+
             Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
             Momo momo = null;
             if (order != null && account !=null)
@@ -70,7 +80,7 @@ namespace MonShopAPI.Controller
                  momo = new Momo { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = account.FullName, OrderID = OrderID};
               
                 string endpoint = _momoServices.CreatePaymentString(momo);
-
+                _memoryCache.Set($"PaymentURL_{OrderID}", endpoint, TimeSpan.FromMinutes(30));
                 return Content(endpoint);
             }
             return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");

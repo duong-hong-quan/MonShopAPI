@@ -24,6 +24,8 @@ namespace MonShopLibrary.Repository
         public async Task UpdateStatusForOrder(int OrderID, int status) => await db.UpdateStatusForOrder(OrderID, status);
         public async Task<Order> GetOrderByID(int OrderID) => await db.GetOrderByID(OrderID);
         public async Task<List<Order>> GetAllOrder() => await db.GetAllOrder();
+        public async Task<List<OrderItem>> GetListItemByOrderID(int OrderID) => await db.GetListItemByOrderID(OrderID);
+
 
     }
 }

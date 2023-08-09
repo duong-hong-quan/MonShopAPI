@@ -87,5 +87,11 @@ namespace MonShopLibrary.DAO
             return order;
         }
 
+        public async Task<List<OrderItem>> GetListItemByOrderID(int OrderID)
+        {
+            List<OrderItem> orderItems = await this.OrderItems.Include(o=> o.Product).Where(o=> o.OrderId == OrderID).ToListAsync();
+            return orderItems;
+        }
+
     }
 }

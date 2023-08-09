@@ -11,7 +11,6 @@ builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -33,6 +32,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

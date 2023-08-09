@@ -24,6 +24,13 @@ namespace MonShopAPI.Controller
             var list = await _orderRepository.GetAllOrder();
             return Ok(list);
         }
+        [HttpGet]
+        [Route("GetListItemByOrderID")]
+        public async Task<IActionResult> GetListItemByOrderID(int orderID)
+        {
+            var list = await _orderRepository.GetListItemByOrderID(orderID);
+            return Ok(list);
+        }
 
         [HttpGet]
         [Route("GetAllOrderStatus")]

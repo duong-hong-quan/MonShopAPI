@@ -22,5 +22,7 @@ namespace MonShopLibrary.Repository
         public Task UpdateStatusForOrder(int OrderID, int status);
         public Task<Order> GetOrderByID(int OrderID);
         public Task<List<Order>> GetAllOrder();
+        public  Task<List<OrderItem>> GetListItemByOrderID(int OrderID);
+
     }
 }
