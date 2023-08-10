@@ -21,5 +21,8 @@ namespace MonShopLibrary.Repository
         public  Task UpdateStatusPaymentMomo(long PaymentResponseId, bool success);
 
         public  Task UpdateStatusPaymentVNPay(long PaymentResponseId, bool success);
+        public  Task<MomoPaymentResponse> GetPaymentMomoByID(long PaymentResponseId) ;
+        public  Task<VnpayPaymentResponse> GetPaymentVNPayByID(long PaymentResponseId) ;
+        public  Task<PayPalPaymentResponse> GetPaymentPaypalByID(string PaymentResponseId) ;
     }
 }

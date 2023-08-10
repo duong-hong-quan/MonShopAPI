@@ -93,5 +93,20 @@ namespace MonShopLibrary.DAO
             return orderItems;
         }
 
+        public async Task UpdateQuantityAfterPay(int OrderID)
+        {
+            List<OrderItem> list = await this.OrderItems.Where(o => o.OrderId == OrderID).ToListAsync();
+            foreach(OrderItem item in list)
+            {
+                int quantity = item.Quantity;
+                Product product = await this.Products.FindAsync(item.ProductId);
+                if(product != null)
+                {
+                    product.Quantity = product.Quantity - quantity;
+                }
+            }
+            await this.SaveChangesAsync();  
+        }
+
     }
 }

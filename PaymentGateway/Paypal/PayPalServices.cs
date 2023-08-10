@@ -96,7 +96,7 @@ namespace PaymentGateway.Paypal
             return paymentUrl;
 
         }
-
+        /*
         public PaymentResponePayPal PaymentExecute(IQueryCollection collections)
         {
             var response = new PaymentResponePayPal();
@@ -145,6 +145,7 @@ namespace PaymentGateway.Paypal
 
             return response;
         }
+        */
     }
 
 }

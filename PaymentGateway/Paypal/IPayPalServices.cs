@@ -11,6 +11,5 @@ namespace PaymentGateway.Paypal
     public interface IPayPalServices
     {
         public Task<string> CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
-        public PaymentResponePayPal PaymentExecute(IQueryCollection collections);
     }
 }

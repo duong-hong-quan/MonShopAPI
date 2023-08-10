@@ -14,8 +14,13 @@ namespace MonShopLibrary.DAO
 
         public async Task AddPaymentMomo(MomoPaymentResponse momo)
         {
-            await this.MomoPaymentResponses.AddAsync(momo);
-            await this.SaveChangesAsync();
+            MomoPaymentResponse momoDTO = await GetPaymentMomoByID(momo.PaymentResponseId);
+            if (momoDTO == null)
+            {
+                await this.MomoPaymentResponses.AddAsync(momo);
+                await this.SaveChangesAsync();
+            }
+
         }
 
         public async Task<List<MomoPaymentResponse>> GetAllPaymentMomo()
@@ -26,10 +31,15 @@ namespace MonShopLibrary.DAO
 
         public async Task AddPaymentVNPay(VnpayPaymentResponse vnpayDTO)
         {
-            await this.VnpayPaymentResponses.AddAsync(vnpayDTO);
-            await this.SaveChangesAsync();
+            VnpayPaymentResponse vnpay = await GetPaymentVNPayByID(vnpayDTO.PaymentResponseId);
+            if (vnpay == null)
+            {
+                await this.VnpayPaymentResponses.AddAsync(vnpayDTO);
+                await this.SaveChangesAsync();
+            }
+
         }
-     
+
         public async Task<List<VnpayPaymentResponse>> GetAllPaymentVNPay()
         {
             List<VnpayPaymentResponse> list = await this.VnpayPaymentResponses.ToListAsync();
@@ -37,8 +47,13 @@ namespace MonShopLibrary.DAO
         }
         public async Task AddPaymentPaypal(PayPalPaymentResponse paypalDTO)
         {
-            await this.PayPalPaymentResponses.AddAsync(paypalDTO);
-            await this.SaveChangesAsync();
+            PayPalPaymentResponse paypal = await GetPaymentPaypalByID(paypalDTO.PaymentResponseId);
+            if (paypal == null)
+            {
+                await this.PayPalPaymentResponses.AddAsync(paypalDTO);
+                await this.SaveChangesAsync();
+            }
+
         }
         public async Task<List<PayPalPaymentResponse>> GetAllPaymentPayPal()
         {
@@ -48,21 +63,49 @@ namespace MonShopLibrary.DAO
 
         public async Task UpdateStatusPaymentPayPal(string PaymentResponseId, bool success)
         {
-            PayPalPaymentResponse payment = await this.PayPalPaymentResponses.FindAsync(PaymentResponseId);
-            payment.Success = success;
-            await this.SaveChangesAsync();
+            PayPalPaymentResponse payment = await GetPaymentPaypalByID(PaymentResponseId);
+            if (payment != null)
+            {
+                payment.Success = success;
+                await this.SaveChangesAsync();
+
+            }
         }
         public async Task UpdateStatusPaymentMomo(long PaymentResponseId, bool success)
         {
-            MomoPaymentResponse payment = await this.MomoPaymentResponses.FindAsync(PaymentResponseId);
-            payment.Success = success;
-            await this.SaveChangesAsync();
+            MomoPaymentResponse payment = await GetPaymentMomoByID(PaymentResponseId);
+            if (payment != null)
+            {
+                payment.Success = success;
+                await this.SaveChangesAsync();
+
+            }
         }
         public async Task UpdateStatusPaymentVNPay(long PaymentResponseId, bool success)
         {
-            VnpayPaymentResponse payment = await this.VnpayPaymentResponses.FindAsync(PaymentResponseId);
-            payment.Success = success;
-            await this.SaveChangesAsync();
+            VnpayPaymentResponse payment = await GetPaymentVNPayByID(PaymentResponseId);
+            if (payment != null)
+            {
+                payment.Success = success;
+                await this.SaveChangesAsync();
+
+            }
+        }
+
+        public async Task<MomoPaymentResponse> GetPaymentMomoByID (long PaymentResponseId)
+        {
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.FindAsync(PaymentResponseId);
+            return momo;
+        }
+        public async Task<VnpayPaymentResponse> GetPaymentVNPayByID(long PaymentResponseId)
+        {
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.FindAsync(PaymentResponseId);
+            return vnpay;
+        }
+        public async Task<PayPalPaymentResponse> GetPaymentPaypalByID(string PaymentResponseId)
+        {
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.FindAsync(PaymentResponseId);
+            return paypal;
         }
 
     }

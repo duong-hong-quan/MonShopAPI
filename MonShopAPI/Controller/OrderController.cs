@@ -11,10 +11,11 @@ namespace MonShopAPI.Controller
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-
+        private readonly IProductRepository _productRepository;
         public OrderController()
         {
             _orderRepository = new OrderRepository();
+            _productRepository = new ProductRepository();
         }
 
         [HttpGet]
@@ -58,6 +59,20 @@ namespace MonShopAPI.Controller
         [Route("AddOrderRequest")]
         public async Task<IActionResult> AddOrderRequest(OrderRequest dto)
         {
+            foreach (var item in dto.Items)
+            {
+                if (item.Quantity == 0)
+                {
+                    return BadRequest($"The quantity must greater than 0");
+                }
+                Product product = await _productRepository.GetProductByID(item.ProductId);
+                if(product == null)
+                {
+                    return BadRequest($"No result Product with ID {item.ProductId}");
+                }
+
+            }
+
             int OrderID = await _orderRepository.AddOrderRequest(dto);
             return Ok(OrderID);
         }
