@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace MonShop.Chat
 {
-    [HubName("MyHub")]
 
     public class ChatHub : Hub
     {
