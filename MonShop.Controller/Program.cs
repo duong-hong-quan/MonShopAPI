@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonShop.Chat;
-using MonShopLibrary.Models;
+using MonShop.Library.Models;
 using System.Text;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -68,7 +68,7 @@ app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapHub<ChatHub>("/chathub");
+app.MapHub<ChatHub>("/chat");
 
 app.MapControllers();
 app.Run();

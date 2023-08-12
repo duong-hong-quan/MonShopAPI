@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MonShopLibrary.Models
+namespace MonShop.Library.Models
 {
     public partial class MomoPaymentResponse
     {

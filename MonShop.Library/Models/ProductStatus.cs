@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace MonShopLibrary.Models
+namespace MonShop.Library.Models
 {
     public partial class ProductStatus
     {

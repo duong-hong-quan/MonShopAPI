@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using MonShopLibrary.Models;
+using MonShop.Library.Models;
 using MonShopLibrary.Repository;
 using MonShopLibrary.Utils;
 using Newtonsoft.Json;

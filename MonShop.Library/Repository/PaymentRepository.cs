@@ -1,5 +1,5 @@
 ﻿using MonShopLibrary.DAO;
-using MonShopLibrary.Models;
+using MonShop.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

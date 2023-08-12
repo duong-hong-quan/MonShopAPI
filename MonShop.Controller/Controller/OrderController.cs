@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonShopLibrary.DTO;
-using MonShopLibrary.Models;
+using MonShop.Library.Models;
 using MonShopLibrary.Repository;
 
 namespace MonShopAPI.Controller

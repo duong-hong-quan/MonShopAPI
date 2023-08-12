@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MonShopAPI.Util;
 using MonShopLibrary.DTO;
-using MonShopLibrary.Models;
+using MonShop.Library.Models;
 using MonShopLibrary.Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

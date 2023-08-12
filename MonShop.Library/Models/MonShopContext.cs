@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
-namespace MonShopLibrary.Models
+namespace MonShop.Library.Models
 {
     public partial class MonShopContext : DbContext
     {
@@ -33,14 +32,10 @@ namespace MonShopLibrary.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            IConfiguration config = new ConfigurationBuilder()
-                         .SetBasePath(Directory.GetCurrentDirectory())
-                         .AddJsonFile("appsettings.json", true, true)
-                         .Build();
-            string cs = config["ConnectionStrings:Host"];
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(cs);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server =(local); database = MonShop;uid=sa;pwd=12345;TrustServerCertificate=True;");
             }
         }
 
@@ -80,6 +75,8 @@ namespace MonShopLibrary.Models
             {
                 entity.HasNoKey();
 
+                entity.Property(e => e.Content).HasMaxLength(255);
+
                 entity.Property(e => e.MessageId)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("MessageID");
@@ -89,18 +86,18 @@ namespace MonShopLibrary.Models
                 entity.HasOne(d => d.ReceiverNavigation)
                     .WithMany()
                     .HasForeignKey(d => d.Receiver)
-                    .HasConstraintName("FK__Messages__Receiv__571DF1D5");
+                    .HasConstraintName("FK__Messages__Receiv__5812160E");
 
                 entity.HasOne(d => d.SenderNavigation)
                     .WithMany()
                     .HasForeignKey(d => d.Sender)
-                    .HasConstraintName("FK__Messages__Sender__5629CD9C");
+                    .HasConstraintName("FK__Messages__Sender__571DF1D5");
             });
 
             modelBuilder.Entity<MomoPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__MomoPaym__766E687AD781D271");
+                    .HasName("PK__MomoPaym__766E687A18396922");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
@@ -169,7 +166,7 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<PayPalPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__PayPalPa__766E687A401AC6A8");
+                    .HasName("PK__PayPalPa__766E687A9FF01B47");
 
                 entity.Property(e => e.PaymentResponseId).HasMaxLength(255);
 
@@ -228,7 +225,7 @@ namespace MonShopLibrary.Models
             modelBuilder.Entity<Token>(entity =>
             {
                 entity.HasKey(e => e.RefreshToken)
-                    .HasName("PK__Tokens__DEA298DBA3254F77");
+                    .HasName("PK__Tokens__DEA298DB0C03CCBE");
 
                 entity.Property(e => e.RefreshToken)
                     .HasMaxLength(255)
@@ -242,13 +239,13 @@ namespace MonShopLibrary.Models
                     .WithMany(p => p.Tokens)
                     .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Tokens__AccountI__5AEE82B9");
+                    .HasConstraintName("FK__Tokens__AccountI__5629CD9C");
             });
 
             modelBuilder.Entity<VnpayPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__VNPayPay__766E687A02292FDA");
+                    .HasName("PK__VNPayPay__766E687A85AA1B91");
 
                 entity.ToTable("VNPayPaymentResponses");
 

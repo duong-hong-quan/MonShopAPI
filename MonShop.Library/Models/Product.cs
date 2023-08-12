@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace MonShopLibrary.Models
+namespace MonShop.Library.Models
 {
     public partial class Product
     {
@@ -15,6 +15,7 @@ namespace MonShopLibrary.Models
         public string ProductName { get; set; } = null!;
         public string? ImageUrl { get; set; }
         public double Price { get; set; }
+        public double? Discount { get; set; }
         public int Quantity { get; set; }
         public string? Description { get; set; }
         public int? CategoryId { get; set; }
