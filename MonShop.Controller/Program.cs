@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
 {
-    builder.WithOrigins("http://192.168.1.9:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 
 }));
 builder.Services.AddControllers();
