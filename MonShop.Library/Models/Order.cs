@@ -23,9 +23,9 @@ namespace MonShop.Library.Models
         public virtual Account BuyerAccount { get; set; } = null!;
         public virtual OrderStatus OrderStatus { get; set; } = null!;
         [JsonIgnore]
-
         public virtual ICollection<MomoPaymentResponse> MomoPaymentResponses { get; set; }
         [JsonIgnore]
+
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         [JsonIgnore]

@@ -107,6 +107,17 @@ namespace MonShopAPI.Controller
 
         }
 
+        [Authorize]
+        [HttpGet]
+        [Route("GetAccountByID")]
+        public async Task<IActionResult> GetAccountByID(int AccountID)
+        {
+            Account account = await _accountRepository.GetAccountByID(AccountID);
+            return Ok(account);
+
+        }
+
+
 
     }
 

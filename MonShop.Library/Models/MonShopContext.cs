@@ -28,6 +28,7 @@ namespace MonShop.Library.Models
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductStatus> ProductStatuses { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
+        public virtual DbSet<Room> Rooms { get; set; } = null!;
         public virtual DbSet<Token> Tokens { get; set; } = null!;
         public virtual DbSet<VnpayPaymentResponse> VnpayPaymentResponses { get; set; } = null!;
 
@@ -42,6 +43,7 @@ namespace MonShop.Library.Models
             {
                 optionsBuilder.UseSqlServer(cs);
             }
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -68,7 +70,7 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Account__RoleId__4CA06362");
+                    .HasConstraintName("FK__Account__RoleId__4F7CD00D");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -78,31 +80,30 @@ namespace MonShop.Library.Models
 
             modelBuilder.Entity<Message>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.MessageId).HasColumnName("MessageID");
 
                 entity.Property(e => e.Content).HasMaxLength(255);
 
-                entity.Property(e => e.MessageId)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("MessageID");
+                entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
                 entity.Property(e => e.SendTime).HasColumnType("datetime");
 
-                entity.HasOne(d => d.ReceiverNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.Receiver)
-                    .HasConstraintName("FK__Messages__Receiv__5812160E");
+                entity.HasOne(d => d.Room)
+                    .WithMany(p => p.Messages)
+                    .HasForeignKey(d => d.RoomId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Messages__RoomID__5070F446");
 
                 entity.HasOne(d => d.SenderNavigation)
-                    .WithMany()
+                    .WithMany(p => p.Messages)
                     .HasForeignKey(d => d.Sender)
-                    .HasConstraintName("FK__Messages__Sender__571DF1D5");
+                    .HasConstraintName("FK__Messages__Sender__5165187F");
             });
 
             modelBuilder.Entity<MomoPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__MomoPaym__766E687A18396922");
+                    .HasName("PK__MomoPaym__766E687A4B7BB2DE");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
@@ -118,7 +119,7 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.MomoPaymentResponses)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__MomoPayme__Order__4D94879B");
+                    .HasConstraintName("FK__MomoPayme__Order__52593CB8");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -133,13 +134,13 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.BuyerAccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__BuyerAcc__5070F446");
+                    .HasConstraintName("FK__Orders__BuyerAcc__5535A963");
 
                 entity.HasOne(d => d.OrderStatus)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.OrderStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__OrderSta__5165187F");
+                    .HasConstraintName("FK__Orders__OrderSta__5629CD9C");
             });
 
             modelBuilder.Entity<OrderItem>(entity =>
@@ -152,13 +153,13 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderItem__Order__4E88ABD4");
+                    .HasConstraintName("FK__OrderItem__Order__534D60F1");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderItem__Produ__4F7CD00D");
+                    .HasConstraintName("FK__OrderItem__Produ__5441852A");
             });
 
             modelBuilder.Entity<OrderStatus>(entity =>
@@ -171,7 +172,7 @@ namespace MonShop.Library.Models
             modelBuilder.Entity<PayPalPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__PayPalPa__766E687A9FF01B47");
+                    .HasName("PK__PayPalPa__766E687A718538ED");
 
                 entity.Property(e => e.PaymentResponseId).HasMaxLength(255);
 
@@ -187,7 +188,7 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.PayPalPaymentResponses)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PayPalPay__Order__52593CB8");
+                    .HasConstraintName("FK__PayPalPay__Order__571DF1D5");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -201,12 +202,12 @@ namespace MonShop.Library.Models
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("FK__Products__Catego__5441852A");
+                    .HasConstraintName("FK__Products__Catego__5812160E");
 
                 entity.HasOne(d => d.ProductStatus)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.ProductStatusId)
-                    .HasConstraintName("FK__Products__Produc__534D60F1");
+                    .HasConstraintName("FK__Products__Produc__59063A47");
             });
 
             modelBuilder.Entity<ProductStatus>(entity =>
@@ -227,10 +228,19 @@ namespace MonShop.Library.Models
                 entity.Property(e => e.RoleName).HasMaxLength(255);
             });
 
+            modelBuilder.Entity<Room>(entity =>
+            {
+                entity.ToTable("Room");
+
+                entity.Property(e => e.RoomId).HasColumnName("RoomID");
+
+                entity.Property(e => e.RoomName).HasMaxLength(255);
+            });
+
             modelBuilder.Entity<Token>(entity =>
             {
                 entity.HasKey(e => e.RefreshToken)
-                    .HasName("PK__Tokens__DEA298DB0C03CCBE");
+                    .HasName("PK__Tokens__DEA298DBB8FD43F5");
 
                 entity.Property(e => e.RefreshToken)
                     .HasMaxLength(255)
@@ -244,13 +254,13 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.Tokens)
                     .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Tokens__AccountI__5629CD9C");
+                    .HasConstraintName("FK__Tokens__AccountI__59FA5E80");
             });
 
             modelBuilder.Entity<VnpayPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__VNPayPay__766E687A85AA1B91");
+                    .HasName("PK__VNPayPay__766E687A019D1832");
 
                 entity.ToTable("VNPayPaymentResponses");
 
@@ -268,7 +278,7 @@ namespace MonShop.Library.Models
                     .WithMany(p => p.VnpayPaymentResponses)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VNPayPaym__Order__5535A963");
+                    .HasConstraintName("FK__VNPayPaym__Order__5AEE82B9");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -8,6 +8,7 @@ namespace MonShop.Library.Models
     {
         public Account()
         {
+            Messages = new HashSet<Message>();
             Orders = new HashSet<Order>();
             Tokens = new HashSet<Token>();
         }
@@ -25,6 +26,9 @@ namespace MonShop.Library.Models
 
         public virtual Role Role { get; set; } = null!;
         [JsonIgnore]
+        public virtual ICollection<Message> Messages { get; set; }
+        [JsonIgnore]
+
         public virtual ICollection<Order> Orders { get; set; }
         [JsonIgnore]
 

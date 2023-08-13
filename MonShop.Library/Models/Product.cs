@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace MonShop.Library.Models
 {
@@ -24,8 +23,6 @@ namespace MonShop.Library.Models
 
         public virtual Category? Category { get; set; }
         public virtual ProductStatus? ProductStatus { get; set; }
-        [JsonIgnore]
-
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }
