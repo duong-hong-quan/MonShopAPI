@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonShop.Library.DTO;
 
 namespace MonShopLibrary.Repository
 {
@@ -17,7 +18,8 @@ namespace MonShopLibrary.Repository
         public Task UpdateStatusForOrder(string OrderID, int status);
         public Task<Order> GetOrderByID(string OrderID);
         public Task<List<Order>> GetAllOrder();
-        public  Task<List<OrderItem>> GetListItemByOrderID(string OrderID);
+        public Task<ListOrder> GetListItemByOrderID(string OrderID);
         public Task UpdateQuantityAfterPay(string OrderID);
+        public Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID);
     }
 }

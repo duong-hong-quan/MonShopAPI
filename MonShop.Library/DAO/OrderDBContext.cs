@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonShop.Library.DTO;
 
 namespace MonShopLibrary.DAO
 {
@@ -86,11 +87,34 @@ namespace MonShopLibrary.DAO
             List<Order> order = await this.Orders.ToListAsync();
             return order;
         }
-
-        public async Task<List<OrderItem>> GetListItemByOrderID(string OrderID)
+        public async Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
         {
+            List<Order> order = await this.Orders.Where(a => a.BuyerAccountId == AccountID && a.OrderStatusId == OrderStatusID).ToListAsync();
+            return order;
+        }
+        public async Task<ListOrder> GetListItemByOrderID(string OrderID)
+        {
+            string paymentMethod = "Pending pay";
+            Order orderDTO = await this.Orders.FindAsync(OrderID);
+            MomoPaymentResponse paymentResponse = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            if (paymentResponse != null)
+            {
+                paymentMethod = "Momo";
+            }
+            VnpayPaymentResponse vnPaymentResponse = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            if (vnPaymentResponse != null)
+            {
+                paymentMethod = "VNpay";
+            }
+            PayPalPaymentResponse paypalPaymentResponse = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            if (paypalPaymentResponse != null)
+            {
+                paymentMethod = "PayPal";
+            }
             List<OrderItem> orderItems = await this.OrderItems.Include(o=> o.Product).Where(o=> o.OrderId == OrderID).ToListAsync();
-            return orderItems;
+            ListOrder listOrder = new ListOrder { order = orderDTO, orderItem= orderItems, paymentMethod = paymentMethod};
+
+            return listOrder;
         }
 
         public async Task UpdateQuantityAfterPay(string OrderID)

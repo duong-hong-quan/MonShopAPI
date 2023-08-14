@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MonShopLibrary.DTO;
 using MonShop.Library.Models;
 using MonShopLibrary.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MonShopAPI.Controller
 {
@@ -66,7 +67,7 @@ namespace MonShopAPI.Controller
                     return BadRequest($"The quantity must greater than 0");
                 }
                 Product product = await _productRepository.GetProductByID(item.ProductId);
-                if(product == null)
+                if (product == null)
                 {
                     return BadRequest($"No result Product with ID {item.ProductId}");
                 }
@@ -85,6 +86,14 @@ namespace MonShopAPI.Controller
             return Ok();
         }
 
+    //    [Authorize]
+        [HttpGet]
+        [Route("GetAllOrderByAccountID")]
+        public async Task<IActionResult> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
+        {
+            List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
+            return Ok(list);
+        }
 
 
     }

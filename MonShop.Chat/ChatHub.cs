@@ -15,7 +15,7 @@ namespace MonShop.Chat
         public async Task SendMessage(MessageRequest message)
         {
             await messageRepository.AddMessage(message);
-            List<Message> list = await messageRepository.GetAllMessageByRoomID(1);
+            List<Message> list = await messageRepository.GetAllMessageByAccountID(message.AccountID);
             await Clients.All.SendAsync("ReceiveMessage", list);
         }
     }

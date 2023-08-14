@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonShop.Library.DTO;
 
 namespace MonShopLibrary.Repository
 {
@@ -24,8 +25,9 @@ namespace MonShopLibrary.Repository
         public async Task UpdateStatusForOrder(string OrderID, int status) => await db.UpdateStatusForOrder(OrderID, status);
         public async Task<Order> GetOrderByID(string OrderID) => await db.GetOrderByID(OrderID);
         public async Task<List<Order>> GetAllOrder() => await db.GetAllOrder();
-        public async Task<List<OrderItem>> GetListItemByOrderID(string OrderID) => await db.GetListItemByOrderID(OrderID);
+        public async Task<ListOrder> GetListItemByOrderID(string OrderID) => await db.GetListItemByOrderID(OrderID);
         public async Task UpdateQuantityAfterPay(string OrderID) => await db.UpdateQuantityAfterPay(OrderID);
+        public async Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID) => await db.GetAllOrderByAccountID(AccountID, OrderStatusID);
 
 
     }

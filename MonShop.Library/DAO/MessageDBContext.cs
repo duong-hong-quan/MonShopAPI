@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using MonShop.Library.DTO;
 using MonShop.Library.Models;
+using MonShopLibrary.DAO;
 using MonShopLibrary.Utils;
 using System;
 using System.Collections.Generic;
@@ -49,14 +50,22 @@ namespace MonShop.Library.DAO
                     SendTime = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
 
                 };
-                 this.Messages.Add(DTO);
+                this.Messages.Add(DTO);
                 await this.SaveChangesAsync();
 
             }
         }
         public async Task<List<Message>> GetAllMessageByAccountID(int AccountID)
         {
-            List<Message> list = await this.Messages.Where(m => m.Sender == AccountID).ToListAsync();
+            List<Message> list = null;
+
+            List<Message> messages = await this.Messages.Where(m => m.Sender == AccountID).ToListAsync();
+            Message mess = messages.ElementAt(0);
+
+            {
+                list = await this.Messages.Where(m => m.RoomId == mess.RoomId).ToListAsync();
+
+            }
             return list;
         }
 

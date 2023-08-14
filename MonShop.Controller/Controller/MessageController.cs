@@ -6,7 +6,7 @@ using MonShop.Library.Repository;
 
 namespace MonShop.Controller.Controller
 {
-    [Route("api/[controller]")]
+    [Route("Message")]
     [ApiController]
     public class MessageController : ControllerBase
     {
@@ -18,6 +18,7 @@ namespace MonShop.Controller.Controller
         }
 
         [HttpPost]
+        [Route("AddMessage")]
         public async Task<IActionResult> AddMessage(MessageRequest request)
         {
             await _messageRepository.AddMessage(request);
@@ -25,9 +26,20 @@ namespace MonShop.Controller.Controller
 
         }
         [HttpGet]
+        [Route("GetMessage")]
+
         public async Task<IActionResult> GetMessage(int roomID)
         {
             List<Message> list = await _messageRepository.GetAllMessageByRoomID(roomID);
+            return Ok(list);
+        }
+
+        [HttpGet]
+        [Route("GetAllMessageByAccountID")]
+
+        public async Task <IActionResult> GetAllMessageByAccountID(int AccountID)
+        {
+            List<Message> list = await _messageRepository.GetAllMessageByAccountID( AccountID);
             return Ok(list);
         }
     }

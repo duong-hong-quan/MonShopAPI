@@ -76,7 +76,11 @@ namespace MonShopLibrary.DAO
             Account account = await this.Accounts.FindAsync(id);
             return account;
         }
-
+        public async Task<Account> GetAccountByEmail(string email)
+        {
+            Account account = await this.Accounts.Where(a=> a.Email== email).SingleOrDefaultAsync();
+            return account;
+        }
         public async Task<Account> Login(LoginRequest loginRequest)
         {
             Account account = await this.Accounts.Where(a => a.Email == loginRequest.Email && a.IsDeleted == false).FirstOrDefaultAsync();
