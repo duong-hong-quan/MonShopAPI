@@ -97,22 +97,22 @@ namespace MonShopLibrary.DAO
             string paymentMethod = "Pending pay";
             Order orderDTO = await this.Orders.FindAsync(OrderID);
             MomoPaymentResponse paymentResponse = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
-            if (paymentResponse != null)
+            if (paymentResponse != null && paymentResponse.Success == true)
             {
                 paymentMethod = "Momo";
             }
             VnpayPaymentResponse vnPaymentResponse = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
-            if (vnPaymentResponse != null)
+            if (vnPaymentResponse != null && vnPaymentResponse.Success == true)
             {
                 paymentMethod = "VNpay";
             }
             PayPalPaymentResponse paypalPaymentResponse = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
-            if (paypalPaymentResponse != null)
+            if (paypalPaymentResponse != null && paypalPaymentResponse.Success == true)
             {
                 paymentMethod = "PayPal";
             }
-            List<OrderItem> orderItems = await this.OrderItems.Include(o=> o.Product).Where(o=> o.OrderId == OrderID).ToListAsync();
-            ListOrder listOrder = new ListOrder { order = orderDTO, orderItem= orderItems, paymentMethod = paymentMethod};
+            List<OrderItem> orderItems = await this.OrderItems.Include(o => o.Product).Where(o => o.OrderId == OrderID).ToListAsync();
+            ListOrder listOrder = new ListOrder { order = orderDTO, orderItem = orderItems, paymentMethod = paymentMethod };
 
             return listOrder;
         }
@@ -120,16 +120,16 @@ namespace MonShopLibrary.DAO
         public async Task UpdateQuantityAfterPay(string OrderID)
         {
             List<OrderItem> list = await this.OrderItems.Where(o => o.OrderId == OrderID).ToListAsync();
-            foreach(OrderItem item in list)
+            foreach (OrderItem item in list)
             {
                 int quantity = item.Quantity;
                 Product product = await this.Products.FindAsync(item.ProductId);
-                if(product != null)
+                if (product != null)
                 {
                     product.Quantity = product.Quantity - quantity;
                 }
             }
-            await this.SaveChangesAsync();  
+            await this.SaveChangesAsync();
         }
 
     }
