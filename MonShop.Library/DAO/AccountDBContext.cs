@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace MonShopLibrary.DAO
 {
@@ -17,7 +18,7 @@ namespace MonShopLibrary.DAO
 
         public async Task<List<Account>> GetAllAccount()
         {
-            List<Account> accounts = await this.Accounts.ToListAsync();
+            List<Account> accounts = await this.Accounts.Include(a => a.Role).ToListAsync();
             return accounts;
         }
 
@@ -32,7 +33,8 @@ namespace MonShopLibrary.DAO
                 ImageUrl = dto.ImageUrl,
                 IsDeleted = false,
                 Password = Utility.HashPassword(dto.Password),
-                RoleId = dto.RoleId
+                RoleId = dto.RoleId,
+                PhoneNumber = dto.PhoneNumber,
             };
             await this.Accounts.AddAsync(account);
             await this.SaveChangesAsync();
@@ -40,21 +42,18 @@ namespace MonShopLibrary.DAO
 
         public async Task UpdateAccount(AccountDTO dto)
         {
-
-            Account account = new Account
-            {
-                AccountId = dto.AccountId,
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-
-                Address = dto.Address,
-                ImageUrl = dto.ImageUrl,
-                IsDeleted = false,
-                Password = dto.Password,
-                RoleId = dto.RoleId
-            };
-            this.Accounts.Update(account);
+            Account account = await GetAccountByID(dto.AccountId);
+         
+            account.AccountId = dto.AccountId;
+            account.Email = dto.Email;
+            account.FirstName = dto.FirstName;
+            account.LastName = dto.LastName;
+            account.Password = account.Password;
+            account.Address = dto.Address;
+            account.ImageUrl = account.ImageUrl;
+            account.IsDeleted = dto.IsDeleted;
+            account.RoleId = dto.RoleId;
+            account.PhoneNumber = dto.PhoneNumber;
             await this.SaveChangesAsync();
         }
         public async Task DeleteAccount(AccountDTO dto)
@@ -78,7 +77,7 @@ namespace MonShopLibrary.DAO
         }
         public async Task<Account> GetAccountByEmail(string email)
         {
-            Account account = await this.Accounts.Where(a=> a.Email== email).SingleOrDefaultAsync();
+            Account account = await this.Accounts.Where(a => a.Email == email).SingleOrDefaultAsync();
             return account;
         }
         public async Task<Account> Login(LoginRequest loginRequest)
@@ -90,7 +89,7 @@ namespace MonShopLibrary.DAO
             }
             return null;
         }
-       
+
 
         public async Task<string> GenerateRefreshToken(int AccountID)
         {

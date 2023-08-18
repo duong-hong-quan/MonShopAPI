@@ -9,7 +9,8 @@ namespace MonShop.Chat
     public class ChatHub : Hub
     {
         private readonly IMessageRepository messageRepository;
-        public ChatHub() {
+        public ChatHub()
+        {
             messageRepository = new MessageRepository();
         }
         public async Task SendMessage(MessageRequest message)
@@ -17,6 +18,20 @@ namespace MonShop.Chat
             await messageRepository.AddMessage(message);
             List<Message> list = await messageRepository.GetAllMessageByAccountID(message.AccountID);
             await Clients.All.SendAsync("ReceiveMessage", list);
+            await Clients.All.SendAsync("ReceiveAdminMessage", list);
+            List<Room> roomList = await messageRepository.GetAllRoom();
+            await Clients.All.SendAsync("ReceiveAllRoom", roomList);
+        }
+
+
+        public async Task AddMessageAdmin(MessageAdminRequest message)
+        {
+
+            await messageRepository.AddMessageAdmin(message);
+            List<Message> list = await messageRepository.GetAllMessageByRoomID(message.RoomId);
+            await Clients.All.SendAsync("ReceiveMessage", list);
+            await Clients.All.SendAsync("ReceiveAdminMessage", list);
+
         }
     }
 }

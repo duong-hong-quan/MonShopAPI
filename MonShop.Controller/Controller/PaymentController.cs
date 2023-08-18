@@ -157,18 +157,19 @@ namespace MonShopAPI.Controller
             try {
                 Order order = await _orderRepository.GetOrderByID(momo.extraData);
 
-                MomoPaymentResponse dto = new MomoPaymentResponse
-                {
-                    PaymentResponseId = (long)momo.transId,
-                    OrderId = momo.extraData,
-                    Amount = momo.amount.ToString(),
-                    OrderInfo = momo.orderInfo,
-                    Success = true
-                };
-                await _paymentRepository.AddPaymentMomo(dto);
+             
 
                 if (momo.resultCode == 0 && order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
+                    MomoPaymentResponse dto = new MomoPaymentResponse
+                    {
+                        PaymentResponseId = (long)momo.transId,
+                        OrderId = momo.extraData,
+                        Amount = momo.amount.ToString(),
+                        OrderInfo = momo.orderInfo,
+                        Success = true
+                    };
+                    await _paymentRepository.AddPaymentMomo(dto);
 
                     await _orderRepository.UpdateStatusForOrder(momo.extraData, Constant.Order.SUCCESS_PAY);
                     await _orderRepository.UpdateQuantityAfterPay(momo.extraData);
@@ -176,7 +177,6 @@ namespace MonShopAPI.Controller
                 }
                 else
                 {
-                    await _paymentRepository.UpdateStatusPaymentMomo(int.Parse(momo.extraData), false);
                     await _orderRepository.UpdateStatusForOrder(momo.orderId, Constant.Order.PENDING_PAY);
 
                 }
@@ -213,11 +213,11 @@ namespace MonShopAPI.Controller
                         OrderInfo = eventData.resource.transactions[0].description,
                         Success = true
                     };
-                    await _paymentRepository.AddPaymentPaypal(dto);
 
                     if (eventData.resource.payer.status == "VERIFIED" && order.OrderStatusId == Constant.Order.PENDING_PAY)
                     {
-
+                        
+                        await _paymentRepository.AddPaymentPaypal(dto);
 
                         await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
                         await _orderRepository.UpdateQuantityAfterPay(eventData.resource.transactions[0].invoice_number);
@@ -225,7 +225,6 @@ namespace MonShopAPI.Controller
                     }
                     else
                     {
-                        await _paymentRepository.UpdateStatusPaymentPayPal(dto.OrderId.ToString(), false);
                         await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.PENDING_PAY);
 
                     }
@@ -263,20 +262,22 @@ namespace MonShopAPI.Controller
                     Success = true
                 };
 
-                VnpayPaymentResponse dto = new VnpayPaymentResponse
-                {
-                    PaymentResponseId = Convert.ToInt32(response.PaymentId),
-                    OrderId = response.OrderId,
-                    Amount = response.Amount.ToString(),
-                    OrderInfo = response.OrderDescription,
-                    Success = true
-
-                }; ;
+             
                 Order order = await _orderRepository.GetOrderByID(response.OrderId);
-                await _paymentRepository.AddPaymentVNPay(dto);
 
                 if (response.VnPayResponseCode == "00" && order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
+                    VnpayPaymentResponse dto = new VnpayPaymentResponse
+                    {
+                        PaymentResponseId = Convert.ToInt32(response.PaymentId),
+                        OrderId = response.OrderId,
+                        Amount = response.Amount.ToString(),
+                        OrderInfo = response.OrderDescription,
+                        Success = true
+
+                    };
+                    await _paymentRepository.AddPaymentVNPay(dto);
+
                     await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
                     await _orderRepository.UpdateQuantityAfterPay(dto.OrderId);
 

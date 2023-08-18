@@ -20,6 +20,9 @@ namespace MonShop.Library.Repository
 
 
         public async Task<List<Message>> GetAllMessageByRoomID(int RoomID) => await db.GetAllMessageByRoomID(RoomID);
+        public async Task<List<Room>> GetAllRoom() => await db.GetAllRoom();
+        public async Task AddMessageAdmin(MessageAdminRequest message) => await db.AddMessageAdmin(message);
+        public async Task<Room> GetRoomByID(int roomID) => await db.GetRoomByID(roomID);
 
 
 

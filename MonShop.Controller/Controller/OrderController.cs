@@ -82,8 +82,20 @@ namespace MonShopAPI.Controller
 
         public async Task<IActionResult> UpdateStatusForOrder(string OrderID, int status)
         {
-            await _orderRepository.UpdateStatusForOrder(OrderID, status);
-            return Ok();
+            Order order = await _orderRepository.GetOrderByID(OrderID);
+            if(order == null)
+            {
+                return BadRequest();
+            }
+            if (order.OrderStatusId != MonShopLibrary.Utils.Constant.Order.PENDING_PAY ||
+                  order.OrderStatusId != MonShopLibrary.Utils.Constant.Order.FAILURE_PAY ||
+                  order.OrderStatusId != MonShopLibrary.Utils.Constant.Order.SUCCESS_PAY)
+            {
+                await _orderRepository.UpdateStatusForOrder(OrderID, status);
+                return Ok();
+
+            }
+            return BadRequest("The system only accept when the order is payed success!");
         }
 
     //    [Authorize]

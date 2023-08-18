@@ -13,6 +13,7 @@ namespace MonShop.Library.Models
 
         public int RoomId { get; set; }
         public string? RoomName { get; set; }
+        public string? RoomImg { get; set; }
         [JsonIgnore]
 
         public virtual ICollection<Message> Messages { get; set; }

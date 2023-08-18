@@ -38,7 +38,8 @@ namespace MonShop.Library.DAO
             }
             else
             {
-                Room room = new Room { RoomName = Guid.NewGuid().ToString() };
+                Account account = await this.Accounts.Where(a => a.AccountId == message.AccountID).SingleOrDefaultAsync();
+                Room room = new Room { RoomName = $"{account.FirstName} {account.LastName}", RoomImg = account.ImageUrl };
                 await this.Rooms.AddAsync(room);
                 await this.SaveChangesAsync();
                 int roomID = room.RoomId;
@@ -55,17 +56,46 @@ namespace MonShop.Library.DAO
 
             }
         }
+
+        public async Task<List<Room>> GetAllRoom()
+        {
+            List<Room> rooms = await this.Rooms.ToListAsync();
+            return rooms;
+        }
+
+        public async Task<Room> GetRoomByID(int roomID)
+        {
+            Room rooms = await this.Rooms.FindAsync(roomID);
+            return rooms;
+        }
+        public async Task AddMessageAdmin(MessageAdminRequest message)
+        {
+            Message mess = new Message
+            {
+                Content = message.Content,
+                RoomId = message.RoomId,
+                Sender = message.Sender,
+                SendTime = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
+            };
+            await this.Messages.AddAsync(mess);
+            await this.SaveChangesAsync();
+
+        }
         public async Task<List<Message>> GetAllMessageByAccountID(int AccountID)
         {
             List<Message> list = null;
 
             List<Message> messages = await this.Messages.Where(m => m.Sender == AccountID).ToListAsync();
-            Message mess = messages.ElementAt(0);
-
+            if (messages.Count > 0)
             {
-                list = await this.Messages.Where(m => m.RoomId == mess.RoomId).ToListAsync();
+                Message mess = messages.ElementAt(0);
+                if (mess != null)
+                {
+                    list = await this.Messages.Where(m => m.RoomId == mess.RoomId).ToListAsync();
 
+                }
             }
+
             return list;
         }
 

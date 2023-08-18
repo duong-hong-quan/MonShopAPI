@@ -19,16 +19,16 @@ namespace MonShop.Controller.Controller
 
         [HttpPost]
         [Route("AddMessage")]
-        public async Task<IActionResult> AddMessage(MessageRequest request)
+        public async Task<IActionResult> AddMessage(MessageAdminRequest request)
         {
-            await _messageRepository.AddMessage(request);
+            await _messageRepository.AddMessageAdmin(request);
             return Ok();
 
         }
         [HttpGet]
-        [Route("GetMessage")]
+        [Route("GetMessageByRoomID")]
 
-        public async Task<IActionResult> GetMessage(int roomID)
+        public async Task<IActionResult> GetMessageByRoomID(int roomID)
         {
             List<Message> list = await _messageRepository.GetAllMessageByRoomID(roomID);
             return Ok(list);
@@ -37,10 +37,31 @@ namespace MonShop.Controller.Controller
         [HttpGet]
         [Route("GetAllMessageByAccountID")]
 
-        public async Task <IActionResult> GetAllMessageByAccountID(int AccountID)
+        public async Task<IActionResult> GetAllMessageByAccountID(int AccountID)
         {
-            List<Message> list = await _messageRepository.GetAllMessageByAccountID( AccountID);
+            List<Message> list = await _messageRepository.GetAllMessageByAccountID(AccountID);
+            if (list != null)
+            {
+                return Ok(list);
+
+            }
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("GetAllRoom")]
+        public async Task<IActionResult> GetAllRoom()
+        {
+            List<Room> list = await _messageRepository.GetAllRoom();
             return Ok(list);
+        }
+
+        [HttpGet]
+        [Route("GetRoomByID")]
+        public async Task<IActionResult> GetRoomByID(int roomID)
+        {
+            Room room = await _messageRepository.GetRoomByID(roomID);
+            return Ok(room);
         }
     }
 }

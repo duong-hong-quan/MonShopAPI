@@ -19,6 +19,8 @@ namespace MonShopLibrary.Repository
         public async Task<List<Category>> GetAllCategory() => await db.GetAllCategory();
 
         public async Task<Product> GetProductByID(int id) => await db.GetProductByID(id);
+        public async Task<List<ProductStatus>> GetAllProductStatus() => await db.GetAllProductStatus();
+
 
     }
 }

@@ -23,7 +23,6 @@ namespace MonShopAPI.Controller
             _accountRepository = new AccountRepository();
 
         }
-        [Authorize(Roles = "admin")]
         [HttpGet]
         [Route("GetAllAccount")]
         public async Task<IActionResult> GetAllAccount()
@@ -31,7 +30,6 @@ namespace MonShopAPI.Controller
             var list = await _accountRepository.GetAllAccount();
             return Ok(list);
         }
-        [Authorize(Roles = "admin")]
         [HttpGet]
         [Route("GetAllRole")]
         public async Task<IActionResult> GetAllRole()
@@ -39,7 +37,6 @@ namespace MonShopAPI.Controller
             var list = await _accountRepository.GetAllRole();
             return Ok(list);
         }
-        [Authorize(Roles = "admin")]
         [HttpPost]
         [Route("AddAccount")]
         public async Task<IActionResult> Add(AccountDTO dto)
@@ -47,7 +44,6 @@ namespace MonShopAPI.Controller
             await _accountRepository.AddAccount(dto);
             return Ok();
         }
-        [Authorize(Roles = "admin")]
 
         [HttpPut]
         [Route("UpdateAccount")]
@@ -56,7 +52,6 @@ namespace MonShopAPI.Controller
             await _accountRepository.UpdateAccount(dto);
             return Ok();
         }
-        [Authorize(Roles = "admin")]
 
         [HttpDelete]
         [Route("DeleteAccount")]
@@ -85,29 +80,31 @@ namespace MonShopAPI.Controller
             return NotFound("User not found");
         }
 
-        [Authorize]
         [HttpGet]
         [Route("GetNewToken")]
 
         public async Task<IActionResult> GetNewToken(string refreshToken)
         {
             Token token = await _accountRepository.GetToken(refreshToken);
-            Account account = await _accountRepository.GetAccountByID(token.AccountId);
-
-            if (token != null && account != null)
+            if(token != null)
             {
-                var newToken = JWTHelper.GenerateToken(account);
-                return Ok(new LoginRespone
+                Account account = await _accountRepository.GetAccountByID(token.AccountId);
+                if (account != null)
                 {
-                    Token = newToken,
-                    RefreshToken = await _accountRepository.GenerateRefreshToken(token.AccountId)
-                });
+                    var newToken = JWTHelper.GenerateToken(account);
+                    return Ok(new LoginRespone
+                    {
+                        Token = newToken,
+                        RefreshToken = await _accountRepository.GenerateRefreshToken(token.AccountId)
+                    });
+                }
             }
+
+          
             return BadRequest($"User not found");
 
         }
 
-        [Authorize]
         [HttpGet]
         [Route("GetAccountByID")]
         public async Task<IActionResult> GetAccountByID(int AccountID)

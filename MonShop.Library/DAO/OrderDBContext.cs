@@ -73,7 +73,16 @@ namespace MonShopLibrary.DAO
         public async Task UpdateStatusForOrder(string OrderID, int status)
         {
             Order order = await this.Orders.FindAsync(OrderID);
-            order.OrderStatusId = status;
+            if (order != null) {
+                if(order.OrderStatusId != Utils.Constant.Order.PENDING_PAY ||
+                    order.OrderStatusId != Utils.Constant.Order.FAILURE_PAY ||
+                    order.OrderStatusId != Utils.Constant.Order.SUCCESS_PAY)
+                {
+                    order.OrderStatusId = status;
+
+                }
+
+            }
             await this.SaveChangesAsync();
         }
 
@@ -84,7 +93,7 @@ namespace MonShopLibrary.DAO
         }
         public async Task<List<Order>> GetAllOrder()
         {
-            List<Order> order = await this.Orders.ToListAsync();
+            List<Order> order = await this.Orders.Include(o => o.BuyerAccount).Include(o=> o.OrderStatus).ToListAsync();
             return order;
         }
         public async Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
@@ -94,8 +103,8 @@ namespace MonShopLibrary.DAO
         }
         public async Task<ListOrder> GetListItemByOrderID(string OrderID)
         {
-            string paymentMethod = "Pending pay";
-            Order orderDTO = await this.Orders.FindAsync(OrderID);
+            string paymentMethod = "Pending Pay";
+            Order orderDTO = await this.Orders.Include(o=> o.BuyerAccount).Include(o => o.OrderStatus).Where(o=>o.OrderId== OrderID).SingleOrDefaultAsync();
             MomoPaymentResponse paymentResponse = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
             if (paymentResponse != null && paymentResponse.Success == true)
             {
@@ -132,5 +141,7 @@ namespace MonShopLibrary.DAO
             await this.SaveChangesAsync();
         }
 
+
+        
     }
 }

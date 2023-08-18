@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MonShopLibrary.Utils.Constant;
+using System.Diagnostics;
 
 namespace MonShopLibrary.DAO
 {
@@ -14,14 +16,20 @@ namespace MonShopLibrary.DAO
         public ProductDBContext() { }
 
 
-        public async Task<List<Category>> GetAllCategory()
+        public async Task<List<MonShop.Library.Models.Category>> GetAllCategory()
         {
-            List<Category> list = await this.Categories.ToListAsync();
+            List<MonShop.Library.Models.Category> list = await this.Categories.ToListAsync();
+            return list;
+        }
+        public async Task<List<ProductStatus>> GetAllProductStatus()
+        {
+            List<ProductStatus> list = await this.ProductStatuses.ToListAsync();
             return list;
         }
         public async Task<List<Product>> GetAllProduct()
         {
-            List<Product> list = await this.Products.ToListAsync();
+            List<Product> list = await this.Products.Include(p=> p.Category).Include(p => p.ProductStatus).ToListAsync();
+
             return list;
         }
         public async Task AddProduct(ProductDTO dto)
@@ -35,6 +43,7 @@ namespace MonShopLibrary.DAO
                 Description = dto.Description,
                 CategoryId = dto.CategoryId,
                 ProductStatusId = dto.ProductStatusId,
+                Discount = dto.Discount,
                 IsDeleted = false
 
             };
@@ -44,20 +53,17 @@ namespace MonShopLibrary.DAO
 
         public async Task UpdateProduct(ProductDTO dto)
         {
-            Product product = new Product
-            {
-                ProductId = dto.ProductId,
-                ProductName = dto.ProductName,
-                ImageUrl = dto.ImageUrl,
-                Price = dto.Price,
-                Quantity = dto.Quantity,
-                Description = dto.Description,
-                CategoryId = dto.CategoryId,
-                ProductStatusId = dto.ProductStatusId,
-                IsDeleted = false
-
-            };
-            this.Products.Update(product);
+            Product product = await GetProductByID(dto.ProductId);
+            product.ProductId = dto.ProductId;
+            product.ProductName = dto.ProductName;
+            product.ImageUrl = dto.ImageUrl;
+            product.Price = dto.Price;
+            product.Quantity = dto.Quantity;
+            product.Description = dto.Description;
+            product.CategoryId = dto.CategoryId;
+            product.ProductStatusId = dto.ProductStatusId;
+            product.Discount = dto.Discount;
+            product.IsDeleted = dto.IsDeleted;
             await this.SaveChangesAsync();
 
         }

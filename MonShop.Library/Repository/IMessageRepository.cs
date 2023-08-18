@@ -18,6 +18,9 @@ namespace MonShop.Library.Repository
 
         public Task<List<Message>> GetAllMessageByRoomID(int RoomID);
 
+        public Task<List<Room>> GetAllRoom();
+        public Task AddMessageAdmin(MessageAdminRequest message);
+        public  Task<Room> GetRoomByID(int roomID);
 
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace MonShop.Library.Models
 {
@@ -34,16 +33,11 @@ namespace MonShop.Library.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            IConfiguration config = new ConfigurationBuilder()
-                       .SetBasePath(Directory.GetCurrentDirectory())
-                       .AddJsonFile("appsettings.json", true, true)
-                       .Build();
-            string cs = config["ConnectionStrings:Host"];
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(cs);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server =(local); database =MonShop;uid=sa;pwd=12345;TrustServerCertificate=True;");
             }
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -103,7 +97,7 @@ namespace MonShop.Library.Models
             modelBuilder.Entity<MomoPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__MomoPaym__766E687A4B7BB2DE");
+                    .HasName("PK__MomoPaym__766E687A466B04F1");
 
                 entity.Property(e => e.PaymentResponseId).ValueGeneratedNever();
 
@@ -172,7 +166,7 @@ namespace MonShop.Library.Models
             modelBuilder.Entity<PayPalPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__PayPalPa__766E687A718538ED");
+                    .HasName("PK__PayPalPa__766E687A84257AC6");
 
                 entity.Property(e => e.PaymentResponseId).HasMaxLength(255);
 
@@ -234,13 +228,15 @@ namespace MonShop.Library.Models
 
                 entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
+                entity.Property(e => e.RoomImg).HasMaxLength(1000);
+
                 entity.Property(e => e.RoomName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<Token>(entity =>
             {
                 entity.HasKey(e => e.RefreshToken)
-                    .HasName("PK__Tokens__DEA298DBB8FD43F5");
+                    .HasName("PK__Tokens__DEA298DB25C1829E");
 
                 entity.Property(e => e.RefreshToken)
                     .HasMaxLength(255)
@@ -260,7 +256,7 @@ namespace MonShop.Library.Models
             modelBuilder.Entity<VnpayPaymentResponse>(entity =>
             {
                 entity.HasKey(e => e.PaymentResponseId)
-                    .HasName("PK__VNPayPay__766E687A019D1832");
+                    .HasName("PK__VNPayPay__766E687AA6EB852D");
 
                 entity.ToTable("VNPayPaymentResponses");
 
