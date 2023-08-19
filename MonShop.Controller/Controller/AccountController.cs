@@ -14,6 +14,7 @@ namespace MonShopAPI.Controller
 {
     [Route("Account")]
     [ApiController]
+
     public class AccountController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
