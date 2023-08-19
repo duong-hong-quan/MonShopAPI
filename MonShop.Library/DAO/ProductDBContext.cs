@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static MonShopLibrary.Utils.Constant;
 using System.Diagnostics;
+using MonShopLibrary.Utils;
 
 namespace MonShopLibrary.DAO
 {
@@ -28,7 +28,13 @@ namespace MonShopLibrary.DAO
         }
         public async Task<List<Product>> GetAllProduct()
         {
-            List<Product> list = await this.Products.Include(p=> p.Category).Include(p => p.ProductStatus).ToListAsync();
+            List<Product> list = await this.Products.Include(p=> p.Category).Include(p => p.ProductStatus).Where(p=> p.IsDeleted == false && p.ProductStatusId != Constant.Product.IN_ACTIVE).ToListAsync();
+
+            return list;
+        }
+        public async Task<List<Product>> GetAllProductByManager()
+        {
+            List<Product> list = await this.Products.Include(p => p.Category).Include(p => p.ProductStatus).ToListAsync();
 
             return list;
         }

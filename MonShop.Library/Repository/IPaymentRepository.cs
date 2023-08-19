@@ -24,5 +24,9 @@ namespace MonShopLibrary.Repository
         public  Task<MomoPaymentResponse> GetPaymentMomoByID(long PaymentResponseId) ;
         public  Task<VnpayPaymentResponse> GetPaymentVNPayByID(long PaymentResponseId) ;
         public  Task<PayPalPaymentResponse> GetPaymentPaypalByID(string PaymentResponseId) ;
+        public  Task<MomoPaymentResponse> GetPaymentMomoByOrderID(string OrderID) ;
+        public  Task<VnpayPaymentResponse> GetPaymentVNPayByOrderID(string OrderID);
+        public  Task<PayPalPaymentResponse> GetPaymentPaypalByOrderID(string OrderID);
+
     }
 }

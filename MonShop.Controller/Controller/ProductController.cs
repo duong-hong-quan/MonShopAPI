@@ -29,7 +29,13 @@ namespace MonShopAPI.Controller
             var list = await _productRepository.GetAllProduct();
             return Ok(list);
         }
-
+        [HttpGet]
+        [Route("GetAllProductByManager")]
+        public async Task<IActionResult> GetAllProductByManager()
+        {
+            var list = await _productRepository.GetAllProductByManager();
+            return Ok(list);
+        }
         [HttpGet]
         [Route("GetAllProductStatus")]
         public async Task<IActionResult> GetAllProductStatus()
@@ -49,7 +55,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> AddProduct(ProductDTO dto)
         {
             await _productRepository.AddProduct(dto);
-            return Ok();
+            return Ok("Add product successfully");
         }
         [HttpPut]
         [Route("UpdateProduct")]
@@ -57,7 +63,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> UpdateProduct(ProductDTO dto)
         {
             await _productRepository.UpdateProduct(dto);
-            return Ok();
+            return Ok("Update Product Successfully");
         }
         [HttpDelete]
         [Route("DeleteProduct")]
@@ -65,7 +71,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> DeleteProduct(ProductDTO dto)
         {
             await _productRepository.DeleteProduct(dto);
-            return Ok();
+            return Ok("Delete Product Successfully");
         }
     }
 }

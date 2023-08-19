@@ -21,5 +21,6 @@ namespace MonShopLibrary.Repository
         public Task<ListOrder> GetListItemByOrderID(string OrderID);
         public Task UpdateQuantityAfterPay(string OrderID);
         public Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID);
+        public  Task<OrderCount> OrderStatistic(int AccountID);
     }
 }

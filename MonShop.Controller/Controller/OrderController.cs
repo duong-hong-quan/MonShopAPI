@@ -4,6 +4,8 @@ using MonShopLibrary.DTO;
 using MonShop.Library.Models;
 using MonShopLibrary.Repository;
 using Microsoft.AspNetCore.Authorization;
+using MonShopLibrary.Utils;
+using MonShop.Library.DTO;
 
 namespace MonShopAPI.Controller
 {
@@ -13,10 +15,12 @@ namespace MonShopAPI.Controller
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IPaymentRepository _paymentRepository;
         public OrderController()
         {
             _orderRepository = new OrderRepository();
             _productRepository = new ProductRepository();
+            _paymentRepository = new PaymentRepository();
         }
 
         [HttpGet]
@@ -83,22 +87,34 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> UpdateStatusForOrder(string OrderID, int status)
         {
             Order order = await _orderRepository.GetOrderByID(OrderID);
-            if(order == null)
+            if (order == null)
             {
                 return BadRequest();
             }
-            if (order.OrderStatusId != MonShopLibrary.Utils.Constant.Order.PENDING_PAY ||
-                  order.OrderStatusId != MonShopLibrary.Utils.Constant.Order.FAILURE_PAY ||
-                  order.OrderStatusId != MonShopLibrary.Utils.Constant.Order.SUCCESS_PAY)
+
+            if (status == Constant.Order.FAILURE_PAY || status == Constant.Order.PENDING_PAY || status == Constant.Order.FAILURE_PAY || status == Constant.Order.SUCCESS_PAY)
             {
-                await _orderRepository.UpdateStatusForOrder(OrderID, status);
-                return Ok();
+                return BadRequest("The system only accept when the order is payed success!");
+            }
+            else
+            {
+                MomoPaymentResponse momo = await _paymentRepository.GetPaymentMomoByOrderID(OrderID);
+                VnpayPaymentResponse vnpay = await _paymentRepository.GetPaymentVNPayByOrderID(OrderID);
+                PayPalPaymentResponse paypal = await _paymentRepository.GetPaymentPaypalByOrderID(OrderID);
+                if (momo != null || vnpay != null || paypal != null)
+                {
+                    await _orderRepository.UpdateStatusForOrder(OrderID, status);
+                    return Ok("Update successful");
+                }
 
             }
             return BadRequest("The system only accept when the order is payed success!");
+
+
+
         }
 
-    //    [Authorize]
+        //    [Authorize]
         [HttpGet]
         [Route("GetAllOrderByAccountID")]
         public async Task<IActionResult> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
@@ -106,7 +122,13 @@ namespace MonShopAPI.Controller
             List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
             return Ok(list);
         }
-
+        [HttpGet]
+        [Route("GetOrderStatistic")]
+        public async Task<IActionResult> GetOrderStatistic(int AccountID)
+        {
+            OrderCount order = await _orderRepository.OrderStatistic(AccountID);
+            return Ok(order);
+        }
 
     }
 }

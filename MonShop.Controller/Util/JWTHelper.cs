@@ -26,6 +26,11 @@ namespace MonShopAPI.Util
             }
             else if (user.RoleId == 2)
             {
+                role = "staff";
+
+            }
+            else if (user.RoleId == 3)
+            {
                 role = "user";
 
             }
@@ -41,7 +46,7 @@ namespace MonShopAPI.Util
                 config["Jwt:Issuer"],
                 config["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddHours(3),
                 signingCredentials: credentials);
 
 

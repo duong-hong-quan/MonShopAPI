@@ -42,7 +42,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> Add(AccountDTO dto)
         {
             await _accountRepository.AddAccount(dto);
-            return Ok();
+            return Ok("Add account successfully");
         }
 
         [HttpPut]
@@ -50,7 +50,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> Update(AccountDTO dto)
         {
             await _accountRepository.UpdateAccount(dto);
-            return Ok();
+            return Ok("Update account successfully");
         }
 
         [HttpDelete]
@@ -58,7 +58,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> Delete(AccountDTO dto)
         {
             await _accountRepository.DeleteAccount(dto);
-            return Ok();
+            return Ok("Delete account successfully");
         }
 
         [AllowAnonymous]

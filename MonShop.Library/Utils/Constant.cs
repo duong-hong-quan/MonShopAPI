@@ -41,5 +41,12 @@ namespace MonShopLibrary.Utils
 
 
         }
+
+        public class Product
+        {
+            public static int ACTIVE = 1;
+            public static int IN_ACTIVE = 2;
+
+        }
     }
 }

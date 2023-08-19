@@ -97,6 +97,7 @@ namespace MonShopLibrary.DAO
             MomoPaymentResponse momo = await this.MomoPaymentResponses.FindAsync(PaymentResponseId);
             return momo;
         }
+       
         public async Task<VnpayPaymentResponse> GetPaymentVNPayByID(long PaymentResponseId)
         {
             VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.FindAsync(PaymentResponseId);
@@ -108,6 +109,22 @@ namespace MonShopLibrary.DAO
             return paypal;
         }
 
+        public async Task<MomoPaymentResponse> GetPaymentMomoByOrderID(string OrderID)
+        {
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).SingleOrDefaultAsync();
+            return momo;
+        }
+        public async Task<VnpayPaymentResponse> GetPaymentVNPayByOrderID(string OrderID)
+        {
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(v => v.OrderId == OrderID).SingleOrDefaultAsync();
+            return vnpay;
+        }
+
+        public async Task<PayPalPaymentResponse> GetPaymentPaypalByOrderID(string OrderID)
+        {
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(p => p.OrderId == OrderID).SingleOrDefaultAsync();
+            return paypal;
+        }
     }
 }
 

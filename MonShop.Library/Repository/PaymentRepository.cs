@@ -25,6 +25,9 @@ namespace MonShopLibrary.Repository
         public async Task<MomoPaymentResponse> GetPaymentMomoByID(long PaymentResponseId) => await db.GetPaymentMomoByID(PaymentResponseId);
         public async Task<VnpayPaymentResponse> GetPaymentVNPayByID(long PaymentResponseId) => await db.GetPaymentVNPayByID(PaymentResponseId);
         public async Task<PayPalPaymentResponse> GetPaymentPaypalByID(string PaymentResponseId) => await db.GetPaymentPaypalByID(PaymentResponseId);
+        public async Task<MomoPaymentResponse> GetPaymentMomoByOrderID(string OrderID) => await db.GetPaymentMomoByOrderID(OrderID);
+        public async Task<VnpayPaymentResponse> GetPaymentVNPayByOrderID(string OrderID) => await db.GetPaymentVNPayByOrderID(OrderID);
+        public async Task<PayPalPaymentResponse> GetPaymentPaypalByOrderID(string OrderID) => await db.GetPaymentPaypalByOrderID(OrderID);
 
     }
 }
