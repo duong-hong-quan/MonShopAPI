@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace MonShop.Library.Repository
 {
-    public class MessageRepository: IMessageRepository
+    public class MessageRepository : IMessageRepository
     {
         MessageDBContext db = new MessageDBContext();
 
-        public async Task AddMessage(MessageRequest message) => await db.AddMessage(message);   
-       
-        
+        public async Task AddMessage(MessageRequest message) => await db.AddMessage(message);
+
+
         public async Task<List<Message>> GetAllMessageByAccountID(int AccountID) => await db.GetAllMessageByAccountID(AccountID);
 
 
@@ -24,6 +24,9 @@ namespace MonShop.Library.Repository
         public async Task AddMessageAdmin(MessageAdminRequest message) => await db.AddMessageAdmin(message);
         public async Task<Room> GetRoomByID(int roomID) => await db.GetRoomByID(roomID);
 
+        public async Task CreateRoom(RoomDTO room) => await db.CreateRoom(room);
+        public async Task UpdateRoom(Room room) => await db.UpdateRoom(room);
+        public async Task DeleteRoom(int RoomID) => await db.DeleteRoom(RoomID);
 
 
     }

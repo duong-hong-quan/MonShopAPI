@@ -33,5 +33,32 @@ namespace MonShop.Chat
             await Clients.All.SendAsync("ReceiveAdminMessage", list);
 
         }
+        public async Task UpdateRoom(Room room)
+        {
+            await messageRepository.UpdateRoom(room);
+            List<Room> roomList = await messageRepository.GetAllRoom();
+
+            await Clients.All.SendAsync("ReceiveAllRoom", roomList);
+
+        }
+        public async Task DeleteRoom(int RoomID)
+        {
+
+            await messageRepository.DeleteRoom(RoomID);
+            List<Room> roomList = await messageRepository.GetAllRoom();
+
+            await Clients.All.SendAsync("ReceiveAllRoom", roomList);
+        }
+
+
+
+        public async Task CreateRoom(RoomDTO room)
+        {
+            await messageRepository.CreateRoom(room);
+            List<Room> roomList = await messageRepository.GetAllRoom();
+
+            await Clients.All.SendAsync("ReceiveAllRoom", roomList);
+
+        }
     }
 }

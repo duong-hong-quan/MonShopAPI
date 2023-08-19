@@ -104,5 +104,29 @@ namespace MonShop.Library.DAO
             List<Message> list = await this.Messages.Where(m => m.RoomId == RoomID).ToListAsync();
             return list;
         }
+        public async Task CreateRoom(RoomDTO room)
+        {
+            Room DTO = new Room { RoomName = room.RoomName, RoomImg = room.RoomImg };
+            await this.Rooms.AddAsync(DTO);
+            await this.SaveChangesAsync();
+        }
+
+        public async Task UpdateRoom(Room room)
+        {
+            this.Rooms.Update(room);
+            await this.SaveChangesAsync();
+        }
+
+        public async Task DeleteRoom(int RoomID)
+        {
+            List<Message> list = await GetAllMessageByRoomID(RoomID);
+            foreach(Message message in list) { 
+               this.Messages.Remove(message);
+            
+            }
+            Room room = await GetRoomByID(RoomID);
+            this.Rooms.Remove(room);
+            await this.SaveChangesAsync();
+        }
     }
 }
