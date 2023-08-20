@@ -158,5 +158,18 @@ namespace MonShopLibrary.DAO
             return count;
         }
 
+        public async Task<bool> VerifyOrder(string OrderID)
+        {
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            Order order = await this.Orders.FindAsync(OrderID);
+            if (order != null && order.OrderStatusId == Constant.Order.SUCCESS_PAY && (momo != null || vnpay != null || paypal != null))
+            {
+
+                return true;
+            }
+            return false;
+        }
     }
 }

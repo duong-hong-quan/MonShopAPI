@@ -77,7 +77,7 @@ namespace PaymentGateway.Momo
             string accessKey = "F8BBA842ECF85";
             string serectkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
             string orderInfo = $"Khach hang: {momo.CustomerName} thanh toan hoa don {momo.OrderID}";
-            string redirectUrl = config["Momo:RedirectUrl"];
+            string redirectUrl = $"{config["Momo:RedirectUrl"]}/{momo.OrderID}";
            string ipnUrl = config["Momo:IPNUrl"];
           //  string ipnUrl = "https://webhook.site/3399b42a-eee3-4e2d-8925-c2f893737de9";
 

@@ -130,5 +130,12 @@ namespace MonShopAPI.Controller
             return Ok(order);
         }
 
+        [HttpGet]
+        [Route("VerifyOrder")]
+        public async Task<IActionResult> VerifyOrder(string OrderID)
+        {
+            bool res = await _orderRepository.VerifyOrder(OrderID);
+            return Ok(res);
+        }
     }
 }

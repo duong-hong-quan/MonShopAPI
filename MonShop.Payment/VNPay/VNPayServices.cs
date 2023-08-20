@@ -27,7 +27,7 @@ namespace PaymentGateway.VNPay
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = Utility.getInstance().GetCurrentDateTimeInTimeZone().Ticks.ToString();
             var pay = new VnPayLibrary();
-            var urlCallBack = config["Vnpay:ReturnUrl"];
+            var urlCallBack = $"{config["Vnpay:ReturnUrl"]}/{model.OrderID}";
 
             pay.AddRequestData("vnp_Version", config["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", config["Vnpay:Command"]);

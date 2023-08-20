@@ -29,6 +29,7 @@ namespace MonShopLibrary.Repository
         public async Task UpdateQuantityAfterPay(string OrderID) => await db.UpdateQuantityAfterPay(OrderID);
         public async Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID) => await db.GetAllOrderByAccountID(AccountID, OrderStatusID);
         public async Task<OrderCount> OrderStatistic(int AccountID) => await db.OrderStatistic(AccountID);
+        public async Task<bool> VerifyOrder(string OrderID) => await db.VerifyOrder(OrderID);
 
 
     }

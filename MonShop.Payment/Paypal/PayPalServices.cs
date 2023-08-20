@@ -40,7 +40,7 @@ namespace PaymentGateway.Paypal
             var envSandbox = new SandboxEnvironment(config["Paypal:ClientId"], config["Paypal:SecretKey"]);
             var client = new PayPalHttpClient(envSandbox);
             var paypalOrderId = model.OrderID;
-            var urlCallBack = config["Paypal:CallbackUrl"];
+            var urlCallBack = config["Paypal:RedirectUrl"];
             string price = ConvertVndToDollar(model.Amount).ToString();
 
             var payment = new Payment()
@@ -63,8 +63,8 @@ namespace PaymentGateway.Paypal
                 },
                 RedirectUrls = new RedirectUrls()
                 {
-                    ReturnUrl = urlCallBack,
-                    CancelUrl = urlCallBack
+                    ReturnUrl = $"{urlCallBack}/{model.OrderID}",
+                    CancelUrl = $"{urlCallBack}/{model.OrderID}"
                 },
                 Payer = new Payer()
                 {
