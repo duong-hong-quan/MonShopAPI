@@ -75,9 +75,13 @@ namespace MonShopAPI.Controller
                 {
                     return BadRequest($"No result Product with ID {item.ProductId}");
                 }
+                if (item.Quantity > product.Quantity)
+                {
+                    return BadRequest("This product doesn't have enough quantity");
+                } 
 
             }
-
+          
             string OrderID = await _orderRepository.AddOrderRequest(dto);
             return Ok(OrderID);
         }
@@ -135,7 +139,15 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> VerifyOrder(string OrderID)
         {
             bool res = await _orderRepository.VerifyOrder(OrderID);
-            return Ok(res);
+            if (res)
+            {
+                return Ok();
+
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

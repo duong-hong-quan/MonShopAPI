@@ -175,11 +175,7 @@ namespace MonShopAPI.Controller
                     await _orderRepository.UpdateQuantityAfterPay(momo.extraData);
 
                 }
-                else
-                {
-                    await _orderRepository.UpdateStatusForOrder(momo.orderId, Constant.Order.PENDING_PAY);
-
-                }
+              
 
                 return Ok();
             }
@@ -223,11 +219,7 @@ namespace MonShopAPI.Controller
                         await _orderRepository.UpdateQuantityAfterPay(eventData.resource.transactions[0].invoice_number);
 
                     }
-                    else
-                    {
-                        await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.PENDING_PAY);
-
-                    }
+                  
 
 
                     return Ok();
@@ -282,10 +274,7 @@ namespace MonShopAPI.Controller
                     await _orderRepository.UpdateQuantityAfterPay(dto.OrderId);
 
                 }
-                else
-                {
-                    await _orderRepository.UpdateStatusForOrder(response.OrderId, Constant.Order.PENDING_PAY);
-                }
+             
                 return Ok();
             }
             catch (Exception ex)
