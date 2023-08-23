@@ -9,6 +9,8 @@ using MonShopLibrary.Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MonShop.Library.DTO;
+using MonShopLibrary.Utils;
 
 namespace MonShopAPI.Controller
 {
@@ -87,7 +89,7 @@ namespace MonShopAPI.Controller
         public async Task<IActionResult> GetNewToken(string refreshToken)
         {
             Token token = await _accountRepository.GetToken(refreshToken);
-            if(token != null)
+            if (token != null)
             {
                 Account account = await _accountRepository.GetAccountByID(token.AccountId);
                 if (account != null)
@@ -101,7 +103,7 @@ namespace MonShopAPI.Controller
                 }
             }
 
-          
+
             return BadRequest($"User not found");
 
         }
@@ -114,8 +116,40 @@ namespace MonShopAPI.Controller
             return Ok(account);
 
         }
+        [HttpPost]
+        [Route("SignUp")]
+        public async Task<IActionResult> SignUp(AccountDTO accountDTO)
+        {
+            await _accountRepository.SignUp(accountDTO);
+            return Ok("Sign up successfully !");
+        }
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            Account account = await _accountRepository.GetAccountByID(request.AccountId);
+            if (account == null)
+            {
 
-      
+                return BadRequest($"No result for account with ID {request.AccountId}");
+            }
+            else
+            {
+                bool check = MonShopLibrary.Utils.Utility.VerifyPassword(request.OldPassword, account.Password);
+                if (check)
+                {
+                    await _accountRepository.ChangePassword(request);
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("The old password is wrong!");
+
+                }
+            }
+
+
+        }
 
     }
 

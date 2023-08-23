@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonShop.Library.DTO;
 
 namespace MonShopLibrary.Repository
 {
@@ -22,6 +23,8 @@ namespace MonShopLibrary.Repository
         public async Task<Account> Login(LoginRequest loginRequest) => await db.Login(loginRequest);
         public async Task<string> GenerateRefreshToken(int AccountID)=> await db.GenerateRefreshToken(AccountID);
         public async Task<Token> GetToken(string token) => await db.GetToken(token);
+        public async Task SignUp(AccountDTO dto) => await db.SignUp(dto);
+        public async Task ChangePassword(ChangePasswordRequest request)=> await db.ChangePassword(request);
 
 
 

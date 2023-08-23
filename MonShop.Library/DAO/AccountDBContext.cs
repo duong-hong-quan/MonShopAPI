@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using MonShop.Library.DTO;
 
 namespace MonShopLibrary.DAO
 {
@@ -39,11 +40,38 @@ namespace MonShopLibrary.DAO
             await this.Accounts.AddAsync(account);
             await this.SaveChangesAsync();
         }
+        public async Task SignUp(AccountDTO dto)
+        {
+            Account account = new Account
+            {
+                Email = dto.Email,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Address = dto.Address,
+                ImageUrl = dto.ImageUrl,
+                IsDeleted = false,
+                Password = Utility.HashPassword(dto.Password),
+                RoleId = 3,
+                PhoneNumber = dto.PhoneNumber,
+            };
+            await this.Accounts.AddAsync(account);
+            await this.SaveChangesAsync();
+        }
+
+        public async Task ChangePassword(ChangePasswordRequest request)
+        {
+            Account account = await GetAccountByID(request.AccountId);
+            if (account != null) {
+
+                account.Password = Utility.HashPassword(request.NewPassword);
+            }
+            await this.SaveChangesAsync();
+        }
 
         public async Task UpdateAccount(AccountDTO dto)
         {
             Account account = await GetAccountByID(dto.AccountId);
-         
+
             account.AccountId = dto.AccountId;
             account.Email = dto.Email;
             account.FirstName = dto.FirstName;

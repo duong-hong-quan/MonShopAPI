@@ -28,7 +28,7 @@ namespace MonShopLibrary.DAO
         }
         public async Task<List<Product>> GetAllProduct()
         {
-            List<Product> list = await this.Products.Include(p=> p.Category).Include(p => p.ProductStatus).Where(p=> p.IsDeleted == false && p.ProductStatusId != Constant.Product.IN_ACTIVE).ToListAsync();
+            List<Product> list = await this.Products.Include(p=> p.Category).Include(p => p.ProductStatus).Where(o=> o.ProductStatusId != Constant.Product.IN_ACTIVE && o.IsDeleted == false).ToListAsync();
 
             return list;
         }
