@@ -18,5 +18,6 @@ namespace MonShopLibrary.Repository
         public Task<Product> GetProductByID(int id);
         public  Task<List<ProductStatus>> GetAllProductStatus();
         public  Task<List<Product>> GetAllProductByManager();
+        public  Task<List<Product>> GetTop4();
     }
 }

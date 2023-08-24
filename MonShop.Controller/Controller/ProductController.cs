@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MonShop.Library.Models;
 using MonShopLibrary.DTO;
 using MonShopLibrary.Repository;
 
@@ -72,6 +73,13 @@ namespace MonShopAPI.Controller
         {
             await _productRepository.DeleteProduct(dto);
             return Ok("Delete Product Successfully");
+        }
+        [HttpGet]
+        [Route("GetTop4")]
+        public async Task<IActionResult> GetTop4()
+        {
+            List<Product> list = await _productRepository.GetTop4();
+            return Ok(list);
         }
     }
 }

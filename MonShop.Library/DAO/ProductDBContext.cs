@@ -86,5 +86,15 @@ namespace MonShopLibrary.DAO
             return product;
         }
 
+        public async Task<List<Product>> GetTop4()
+        {
+            var newProducts = await this.Products
+               .Where(p => p.IsDeleted == false && p.ProductStatusId != Constant.Product.IN_ACTIVE) 
+               .OrderByDescending(p => p.ProductId)
+               .Take(4) 
+               .ToListAsync();
+            return newProducts;
+        }
+
     }
 }
