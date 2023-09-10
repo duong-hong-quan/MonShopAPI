@@ -159,7 +159,7 @@ namespace MonShopAPI.Controller
                     string OrderID = await _orderRepository.AddOrderRequest(dto);
                     _responeDTO.Data = OrderID;
                 }
-               
+
 
 
             }
@@ -255,17 +255,30 @@ namespace MonShopAPI.Controller
         [Route("VerifyOrder")]
         public async Task<ResponeDTO> VerifyOrder(string OrderID)
         {
-            bool res = await _orderRepository.VerifyOrder(OrderID);
-            if (res)
+            try
             {
-               _responeDTO.IsSuccess= true;
+
+                bool res = await _orderRepository.VerifyOrder(OrderID);
+                if (res)
+                {
+                    _responeDTO.IsSuccess = true;
+                    _responeDTO.Message = "Payed successfully";
+                }
+                else
+                {
+                    _responeDTO.IsSuccess = false;
+                    _responeDTO.Message = "Payed failed";
+
+                }
 
             }
-            else
+            catch (Exception ex)
             {
-               _responeDTO.IsSuccess= false;
 
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
             }
+
             return _responeDTO;
         }
     }

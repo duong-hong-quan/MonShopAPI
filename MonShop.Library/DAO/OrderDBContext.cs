@@ -160,9 +160,9 @@ namespace MonShopLibrary.DAO
 
         public async Task<bool> VerifyOrder(string OrderID)
         {
-            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
-            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
-            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
             Order order = await this.Orders.FirstAsync(o => o.OrderId == OrderID);
             if (order != null && order.OrderStatusId == Constant.Order.SUCCESS_PAY && (momo != null || vnpay != null || paypal != null))
             {
