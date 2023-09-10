@@ -21,9 +21,9 @@ namespace MonShopAPI.Controller
     {
         private readonly IAccountRepository _accountRepository;
 
-        public AccountController()
+        public AccountController(IAccountRepository accountRepository)
         {
-            _accountRepository = new AccountRepository();
+            _accountRepository = accountRepository;
 
         }
         [HttpGet]

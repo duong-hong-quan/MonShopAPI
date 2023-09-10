@@ -26,14 +26,14 @@ namespace MonShopAPI.Controller
         private readonly IAccountRepository _accountRepository;
         private readonly IPaymentRepository _paymentRepository;
 
-        public PaymentController()
+        public PaymentController(IMomoServices momoServices, IVnPayServices vnPayServices, IPayPalServices payPalServices,  IOrderRepository orderRepository, IAccountRepository accountRepository, IPaymentRepository paymentRepository)
         {
-            _momoServices = new MomoServices();
-            _payPalServices = new PayPalServices();
-            _orderRepository = new OrderRepository();
-            _accountRepository = new AccountRepository();
-            _paymentRepository = new PaymentRepository();
-            _vnPayServices = new VNPayServices();
+            _momoServices = momoServices;
+            _payPalServices = payPalServices;
+            _orderRepository = orderRepository;
+            _accountRepository = accountRepository;
+            _paymentRepository = paymentRepository;
+            _vnPayServices = vnPayServices;
 
         }
 

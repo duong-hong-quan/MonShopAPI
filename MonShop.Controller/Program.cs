@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonShop.Chat;
 using MonShop.Library.Models;
+using MonShop.Library.Repository;
+using MonShopLibrary.Repository;
 using System.Text;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -19,6 +21,14 @@ builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
 
 
 }));
+
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 

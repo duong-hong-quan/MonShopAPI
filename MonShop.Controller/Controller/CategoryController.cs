@@ -10,9 +10,9 @@ namespace MonShopAPI.Controller
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
-        public CategoryController()
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _categoryRepository = new CategoryRepository();
+            _categoryRepository = categoryRepository;
         }
 
         [HttpGet]

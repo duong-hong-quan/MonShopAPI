@@ -16,11 +16,11 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IPaymentRepository _paymentRepository;
-        public OrderController()
+        public OrderController(IOrderRepository orderRepository, IProductRepository productRepository, IPaymentRepository paymentRepository)
         {
-            _orderRepository = new OrderRepository();
-            _productRepository = new ProductRepository();
-            _paymentRepository = new PaymentRepository();
+            _orderRepository = orderRepository;
+            _productRepository = productRepository;
+            _paymentRepository = paymentRepository;
         }
 
         [HttpGet]

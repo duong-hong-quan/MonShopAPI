@@ -12,9 +12,9 @@ namespace MonShopAPI.Controller
     {
         private readonly IProductRepository _productRepository;
 
-        public ProductController()
+        public ProductController(IProductRepository productRepository)
         {
-            _productRepository = new ProductRepository();
+            _productRepository = productRepository;
         }
         [HttpGet]
         [Route("GetAllCategory")]

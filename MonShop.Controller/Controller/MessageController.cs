@@ -12,9 +12,9 @@ namespace MonShop.Controller.Controller
     {
         private readonly IMessageRepository _messageRepository;
 
-        public MessageController()
+        public MessageController(IMessageRepository messageRepository)
         {
-            _messageRepository = new MessageRepository();
+            _messageRepository = messageRepository;
         }
 
         [HttpPost]
