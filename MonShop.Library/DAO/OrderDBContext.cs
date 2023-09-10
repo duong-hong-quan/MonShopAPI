@@ -50,7 +50,7 @@ namespace MonShopLibrary.DAO
             string orderID = order.OrderId;
             foreach (OrderItemDTO itemDTO in dto.Items)
             {
-                Product product = await this.Products.FindAsync(itemDTO.ProductId);
+                Product product = await this.Products.FirstAsync(i => i.ProductId == itemDTO.ProductId);
                 double price = product.Price;
                 OrderItem item = new OrderItem
                 {
@@ -72,7 +72,7 @@ namespace MonShopLibrary.DAO
 
         public async Task UpdateStatusForOrder(string OrderID, int status)
         {
-            Order order = await this.Orders.FindAsync(OrderID);
+            Order order = await this.Orders.FirstAsync(o => o.OrderId == OrderID);
 
             order.OrderStatusId = status;
 
@@ -81,7 +81,7 @@ namespace MonShopLibrary.DAO
 
         public async Task<Order> GetOrderByID(string OrderID)
         {
-            Order order = await this.Orders.FindAsync(OrderID);
+            Order order = await this.Orders.FirstAsync(o => o.OrderId == OrderID);
             return order;
         }
         public async Task<List<Order>> GetAllOrder()
@@ -97,18 +97,18 @@ namespace MonShopLibrary.DAO
         public async Task<ListOrder> GetListItemByOrderID(string OrderID)
         {
             string paymentMethod = "Pending Pay";
-            Order orderDTO = await this.Orders.Include(o => o.BuyerAccount).Include(o => o.OrderStatus).Where(o => o.OrderId == OrderID).SingleOrDefaultAsync();
-            MomoPaymentResponse paymentResponse = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            Order orderDTO = await this.Orders.Include(o => o.BuyerAccount).Include(o => o.OrderStatus).Where(o => o.OrderId == OrderID).FirstAsync();
+            MomoPaymentResponse paymentResponse = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
             if (paymentResponse != null && paymentResponse.Success == true)
             {
                 paymentMethod = "Momo";
             }
-            VnpayPaymentResponse vnPaymentResponse = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            VnpayPaymentResponse vnPaymentResponse = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
             if (vnPaymentResponse != null && vnPaymentResponse.Success == true)
             {
                 paymentMethod = "VNpay";
             }
-            PayPalPaymentResponse paypalPaymentResponse = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
+            PayPalPaymentResponse paypalPaymentResponse = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
             if (paypalPaymentResponse != null && paypalPaymentResponse.Success == true)
             {
                 paymentMethod = "PayPal";
@@ -125,7 +125,7 @@ namespace MonShopLibrary.DAO
             foreach (OrderItem item in list)
             {
                 int quantity = item.Quantity;
-                Product product = await this.Products.FindAsync(item.ProductId);
+                Product product = await this.Products.FirstAsync(i => i.ProductId == item.ProductId);
                 if (product != null)
                 {
                     product.Quantity = product.Quantity - quantity;
@@ -160,10 +160,10 @@ namespace MonShopLibrary.DAO
 
         public async Task<bool> VerifyOrder(string OrderID)
         {
-            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
-            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
-            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstOrDefaultAsync();
-            Order order = await this.Orders.FindAsync(OrderID);
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
+            Order order = await this.Orders.FirstAsync(o => o.OrderId == OrderID);
             if (order != null && order.OrderStatusId == Constant.Order.SUCCESS_PAY && (momo != null || vnpay != null || paypal != null))
             {
 

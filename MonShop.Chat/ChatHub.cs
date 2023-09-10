@@ -8,18 +8,18 @@ namespace MonShop.Chat
 
     public class ChatHub : Hub
     {
-        private readonly IMessageRepository messageRepository;
-        public ChatHub()
+        private readonly IMessageRepository _messageRepository;
+        public ChatHub(IMessageRepository messageRepository)
         {
-            messageRepository = new MessageRepository();
+            _messageRepository = messageRepository;
         }
         public async Task SendMessage(MessageRequest message)
         {
-            await messageRepository.AddMessage(message);
-            List<Message> list = await messageRepository.GetAllMessageByAccountID(message.AccountID);
+            await _messageRepository.AddMessage(message);
+            List<Message> list = await _messageRepository.GetAllMessageByAccountID(message.AccountID);
             await Clients.All.SendAsync("ReceiveMessage", list);
             await Clients.All.SendAsync("ReceiveAdminMessage", list);
-            List<Room> roomList = await messageRepository.GetAllRoom();
+            List<Room> roomList = await _messageRepository.GetAllRoom();
             await Clients.All.SendAsync("ReceiveAllRoom", roomList);
         }
 
@@ -27,16 +27,16 @@ namespace MonShop.Chat
         public async Task AddMessageAdmin(MessageAdminRequest message)
         {
 
-            await messageRepository.AddMessageAdmin(message);
-            List<Message> list = await messageRepository.GetAllMessageByRoomID(message.RoomId);
+            await _messageRepository.AddMessageAdmin(message);
+            List<Message> list = await _messageRepository.GetAllMessageByRoomID(message.RoomId);
             await Clients.All.SendAsync("ReceiveMessage", list);
             await Clients.All.SendAsync("ReceiveAdminMessage", list);
 
         }
         public async Task UpdateRoom(Room room)
         {
-            await messageRepository.UpdateRoom(room);
-            List<Room> roomList = await messageRepository.GetAllRoom();
+            await _messageRepository.UpdateRoom(room);
+            List<Room> roomList = await _messageRepository.GetAllRoom();
 
             await Clients.All.SendAsync("ReceiveAllRoom", roomList);
 
@@ -44,8 +44,8 @@ namespace MonShop.Chat
         public async Task DeleteRoom(int RoomID)
         {
 
-            await messageRepository.DeleteRoom(RoomID);
-            List<Room> roomList = await messageRepository.GetAllRoom();
+            await _messageRepository.DeleteRoom(RoomID);
+            List<Room> roomList = await _messageRepository.GetAllRoom();
 
             await Clients.All.SendAsync("ReceiveAllRoom", roomList);
         }
@@ -54,8 +54,8 @@ namespace MonShop.Chat
 
         public async Task CreateRoom(RoomDTO room)
         {
-            await messageRepository.CreateRoom(room);
-            List<Room> roomList = await messageRepository.GetAllRoom();
+            await _messageRepository.CreateRoom(room);
+            List<Room> roomList = await _messageRepository.GetAllRoom();
 
             await Clients.All.SendAsync("ReceiveAllRoom", roomList);
 

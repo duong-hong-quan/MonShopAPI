@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using MonShop.Library.DTO;
 using MonShopLibrary.Utils;
+using MonShop.Controller.Model;
 
 namespace MonShopAPI.Controller
 {
@@ -20,25 +21,50 @@ namespace MonShopAPI.Controller
     public class AccountController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
-
+        private readonly ResponeDTO _responeDTO;
+        private readonly LoginRespone _loginRespone;
         public AccountController(IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository;
+            _responeDTO = new ResponeDTO();
+            _loginRespone = new LoginRespone();
 
         }
         [HttpGet]
         [Route("GetAllAccount")]
-        public async Task<IActionResult> GetAllAccount()
+        public async Task<ResponeDTO> GetAllAccount()
         {
-            var list = await _accountRepository.GetAllAccount();
-            return Ok(list);
+            try
+            {
+
+                _responeDTO.Data = await _accountRepository.GetAllAccount();
+
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
+            }
+            return _responeDTO;
         }
         [HttpGet]
         [Route("GetAllRole")]
-        public async Task<IActionResult> GetAllRole()
+        public async Task<ResponeDTO> GetAllRole()
         {
-            var list = await _accountRepository.GetAllRole();
-            return Ok(list);
+            try
+            {
+                _responeDTO.Data = await _accountRepository.GetAllRole();
+
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
         }
         [HttpPost]
         [Route("AddAccount")]
@@ -67,53 +93,87 @@ namespace MonShopAPI.Controller
         [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult> Login(LoginRequest userLogin)
+        public async Task<ResponeDTO> Login(LoginRequest userLogin)
         {
-            var user = await _accountRepository.Login(userLogin);
-            if (user != null)
+            try
             {
-                var token = JWTHelper.GenerateToken(user);
-                return Ok(new LoginRespone
+                var user = await _accountRepository.Login(userLogin);
+                if (user != null)
                 {
-                    Token = token,
-                    RefreshToken = await _accountRepository.GenerateRefreshToken(user.AccountId)
-                });
+                    var token = JWTHelper.GenerateToken(user);
+
+                    _loginRespone.Token = token;
+                    _loginRespone.RefreshToken = await _accountRepository.GenerateRefreshToken(user.AccountId);
+                    _responeDTO.Data = _loginRespone;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
             }
 
-            return NotFound("User not found");
+
+
+
+            return _responeDTO;
         }
 
         [HttpGet]
         [Route("GetNewToken")]
 
-        public async Task<IActionResult> GetNewToken(string refreshToken)
+        public async Task<ResponeDTO> GetNewToken(string refreshToken)
         {
-            Token token = await _accountRepository.GetToken(refreshToken);
-            if (token != null)
+            try
             {
-                Account account = await _accountRepository.GetAccountByID(token.AccountId);
-                if (account != null)
+
+                Token token = await _accountRepository.GetToken(refreshToken);
+                if (token != null)
                 {
-                    var newToken = JWTHelper.GenerateToken(account);
-                    return Ok(new LoginRespone
+                    Account account = await _accountRepository.GetAccountByID(token.AccountId);
+                    if (account != null)
                     {
-                        Token = newToken,
-                        RefreshToken = await _accountRepository.GenerateRefreshToken(token.AccountId)
-                    });
+                        var newToken = JWTHelper.GenerateToken(account);
+
+                        _loginRespone.Token = newToken;
+                        _loginRespone.RefreshToken = await _accountRepository.GenerateRefreshToken(token.AccountId);
+                        _responeDTO.Data = _loginRespone;
+
+                    }
                 }
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
             }
 
 
-            return BadRequest($"User not found");
+
+            return _responeDTO;
 
         }
 
         [HttpGet]
         [Route("GetAccountByID")]
-        public async Task<IActionResult> GetAccountByID(int AccountID)
+        public async Task<ResponeDTO> GetAccountByID(int AccountID)
         {
-            Account account = await _accountRepository.GetAccountByID(AccountID);
-            return Ok(account);
+            try
+            {
+                _responeDTO.Data = await _accountRepository.GetAccountByID(AccountID);
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
 
         }
         [HttpPost]

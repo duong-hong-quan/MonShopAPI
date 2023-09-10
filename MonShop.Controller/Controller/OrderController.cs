@@ -6,6 +6,8 @@ using MonShopLibrary.Repository;
 using Microsoft.AspNetCore.Authorization;
 using MonShopLibrary.Utils;
 using MonShop.Library.DTO;
+using MonShop.Controller.Model;
+using System.Collections.Generic;
 
 namespace MonShopAPI.Controller
 {
@@ -16,103 +18,196 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IPaymentRepository _paymentRepository;
-        public OrderController(IOrderRepository orderRepository, IProductRepository productRepository, IPaymentRepository paymentRepository)
+        private readonly ResponeDTO _responeDTO;
+        public OrderController
+            (
+            IOrderRepository orderRepository,
+            IProductRepository productRepository,
+            IPaymentRepository paymentRepository
+            )
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _paymentRepository = paymentRepository;
+            _responeDTO = new ResponeDTO();
         }
 
         [HttpGet]
         [Route("GetAllOrder")]
-        public async Task<IActionResult> GetAllOrder()
+        public async Task<ResponeDTO> GetAllOrder()
         {
-            var list = await _orderRepository.GetAllOrder();
-            return Ok(list);
+            try
+            {
+                var list = await _orderRepository.GetAllOrder();
+                _responeDTO.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+
+            return _responeDTO;
         }
         [HttpGet]
         [Route("GetListItemByOrderID")]
-        public async Task<IActionResult> GetListItemByOrderID(string orderID)
+        public async Task<ResponeDTO> GetListItemByOrderID(string orderID)
         {
-            var list = await _orderRepository.GetListItemByOrderID(orderID);
-            return Ok(list);
+            try
+            {
+                var list = await _orderRepository.GetListItemByOrderID(orderID);
+                _responeDTO.Data = list;
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
         }
 
         [HttpGet]
         [Route("GetAllOrderStatus")]
-        public async Task<IActionResult> GetAllOrderStatus()
+        public async Task<ResponeDTO> GetAllOrderStatus()
         {
-            var list = await _orderRepository.GetAllOrderStatus();
-            return Ok(list);
+            try
+            {
+
+                var list = await _orderRepository.GetAllOrderStatus();
+                _responeDTO.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
         }
         [HttpPost]
         [Route("AddOrderStatus")]
-        public async Task<IActionResult> AddOrderStatus(OrderStatusDTO dto)
+        public async Task<ResponeDTO> AddOrderStatus(OrderStatusDTO dto)
         {
-            await _orderRepository.AddOrderStatus(dto);
-            return Ok(dto);
+            try
+            {
+                await _orderRepository.AddOrderStatus(dto);
+                _responeDTO.Data = dto;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
 
         }
         [HttpPut]
         [Route("UpdateOrderStatus")]
-        public async Task<IActionResult> UpdateOrderStatus(OrderStatusDTO dto)
+        public async Task<ResponeDTO> UpdateOrderStatus(OrderStatusDTO dto)
         {
-            await _orderRepository.UpdateOrderStatus(dto);
-            return Ok(dto);
+            try
+            {
+
+                await _orderRepository.UpdateOrderStatus(dto);
+                _responeDTO.Data = dto;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
         }
         [HttpPost]
         [Route("AddOrderRequest")]
-        public async Task<IActionResult> AddOrderRequest(OrderRequest dto)
+        public async Task<ResponeDTO> AddOrderRequest(OrderRequest dto)
         {
-            foreach (var item in dto.Items)
+            bool isError = false;
+
+            try
             {
-                if (item.Quantity == 0)
+                foreach (var item in dto.Items)
                 {
-                    return BadRequest($"The quantity must greater than 0");
+                    if (item.Quantity == 0)
+                    {
+                        _responeDTO.Message = $"The quantity must greater than 0";
+                        isError = true; // Set the error flag
+                        break; // Exit the loop
+                    }
+                    Product product = await _productRepository.GetProductByID(item.ProductId);
+                    if (product == null)
+                    {
+                        _responeDTO.Message = $"No result Product with ID {item.ProductId}";
+                        isError = true; // Set the error flag
+                        break; // Exit the loop
+
+                    }
+                    if (item.Quantity > product?.Quantity)
+                    {
+                        _responeDTO.Message = "This product doesn't have enough quantity";
+                        isError = true; // Set the error flag
+                        break; // Exit the loop
+
+                    }
+
                 }
-                Product product = await _productRepository.GetProductByID(item.ProductId);
-                if (product == null)
+                if (!isError) // Only execute this block if no error occurred in the loop
                 {
-                    return BadRequest($"No result Product with ID {item.ProductId}");
+                    string OrderID = await _orderRepository.AddOrderRequest(dto);
+                    _responeDTO.Data = OrderID;
                 }
-                if (item.Quantity > product.Quantity)
-                {
-                    return BadRequest("This product doesn't have enough quantity");
-                } 
+               
+
 
             }
-          
-            string OrderID = await _orderRepository.AddOrderRequest(dto);
-            return Ok(OrderID);
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+
+
+            return _responeDTO;
         }
         [HttpPut]
         [Route("UpdateStatusForOrder")]
 
-        public async Task<IActionResult> UpdateStatusForOrder(string OrderID, int status)
+        public async Task<ResponeDTO> UpdateStatusForOrder(string OrderID, int status)
         {
-            Order order = await _orderRepository.GetOrderByID(OrderID);
-            if (order == null)
+            try
             {
-                return BadRequest();
-            }
-
-            if (status == Constant.Order.FAILURE_PAY || status == Constant.Order.PENDING_PAY || status == Constant.Order.FAILURE_PAY || status == Constant.Order.SUCCESS_PAY)
-            {
-                return BadRequest("The system only accept when the order is payed success!");
-            }
-            else
-            {
-                MomoPaymentResponse momo = await _paymentRepository.GetPaymentMomoByOrderID(OrderID);
-                VnpayPaymentResponse vnpay = await _paymentRepository.GetPaymentVNPayByOrderID(OrderID);
-                PayPalPaymentResponse paypal = await _paymentRepository.GetPaymentPaypalByOrderID(OrderID);
-                if (momo != null || vnpay != null || paypal != null)
+                if (status == Constant.Order.FAILURE_PAY ||
+                    status == Constant.Order.PENDING_PAY ||
+                    status == Constant.Order.FAILURE_PAY ||
+                    status == Constant.Order.SUCCESS_PAY)
                 {
-                    await _orderRepository.UpdateStatusForOrder(OrderID, status);
-                    return Ok("Update successful");
+                    _responeDTO.Message = "The system only accept when the order is payed success!";
+                }
+                else
+                {
+                    MomoPaymentResponse momo = await _paymentRepository.GetPaymentMomoByOrderID(OrderID);
+                    VnpayPaymentResponse vnpay = await _paymentRepository.GetPaymentVNPayByOrderID(OrderID);
+                    PayPalPaymentResponse paypal = await _paymentRepository.GetPaymentPaypalByOrderID(OrderID);
+                    if (momo != null || vnpay != null || paypal != null)
+                    {
+                        await _orderRepository.UpdateStatusForOrder(OrderID, status);
+                        _responeDTO.Message = "Update successful";
+                    }
+
                 }
 
+
             }
-            return BadRequest("The system only accept when the order is payed success!");
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
+
 
 
 
@@ -121,33 +216,57 @@ namespace MonShopAPI.Controller
         //    [Authorize]
         [HttpGet]
         [Route("GetAllOrderByAccountID")]
-        public async Task<IActionResult> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
+        public async Task<ResponeDTO> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
         {
-            List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
-            return Ok(list);
+            try
+            {
+
+                List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
+
+                _responeDTO.Data = list;
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
         }
         [HttpGet]
         [Route("GetOrderStatistic")]
-        public async Task<IActionResult> GetOrderStatistic(int AccountID)
+        public async Task<ResponeDTO> GetOrderStatistic(int AccountID)
         {
-            OrderCount order = await _orderRepository.OrderStatistic(AccountID);
-            return Ok(order);
+            try
+            {
+                OrderCount order = await _orderRepository.OrderStatistic(AccountID);
+                _responeDTO.Data = order;
+
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+            return _responeDTO;
         }
 
         [HttpGet]
         [Route("VerifyOrder")]
-        public async Task<IActionResult> VerifyOrder(string OrderID)
+        public async Task<ResponeDTO> VerifyOrder(string OrderID)
         {
             bool res = await _orderRepository.VerifyOrder(OrderID);
             if (res)
             {
-                return Ok();
+               _responeDTO.IsSuccess= true;
 
             }
             else
             {
-                return BadRequest();
+               _responeDTO.IsSuccess= false;
+
             }
+            return _responeDTO;
         }
     }
 }

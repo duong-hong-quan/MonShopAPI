@@ -5,7 +5,11 @@ using MonShop.Chat;
 using MonShop.Library.Models;
 using MonShop.Library.Repository;
 using MonShopLibrary.Repository;
+using PaymentGateway.Momo;
+using PaymentGateway.Paypal;
+using PaymentGateway.VNPay;
 using System.Text;
+using VNPay.Services;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +32,9 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IVnPayServices, VNPayServices>();
+builder.Services.AddScoped<IMomoServices, MomoServices>();
+builder.Services.AddScoped<IPayPalServices, PayPalServices>();
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();

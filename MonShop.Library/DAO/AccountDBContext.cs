@@ -61,7 +61,8 @@ namespace MonShopLibrary.DAO
         public async Task ChangePassword(ChangePasswordRequest request)
         {
             Account account = await GetAccountByID(request.AccountId);
-            if (account != null) {
+            if (account != null)
+            {
 
                 account.Password = Utility.HashPassword(request.NewPassword);
             }
@@ -86,7 +87,7 @@ namespace MonShopLibrary.DAO
         }
         public async Task DeleteAccount(AccountDTO dto)
         {
-            Account account = this.Accounts.Find(dto.AccountId);
+            Account account = await this.Accounts.FirstAsync(a => a.AccountId == dto.AccountId);
             account.IsDeleted = true;
             await this.SaveChangesAsync();
 
@@ -100,17 +101,17 @@ namespace MonShopLibrary.DAO
 
         public async Task<Account> GetAccountByID(int id)
         {
-            Account account = await this.Accounts.FindAsync(id);
+            Account account = await this.Accounts.FirstAsync(a => a.AccountId == id);
             return account;
         }
         public async Task<Account> GetAccountByEmail(string email)
         {
-            Account account = await this.Accounts.Where(a => a.Email == email).SingleOrDefaultAsync();
+            Account account = await this.Accounts.Where(a => a.Email == email).FirstAsync();
             return account;
         }
         public async Task<Account> Login(LoginRequest loginRequest)
         {
-            Account account = await this.Accounts.Where(a => a.Email == loginRequest.Email && a.IsDeleted == false).FirstOrDefaultAsync();
+            Account account = await this.Accounts.Where(a => a.Email == loginRequest.Email && a.IsDeleted == false).FirstAsync();
             if (account != null && Utility.VerifyPassword(loginRequest.Password, account.Password))
             {
                 return account;
@@ -121,7 +122,7 @@ namespace MonShopLibrary.DAO
 
         public async Task<string> GenerateRefreshToken(int AccountID)
         {
-            Token token = await this.Tokens.Where(a => a.AccountId == AccountID).FirstOrDefaultAsync();
+            Token token = await this.Tokens.Where(a => a.AccountId == AccountID).FirstAsync();
             if (token == null)
             {
                 Token refreshToken = new Token
@@ -148,12 +149,10 @@ namespace MonShopLibrary.DAO
 
         public async Task<Token> GetToken(string token)
         {
-            Token tokenDTO = await this.Tokens.FindAsync(token);
-            if (tokenDTO != null)
-            {
-                return tokenDTO;
-            }
-            return null;
+            Token tokenDTO = await this.Tokens.FirstAsync(t => t.RefreshToken == token);
+
+            return tokenDTO;
+
         }
     }
 }

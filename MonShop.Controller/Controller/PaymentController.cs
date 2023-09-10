@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using MonShop.Controller.Model;
 using MonShop.Library.Models;
 using MonShopLibrary.Repository;
 using MonShopLibrary.Utils;
@@ -25,8 +26,8 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IPaymentRepository _paymentRepository;
-
-        public PaymentController(IMomoServices momoServices, IVnPayServices vnPayServices, IPayPalServices payPalServices,  IOrderRepository orderRepository, IAccountRepository accountRepository, IPaymentRepository paymentRepository)
+        private readonly ResponeDTO _responeDTO;
+        public PaymentController(IMomoServices momoServices, IVnPayServices vnPayServices, IPayPalServices payPalServices, IOrderRepository orderRepository, IAccountRepository accountRepository, IPaymentRepository paymentRepository)
         {
             _momoServices = momoServices;
             _payPalServices = payPalServices;
@@ -34,6 +35,7 @@ namespace MonShopAPI.Controller
             _accountRepository = accountRepository;
             _paymentRepository = paymentRepository;
             _vnPayServices = vnPayServices;
+            _responeDTO = new ResponeDTO();
 
         }
 
@@ -41,112 +43,189 @@ namespace MonShopAPI.Controller
 
         [HttpGet]
         [Route("GellAllPaymentMomo")]
-        public async Task<IActionResult> GetAllPaymentMomo()
+        public async Task<ResponeDTO> GetAllPaymentMomo()
         {
-            var list = await _paymentRepository.GetAllPaymentMomo();
-            return Ok(list);
+            try
+            {
+                var list = await _paymentRepository.GetAllPaymentMomo();
+                _responeDTO.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
+            }
+            return _responeDTO;
         }
 
         [HttpGet]
         [Route("GellAllPaymentVNPay")]
-        public async Task<IActionResult> GellAllPaymentVNPay()
+        public async Task<ResponeDTO> GellAllPaymentVNPay()
         {
-            var list = await _paymentRepository.GetAllPaymenVNPay();
-            return Ok(list);
+            try
+            {
+                var list = await _paymentRepository.GetAllPaymenVNPay();
+                _responeDTO.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
+            }
+            return _responeDTO;
         }
         [HttpGet]
         [Route("GellAllPaymentPayPal")]
-        public async Task<IActionResult> GellAllPaymentPayPal()
+        public async Task<ResponeDTO> GellAllPaymentPayPal()
         {
-            var list = await _paymentRepository.GetAllPaymentPayPal();
-            return Ok(list);
+            try
+            {
+
+                var list = await _paymentRepository.GetAllPaymentPayPal();
+                _responeDTO.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+
+            return _responeDTO;
         }
 
         [HttpPost]
         [Route("GetPaymentURLMomo")]
-        public async Task<IActionResult> GetPaymentURLMomo(string OrderID)
+        public async Task<ResponeDTO> GetPaymentURLMomo(string OrderID)
         {
-            Order order = await _orderRepository.GetOrderByID(OrderID);
-            Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
-            if (order == null)
+            try
             {
-                return BadRequest($"No result order with ID {OrderID}");
-            }
-
-            if (order.OrderStatusId != Constant.Order.PENDING_PAY)
-            {
-                return BadRequest($"No result for order {OrderID} with status pending");
-            }
-
-            if (order.OrderStatusId == Constant.Order.PENDING_PAY)
-            {
-                Momo momo = new Momo
+                Order order = await _orderRepository.GetOrderByID(OrderID);
+                Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+                if (order == null)
                 {
-                    AccountID = order.BuyerAccountId,
-                    Amount = (double)order.Total,
-                    CustomerName = $"{account.FirstName} {account.LastName}",
-                    OrderID = OrderID
-                };
+                    _responeDTO.Message = $"No result order with ID {OrderID}";
+                }
 
-                string endpoint = _momoServices.CreatePaymentString(momo);
-                return Content(endpoint);
+                if (order?.OrderStatusId != Constant.Order.PENDING_PAY)
+                {
+                    _responeDTO.Message = $"No result for order {OrderID} with status pending";
+                }
+
+                if (order?.OrderStatusId == Constant.Order.PENDING_PAY)
+                {
+                    Momo momo = new Momo
+                    {
+                        AccountID = order.BuyerAccountId,
+                        Amount = (double)order.Total,
+                        CustomerName = $"{account.FirstName} {account.LastName}",
+                        OrderID = OrderID
+                    };
+
+                    string endpoint = _momoServices.CreatePaymentString(momo);
+                    _responeDTO.Data = endpoint;
+                }
+
             }
-            return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
+            }
+            return _responeDTO;
+
 
         }
         [HttpPost]
         [Route("GetPaymentURLVNPay")]
-        public async Task<IActionResult> GetPaymentURLVNPay(string OrderID)
+        public async Task<ResponeDTO> GetPaymentURLVNPay(string OrderID)
         {
-            Order order = await _orderRepository.GetOrderByID(OrderID);
-            Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
-            if (order == null)
+            try
             {
-                return BadRequest($"No result order with ID {OrderID}");
-            }
+                Order order = await _orderRepository.GetOrderByID(OrderID);
+                Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+                if (order == null)
+                {
+                    _responeDTO.Message = $"No result order with ID {OrderID}";
+                }
 
-            if (order.OrderStatusId != Constant.Order.PENDING_PAY)
+                if (order?.OrderStatusId != Constant.Order.PENDING_PAY)
+                {
+                    _responeDTO.Message = $"No result for order {OrderID} with status pending";
+                }
+
+                if (order?.OrderStatusId == Constant.Order.PENDING_PAY)
+                {
+                    PaymentInformationModel model = new PaymentInformationModel
+                    {
+                        AccountID = order.BuyerAccountId,
+                        Amount = (double)order.Total,
+                        CustomerName = $"{account.FirstName} {account.LastName}",
+                        OrderID = order.OrderId
+                    };
+
+                    string endpoint = _vnPayServices.CreatePaymentUrl(model, HttpContext);
+                    _responeDTO.Data = endpoint;
+                }
+
+            }
+            catch (Exception ex)
             {
-                return BadRequest($"No result for order {OrderID} with status pending");
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
             }
-
-            if (order.OrderStatusId == Constant.Order.PENDING_PAY)
-            {
-                PaymentInformationModel model = new PaymentInformationModel { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = $"{account.FirstName} {account.LastName}", OrderID = order.OrderId };
-
-                string endpoint = _vnPayServices.CreatePaymentUrl(model, HttpContext);
-
-                return Content(endpoint);
-            }
-            return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");
+            return _responeDTO;
 
         }
 
         [HttpPost]
         [Route("GetPaymentURLPayPal")]
-        public async Task<IActionResult> GetPaymentURLPayPal(string OrderID)
+        public async Task<ResponeDTO> GetPaymentURLPayPal(string OrderID)
         {
-            Order order = await _orderRepository.GetOrderByID(OrderID);
-            Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
-            if (order == null)
+            try
             {
-                return BadRequest($"No result order with ID {OrderID}");
+                Order order = await _orderRepository.GetOrderByID(OrderID);
+                Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+                if (order == null)
+                {
+                    _responeDTO.Message = $"No result order with ID {OrderID}";
+                }
+
+                if (order.OrderStatusId != Constant.Order.PENDING_PAY)
+                {
+                    _responeDTO.Message = $"No result for order {OrderID} with status pending";
+                }
+
+                if (order.OrderStatusId == Constant.Order.PENDING_PAY)
+                {
+                    PaymentInformationModel model = new PaymentInformationModel 
+                    {
+                        AccountID = order.BuyerAccountId,
+                        Amount = (double)order.Total, 
+                        CustomerName = $"{account.FirstName} {account.LastName}", 
+                        OrderID = order.OrderId 
+                    };
+
+                    string endpoint = await _payPalServices.CreatePaymentUrl(model, HttpContext);
+                    _responeDTO.Data = endpoint;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
             }
 
-            if (order.OrderStatusId != Constant.Order.PENDING_PAY)
-            {
-                return BadRequest($"No result for order {OrderID} with status pending");
-            }
-
-            if (order.OrderStatusId == Constant.Order.PENDING_PAY)
-            {
-                PaymentInformationModel model = new PaymentInformationModel { AccountID = order.BuyerAccountId, Amount = (double)order.Total, CustomerName = $"{account.FirstName} {account.LastName}", OrderID = order.OrderId };
-
-                string endpoint = await _payPalServices.CreatePaymentUrl(model, HttpContext);
-
-                return Content(endpoint);
-            }
-            return BadRequest($"Not found Order with ID :{OrderID} OR Account with ID:{order.BuyerAccountId}");
+            return _responeDTO;
 
         }
 
@@ -154,10 +233,11 @@ namespace MonShopAPI.Controller
         [Route("MomoIPN")]
         public async Task<IActionResult> MomoIPN(MomoResponeModel momo)
         {
-            try {
+            try
+            {
                 Order order = await _orderRepository.GetOrderByID(momo.extraData);
 
-             
+
 
                 if (momo.resultCode == 0 && order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
@@ -175,15 +255,16 @@ namespace MonShopAPI.Controller
                     await _orderRepository.UpdateQuantityAfterPay(momo.extraData);
 
                 }
-              
+
 
                 return Ok();
             }
-            catch(Exception ex) {
-            
-            return BadRequest(ex.Message);
-            }  
-          
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
         }
 
 
@@ -192,7 +273,7 @@ namespace MonShopAPI.Controller
         [Route("PayPalIPN")]
         public async Task<IActionResult> PayPalIPN()
         {
-           
+
             try
             {
                 using (StreamReader reader = new StreamReader(Request.Body))
@@ -212,14 +293,14 @@ namespace MonShopAPI.Controller
 
                     if (eventData.resource.payer.status == "VERIFIED" && order.OrderStatusId == Constant.Order.PENDING_PAY)
                     {
-                        
+
                         await _paymentRepository.AddPaymentPaypal(dto);
 
                         await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
                         await _orderRepository.UpdateQuantityAfterPay(eventData.resource.transactions[0].invoice_number);
 
                     }
-                  
+
 
 
                     return Ok();
@@ -254,7 +335,7 @@ namespace MonShopAPI.Controller
                     Success = true
                 };
 
-             
+
                 Order order = await _orderRepository.GetOrderByID(response.OrderId);
 
                 if (response.VnPayResponseCode == "00" && order.OrderStatusId == Constant.Order.PENDING_PAY)
@@ -274,7 +355,7 @@ namespace MonShopAPI.Controller
                     await _orderRepository.UpdateQuantityAfterPay(dto.OrderId);
 
                 }
-             
+
                 return Ok();
             }
             catch (Exception ex)

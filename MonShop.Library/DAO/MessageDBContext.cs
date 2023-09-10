@@ -20,7 +20,7 @@ namespace MonShop.Library.DAO
 
         public async Task AddMessage(MessageRequest message)
         {
-            Message mess = await this.Messages.Where(m => m.Sender == message.AccountID).FirstOrDefaultAsync();
+            Message mess = await this.Messages.Where(m => m.Sender == message.AccountID).FirstAsync();
             if (mess != null)
             {
                 Message DTO = new Message
@@ -38,7 +38,7 @@ namespace MonShop.Library.DAO
             }
             else
             {
-                Account account = await this.Accounts.Where(a => a.AccountId == message.AccountID).SingleOrDefaultAsync();
+                Account account = await this.Accounts.Where(a => a.AccountId == message.AccountID).FirstAsync();
                 Room room = new Room { RoomName = $"{account.FirstName} {account.LastName}", RoomImg = account.ImageUrl };
                 await this.Rooms.AddAsync(room);
                 await this.SaveChangesAsync();
@@ -65,7 +65,7 @@ namespace MonShop.Library.DAO
 
         public async Task<Room> GetRoomByID(int roomID)
         {
-            Room rooms = await this.Rooms.FindAsync(roomID);
+            Room rooms = await this.Rooms.FirstAsync(r=> r.RoomId== roomID);
             return rooms;
         }
         public async Task AddMessageAdmin(MessageAdminRequest message)

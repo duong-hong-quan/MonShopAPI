@@ -94,35 +94,35 @@ namespace MonShopLibrary.DAO
 
         public async Task<MomoPaymentResponse> GetPaymentMomoByID (long PaymentResponseId)
         {
-            MomoPaymentResponse momo = await this.MomoPaymentResponses.FindAsync(PaymentResponseId);
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.FirstAsync(p=> p.PaymentResponseId== PaymentResponseId);
             return momo;
         }
        
         public async Task<VnpayPaymentResponse> GetPaymentVNPayByID(long PaymentResponseId)
         {
-            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.FindAsync(PaymentResponseId);
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.FirstAsync(p => p.PaymentResponseId == PaymentResponseId);
             return vnpay;
         }
         public async Task<PayPalPaymentResponse> GetPaymentPaypalByID(string PaymentResponseId)
         {
-            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.FindAsync(PaymentResponseId);
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.FirstAsync(p => p.PaymentResponseId == PaymentResponseId);
             return paypal;
         }
 
         public async Task<MomoPaymentResponse> GetPaymentMomoByOrderID(string OrderID)
         {
-            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).SingleOrDefaultAsync();
+            MomoPaymentResponse momo = await this.MomoPaymentResponses.Where(m => m.OrderId == OrderID).FirstAsync();
             return momo;
         }
         public async Task<VnpayPaymentResponse> GetPaymentVNPayByOrderID(string OrderID)
         {
-            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(v => v.OrderId == OrderID).SingleOrDefaultAsync();
+            VnpayPaymentResponse vnpay = await this.VnpayPaymentResponses.Where(v => v.OrderId == OrderID).FirstAsync();
             return vnpay;
         }
 
         public async Task<PayPalPaymentResponse> GetPaymentPaypalByOrderID(string OrderID)
         {
-            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(p => p.OrderId == OrderID).SingleOrDefaultAsync();
+            PayPalPaymentResponse paypal = await this.PayPalPaymentResponses.Where(p => p.OrderId == OrderID).FirstAsync();
             return paypal;
         }
     }

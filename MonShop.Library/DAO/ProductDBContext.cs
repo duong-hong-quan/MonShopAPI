@@ -75,14 +75,14 @@ namespace MonShopLibrary.DAO
         }
         public async Task DeleteProduct(ProductDTO dto)
         {
-            Product product = await this.Products.FindAsync(dto.ProductId);
+            Product product = await this.Products.FirstAsync(p => p.ProductId == dto.ProductId);
             product.IsDeleted = true;
             await this.SaveChangesAsync();
         }
 
         public async Task<Product> GetProductByID(int id)
         {
-            Product product = await this.Products.FindAsync(id);
+            Product product = await this.Products.FirstAsync(p => p.ProductId == id);
             return product;
         }
 

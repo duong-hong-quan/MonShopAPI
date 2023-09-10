@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MonShop.Controller.Model;
 using MonShopLibrary.DTO;
 using MonShopLibrary.Repository;
 
@@ -10,39 +11,89 @@ namespace MonShopAPI.Controller
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ResponeDTO _responeDTO;
         public CategoryController(ICategoryRepository categoryRepository)
         {
+
             _categoryRepository = categoryRepository;
+            _responeDTO = new ResponeDTO();
         }
 
         [HttpGet]
         [Route("GetAllCategory")]
-        public async Task<IActionResult> GetAllCategory()
+        public async Task<ResponeDTO> GetAllCategory()
         {
-            var list  = await _categoryRepository.GetAllCategory();
-            return Ok(list);
+            try
+            {
+                _responeDTO.Data = await _categoryRepository.GetAllCategory();
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
+            }
+
+            return _responeDTO;
         }
         [HttpPost]
         [Route("AddCategory")]
-        public async Task<IActionResult> AddCategory(CategoryDTO dto)
+        public async Task<ResponeDTO> AddCategory(CategoryDTO dto)
         {
-            await _categoryRepository.AddCategory(dto);
-            return Ok();
+            try
+            {
+
+                await _categoryRepository.AddCategory(dto);
+                _responeDTO.Data = dto;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+
+            }
+
+            return _responeDTO;
         }
         [HttpPut]
         [Route("UpdateCategory")]
-        public async Task<IActionResult> UpdateCategory(CategoryDTO dto)
+        public async Task<ResponeDTO> UpdateCategory(CategoryDTO dto)
         {
-            await _categoryRepository.UpdateCategory(dto);
-            return Ok();
+            try
+            {
+                await _categoryRepository.UpdateCategory(dto);
+
+                _responeDTO.Data = dto;
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+
+            return _responeDTO;
         }
         [HttpDelete]
         [Route("DeleteCategory")]
 
-        public async Task<IActionResult> DeleteCategory(CategoryDTO dto)
+        public async Task<ResponeDTO> DeleteCategory(CategoryDTO dto)
         {
+            try { 
             await _categoryRepository.DeleteCategory(dto);
-            return Ok();
+                _responeDTO.Data = dto;
+
+
+            }
+            catch (Exception ex)
+            {
+                _responeDTO.IsSuccess = false;
+                _responeDTO.Message = ex.Message;
+            }
+
+            return _responeDTO;
         }
     }
 }
