@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonShop.Chat;
@@ -25,7 +26,10 @@ builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
 
 
 }));
-
+builder.Services.AddDbContext<MonShopContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:Host"));
+});
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();

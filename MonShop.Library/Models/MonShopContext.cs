@@ -32,19 +32,7 @@ namespace MonShop.Library.Models
         public virtual DbSet<Token> Tokens { get; set; } = null!;
         public virtual DbSet<VnpayPaymentResponse> VnpayPaymentResponses { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            IConfiguration config = new ConfigurationBuilder()
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", true, true)
-                        .Build();
-            string cs = config["ConnectionStrings:Host"];
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(cs);
-            }
-
-        }
+    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
