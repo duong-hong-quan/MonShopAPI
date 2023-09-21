@@ -13,9 +13,9 @@ namespace MonShop.Library.Models
         [Key]
         public int CartId { get; set; }
 
-        public int AccountId {  get; set; }
-        [ForeignKey("AccountId")]
-        public Account Account { get; set; }
+        public string ApplicationUserId {  get; set; }
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser ApplicationUser { get; set; }
 
         [NotMapped]
         public double Total {  get; set; }

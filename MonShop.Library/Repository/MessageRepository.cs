@@ -23,13 +23,13 @@ namespace MonShop.Library.Repository
 
         public async Task AddMessage(MessageRequest message)
         {
-            Message mess = await _db.Message.Where(m => m.Sender == message.AccountID).FirstAsync();
+            Message mess = await _db.Message.Where(m => m.ApplicationUserId == message.AccountID).FirstAsync();
             if (mess != null)
             {
                 Message DTO = new Message
                 {
                     RoomId = mess.RoomId,
-                    Sender = message.AccountID,
+                    ApplicationUserId = message.AccountID,
                     Content = message.Message,
                     SendTime = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
 
@@ -41,15 +41,15 @@ namespace MonShop.Library.Repository
             }
             else
             {
-                Account account = await _db.Account.Where(a => a.AccountId == message.AccountID).FirstAsync();
-                Room room = new Room { RoomName = $"{account.FirstName} {account.LastName}", RoomImg = account.ImageUrl };
+                ApplicationUser account = await _db.Users.Where(a => a.Id == message.AccountID).FirstAsync();
+                Room room = new Room { RoomName = $"{account.FirstName} {account.LastName}", RoomImg = "" };
                 await _db.Room.AddAsync(room);
                 await _db.SaveChangesAsync();
                 int roomID = room.RoomId;
                 Message DTO = new Message
                 {
                     RoomId = roomID,
-                    Sender = message.AccountID,
+                    ApplicationUserId = message.AccountID,
                     Content = message.Message,
                     SendTime = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
 
@@ -77,18 +77,18 @@ namespace MonShop.Library.Repository
             {
                 Content = message.Content,
                 RoomId = message.RoomId,
-                Sender = message.Sender,
+                ApplicationUserId = message.Sender,
                 SendTime = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
             };
             await _db.Message.AddAsync(mess);
             await _db.SaveChangesAsync();
 
         }
-        public async Task<List<Message>> GetAllMessageByAccountID(int AccountID)
+        public async Task<List<Message>> GetAllMessageByAccountID(string AccountID)
         {
             List<Message> list = null;
 
-            List<Message> Message = await _db.Message.Where(m => m.Sender == AccountID).ToListAsync();
+            List<Message> Message = await _db.Message.Where(m => m.ApplicationUserId == AccountID).ToListAsync();
             if (Message.Count > 0)
             {
                 Message mess = Message.ElementAt(0);

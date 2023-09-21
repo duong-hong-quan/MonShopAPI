@@ -9,7 +9,6 @@ namespace MonShopAPI.Controller
 {
     [Route("Category")]
     [ApiController]
-    [Authorize]
 
     public class CategoryController : ControllerBase
     {

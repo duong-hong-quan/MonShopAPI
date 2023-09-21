@@ -10,159 +10,88 @@ using Microsoft.EntityFrameworkCore;
 using MonShopLibrary.Utils;
 using MonShop.Library.Repository.IRepository;
 using MonShop.Library.Data;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Utility = MonShopLibrary.Utils.Utility;
 
 namespace MonShopLibrary.Repository
 {
     public class AccountRepository : IAccountRepository
     {
         private readonly MonShopContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
 
 
-        public AccountRepository(MonShopContext db)
+        public AccountRepository(MonShopContext db, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _configuration = configuration;
+            _roleManager = roleManager;
         }
 
-        public async Task<List<Account>> GetAllAccount()
+        public  async Task AssignRole(SignUpRequest request)
         {
-            List<Account> Account = await _db.Account.Include(a => a.Role).ToListAsync();
-            return Account;
-        }
-
-        public async Task AddAccount(AccountDTO dto)
-        {
-            Account account = new Account
+            var user = _db.Users.FirstOrDefault(u => u.Email.ToLower() == request.Email.ToLower());
+            if (user != null)
             {
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Address = dto.Address,
-                ImageUrl = dto.ImageUrl,
-                IsDeleted = false,
-                Password = Utility.HashPassword(dto.Password),
-                RoleId = dto.RoleId,
-                PhoneNumber = dto.PhoneNumber,
-            };
-            await _db.Account.AddAsync(account);
-            await _db.SaveChangesAsync();
-        }
-        public async Task SignUp(AccountDTO dto)
-        {
-            Account account = new Account
-            {
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Address = dto.Address,
-                ImageUrl = dto.ImageUrl,
-                IsDeleted = false,
-                Password = Utility.HashPassword(dto.Password),
-                RoleId = 3,
-                PhoneNumber = dto.PhoneNumber,
-            };
-            await _db.Account.AddAsync(account);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task ChangePassword(ChangePasswordRequest request)
-        {
-            Account account = await GetAccountByID(request.AccountId);
-            if (account != null)
-            {
-
-                account.Password = Utility.HashPassword(request.NewPassword);
-            }
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task UpdateAccount(AccountDTO dto)
-        {
-            Account account = await GetAccountByID(dto.AccountId);
-
-            account.AccountId = dto.AccountId;
-            account.Email = dto.Email;
-            account.FirstName = dto.FirstName;
-            account.LastName = dto.LastName;
-            account.Password = account.Password;
-            account.Address = dto.Address;
-            account.ImageUrl = account.ImageUrl;
-            account.IsDeleted = dto.IsDeleted;
-            account.RoleId = dto.RoleId;
-            account.PhoneNumber = dto.PhoneNumber;
-            await _db.SaveChangesAsync();
-        }
-        public async Task DeleteAccount(AccountDTO dto)
-        {
-            Account account = await _db.Account.FirstAsync(a => a.AccountId == dto.AccountId);
-            account.IsDeleted = true;
-            await _db.SaveChangesAsync();
-
-        }
-
-        public async Task<List<Role>> GetAllRole()
-        {
-            var list = await _db.Role.ToListAsync();
-            return list;
-        }
-
-        public async Task<Account> GetAccountByID(int id)
-        {
-            Account account = await _db.Account.FirstAsync(a => a.AccountId == id);
-            return account;
-        }
-        public async Task<Account> GetAccountByEmail(string email)
-        {
-            Account account = await _db.Account.Where(a => a.Email == email).FirstAsync();
-            return account;
-        }
-        public async Task<Account> Login(LoginRequest loginRequest)
-        {
-            Account account = await _db.Account.Where(a => a.Email == loginRequest.Email && a.IsDeleted == false).FirstAsync();
-            if (account != null && Utility.VerifyPassword(loginRequest.Password, account.Password))
-            {
-                return account;
-            }
-            return null;
-        }
-
-
-        public async Task<string> GenerateRefreshToken(int AccountID)
-        {
-            Token token = await _db.Token.Where(a => a.AccountId == AccountID).FirstOrDefaultAsync();
-            string refToken = "";
-            if (token == null)
-            {
-                Token refreshToken = new Token
+                if (!await _roleManager.RoleExistsAsync(request.Role))
                 {
-                    RefreshToken = Guid.NewGuid().ToString(),
-                    AccountId = AccountID,
-                    ExpiresAt = DateTime.UtcNow.AddMonths(1),
-                };
-                await _db.Token.AddAsync(refreshToken);
-                await _db.SaveChangesAsync();
+                    _roleManager.CreateAsync(new IdentityRole(request.Role)).GetAwaiter().GetResult();
+                }
+                await _userManager.AddToRoleAsync(user, request.Role);
             }
-            else if (token.ExpiresAt <= Utility.getInstance().GetCurrentDateTimeInTimeZone())
-            {
-                token.RefreshToken = Guid.NewGuid().ToString();
-                token.ExpiresAt = DateTime.UtcNow.AddMonths(1);
-                await _db.SaveChangesAsync();
-            }
-            refToken = token.RefreshToken;
-
-            return refToken;
-
-
         }
 
-        public async Task<Token> GetToken(string token)
+        public async Task SignUp(SignUpRequest dto)
         {
-            Token tokenDTO = await _db.Token.FirstAsync(t => t.RefreshToken == token);
-
-            return tokenDTO;
-
+            var user = new ApplicationUser { Email = dto.Email, UserName = dto.Email, FirstName = dto.FirstName, LastName = dto.LastName };
+            await _userManager.CreateAsync(user, dto.Password);
+            await AssignRole(dto);
         }
 
+        public async Task<string?> Login(LoginRequest loginRequest)
+        {
+            var result = await _signInManager.PasswordSignInAsync(loginRequest.Email, loginRequest.Password, false, false);
+            var user = _db.Users.FirstOrDefault(u => u.Email.ToLower() == loginRequest.Email.ToLower());
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return string.Empty;
+
+            }
+            var claims = new List<Claim>
+            {
+           new Claim (ClaimTypes.Email, loginRequest.Email),
+           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+           };
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
 
+            var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
+                expires: DateTime.Now.AddDays(1),
+                claims: claims,
+                signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<ApplicationUser> GetAccountById(string accountId)
+        {
+            return await _db.Users.FirstOrDefaultAsync(a => a.Id == accountId);
+        }
     }
 }

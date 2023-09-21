@@ -70,7 +70,7 @@ namespace MonShopAPI.Controller
             try
             {
                 Order order = await _orderRepository.GetOrderByID(OrderID);
-                Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+                ApplicationUser account = await _accountRepository.GetAccountById(order.ApplicationUserId);
                 if (order == null)
                 {
                     _response.Message = $"No result order with ID {OrderID}";
@@ -85,7 +85,7 @@ namespace MonShopAPI.Controller
                 {
                     Momo momo = new Momo
                     {
-                        AccountID = order.BuyerAccountId,
+                        AccountID =  int.Parse( order.ApplicationUserId),
                         Amount = (double)order.Total,
                         CustomerName = $"{account.FirstName} {account.LastName}",
                         OrderID = OrderID
@@ -113,7 +113,7 @@ namespace MonShopAPI.Controller
             try
             {
                 Order order = await _orderRepository.GetOrderByID(OrderID);
-                Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+                ApplicationUser account = await _accountRepository.GetAccountById(order.ApplicationUserId);
                 if (order == null)
                 {
                     _response.Message = $"No result order with ID {OrderID}";
@@ -128,7 +128,7 @@ namespace MonShopAPI.Controller
                 {
                     PaymentInformationModel model = new PaymentInformationModel
                     {
-                        AccountID = order.BuyerAccountId,
+                        AccountID = int.Parse(order.ApplicationUserId),
                         Amount = (double)order.Total,
                         CustomerName = $"{account.FirstName} {account.LastName}",
                         OrderID = order.OrderId
@@ -156,7 +156,7 @@ namespace MonShopAPI.Controller
             try
             {
                 Order order = await _orderRepository.GetOrderByID(OrderID);
-                Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
+                ApplicationUser account = await _accountRepository.GetAccountById(order.ApplicationUserId);
                 if (order == null)
                 {
                     _response.Message = $"No result order with ID {OrderID}";
@@ -169,12 +169,12 @@ namespace MonShopAPI.Controller
 
                 if (order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
-                    PaymentInformationModel model = new PaymentInformationModel 
+                    PaymentInformationModel model = new PaymentInformationModel
                     {
-                        AccountID = order.BuyerAccountId,
-                        Amount = (double)order.Total, 
-                        CustomerName = $"{account.FirstName} {account.LastName}", 
-                        OrderID = order.OrderId 
+                        AccountID = int.Parse(order.ApplicationUserId),
+                        Amount = (double)order.Total,
+                        CustomerName = $"{account.FirstName} {account.LastName}",
+                        OrderID = order.OrderId
                     };
 
                     string endpoint = await _payPalServices.CreatePaymentUrl(model, HttpContext);
@@ -207,12 +207,12 @@ namespace MonShopAPI.Controller
                 {
                     PaymentResponse dto = new PaymentResponse
                     {
-                        PaymentResponseId = Convert.ToString( momo.transId),
+                        PaymentResponseId = Convert.ToString(momo.transId),
                         OrderId = momo.extraData,
                         Amount = momo.amount.ToString(),
                         OrderInfo = momo.orderInfo,
                         Success = true,
-                        PaymentTypeId =Constant.PaymentType.PAYMENT_MOMO
+                        PaymentTypeId = Constant.PaymentType.PAYMENT_MOMO
                     };
                     await _paymentRepository.AddPaymentRespone(dto);
 
@@ -315,7 +315,7 @@ namespace MonShopAPI.Controller
                         OrderInfo = response.OrderDescription,
                         Success = true,
                         PaymentTypeId = Constant.PaymentType.PAYMENT_VNPAY
-                        
+
 
 
                     };

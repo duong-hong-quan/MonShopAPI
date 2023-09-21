@@ -38,9 +38,9 @@ namespace MonShopLibrary.Repository
             return list;
         }
 
-        public async Task<IEnumerable<PaymentResponse>> GetPaymentByAccountId(int accountId)
+        public async Task<IEnumerable<PaymentResponse>> GetPaymentByAccountId(string accountId)
         {
-            var list = await _db.PaymentResponse.Include(p => p.Order).Include(p => p.PaymentType).Where(p=> p.Order.BuyerAccountId == accountId).ToListAsync();
+            var list = await _db.PaymentResponse.Include(p => p.Order).Include(p => p.PaymentType).Where(p=> p.Order.ApplicationUserId == accountId).ToListAsync();
             return list;
         }
     }

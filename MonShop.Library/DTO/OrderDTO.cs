@@ -9,6 +9,6 @@ namespace MonShopLibrary.DTO
     public class OrderDTO
     {
      
-        public int BuyerAccountId { get; set; }
+        public string BuyerAccountId { get; set; }
     }
 }

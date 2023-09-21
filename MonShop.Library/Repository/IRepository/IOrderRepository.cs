@@ -20,8 +20,8 @@ namespace MonShop.Library.Repository.IRepository
         public Task<List<Order>> GetAllOrder();
         public Task<ListOrder> GetListItemByOrderID(string OrderID);
         public Task UpdateQuantityAfterPay(string OrderID);
-        public Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID);
-        public Task<OrderCount> OrderStatistic(int AccountID);
+        public Task<List<Order>> GetAllOrderByAccountID(string AccountID, int OrderStatusID);
+        public Task<OrderCount> OrderStatistic(string AccountID);
         public Task<bool> VerifyOrder(string OrderID);
     }
 }

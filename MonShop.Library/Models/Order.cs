@@ -17,10 +17,10 @@ namespace MonShop.Library.Models
 
         public OrderStatus OrderStatus { get; set; } = null!;
 
-        public int BuyerAccountId { get; set; }
-        [ForeignKey("BuyerAccountId")]
-        public  Account BuyerAccount { get; set; } = null!;
-       
+        public string ApplicationUserId { get; set; }
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser ApplicationUser { get; set; }
+
 
     }
 }

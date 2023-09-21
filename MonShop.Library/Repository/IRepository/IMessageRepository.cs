@@ -13,7 +13,7 @@ namespace MonShop.Library.Repository.IRepository
         public Task AddMessage(MessageRequest message);
 
 
-        public Task<List<Message>> GetAllMessageByAccountID(int AccountID);
+        public Task<List<Message>> GetAllMessageByAccountID(string AccountID);
 
 
         public Task<List<Message>> GetAllMessageByRoomID(int RoomID);

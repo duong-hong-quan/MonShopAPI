@@ -9,9 +9,9 @@ namespace MonShop.Library.Models
     {
         [Key]
         public int MessageId { get; set; }
-        public int? Sender { get; set; }
-        [ForeignKey("Sender")]
-        public virtual Account? SenderNavigation { get; set; }
+        public string ApplicationUserId { get; set; }
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser ApplicationUser { get; set; }
 
         public string? Content { get; set; }
         public DateTime? SendTime { get; set; }

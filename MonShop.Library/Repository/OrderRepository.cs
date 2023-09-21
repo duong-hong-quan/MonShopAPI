@@ -55,7 +55,7 @@ namespace MonShopLibrary.Repository
                     OrderDate = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
                     Total = total,
                     OrderStatusId = Constant.Order.PENDING_PAY,
-                    BuyerAccountId = cart.AccountId
+                    ApplicationUserId = cart.ApplicationUserId
                 };
                 await _db.Order.AddAsync(order);
                 await _db.SaveChangesAsync();
@@ -106,17 +106,17 @@ namespace MonShopLibrary.Repository
         }
         public async Task<List<Order>> GetAllOrder()
         {
-            List<Order> order = await _db.Order.Include(o => o.BuyerAccount).Include(a => a.BuyerAccount.Role).Include(o => o.OrderStatus).ToListAsync();
+            List<Order> order = await _db.Order.Include(o => o.ApplicationUser).Include(o => o.OrderStatus).ToListAsync();
             return order;
         }
-        public async Task<List<Order>> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
+        public async Task<List<Order>> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
         {
-            List<Order> order = await _db.Order.Where(a => a.BuyerAccountId == AccountID && a.OrderStatusId == OrderStatusID).ToListAsync();
+            List<Order> order = await _db.Order.Where(a => a.ApplicationUserId == AccountID && a.OrderStatusId == OrderStatusID).ToListAsync();
             return order;
         }
         public async Task<ListOrder> GetListItemByOrderID(string OrderID)
         {
-            Order orderDTO = await _db.Order.Include(o => o.BuyerAccount).
+            Order orderDTO = await _db.Order.Include(o => o.ApplicationUser).
                 Include(o => o.OrderStatus).
                 Where(o => o.OrderId == OrderID).
                 FirstAsync();
@@ -147,7 +147,7 @@ namespace MonShopLibrary.Repository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<OrderCount> OrderStatistic(int AccountID)
+        public async Task<OrderCount> OrderStatistic(string AccountID)
         {
             OrderCount order = new OrderCount
             {
@@ -164,10 +164,10 @@ namespace MonShopLibrary.Repository
             return order;
         }
 
-        private async Task<int> OrderCountByStatus(int AccountID, int status)
+        private async Task<int> OrderCountByStatus(string AccountID, int status)
         {
             int count = 0;
-            count = await _db.Order.Where(o => o.BuyerAccountId == AccountID && o.OrderStatusId == status).CountAsync();
+            count = await _db.Order.Where(o => o.ApplicationUserId == AccountID && o.OrderStatusId == status).CountAsync();
             return count;
         }
 

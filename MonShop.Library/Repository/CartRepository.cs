@@ -22,12 +22,12 @@ namespace MonShop.Library.Repository
 
         public async Task AddToCart(CartRequest request)
         {
-            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.AccountId == request.AccountId);
+            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.ApplicationUserId == request.ApplicationUserId);
             CartItem item = await _db.CartItem.FirstOrDefaultAsync(i => i.ProductId == request.item.ProductId);
 
             if (cart == null && item == null)
             {
-                cart = new Cart { AccountId = request.AccountId };
+                cart = new Cart { ApplicationUserId = request.ApplicationUserId };
                 await _db.Cart.AddAsync(cart);
                 await _db.SaveChangesAsync();
 
@@ -71,7 +71,7 @@ namespace MonShop.Library.Repository
 
         public async Task RemoveToCart(CartRequest request)
         {
-            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.AccountId == request.AccountId);
+            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.ApplicationUserId == request.ApplicationUserId);
             CartItem item = await _db.CartItem.FirstOrDefaultAsync(i => i.ProductId == request.item.ProductId);
 
             if (cart != null )

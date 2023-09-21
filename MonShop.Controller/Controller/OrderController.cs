@@ -217,7 +217,7 @@ namespace MonShopAPI.Controller
         //    [Authorize]
         [HttpGet]
         [Route("GetAllOrderByAccountID")]
-        public async Task<ResponseDTO> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
+        public async Task<ResponseDTO> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace MonShopAPI.Controller
         }
         [HttpGet]
         [Route("GetOrderStatistic/{AccountID}")]
-        public async Task<ResponseDTO> GetOrderStatistic(int AccountID)
+        public async Task<ResponseDTO> GetOrderStatistic(string AccountID)
         {
             try
             {

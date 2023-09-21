@@ -11,7 +11,6 @@ namespace MonShop.Controller.Controller
 {
     [Route("Message")]
     [ApiController]
-    [Authorize]
 
     public class MessageController : ControllerBase
     {
@@ -61,7 +60,7 @@ namespace MonShop.Controller.Controller
         [HttpGet]
         [Route("GetAllMessageByAccountID/{AccountID}")]
 
-        public async Task<ResponseDTO> GetAllMessageByAccountID(int AccountID)
+        public async Task<ResponseDTO> GetAllMessageByAccountID(string AccountID)
         {
             try
             {

@@ -13,6 +13,8 @@ using PaymentGateway.VNPay;
 using System;
 using System.Text;
 using VNPay.Services;
+using MonShop.Library.Models;
+using Microsoft.AspNetCore.Identity;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +32,7 @@ builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
 }));
 builder.Services.AddDbContext<MonShopContext>(option =>
 {
-    option.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:Host"));
+    option.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:DB"));
 });
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -48,38 +50,55 @@ builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddSwaggerGen(option =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
     {
-        Version = "v1",
-        Title = "MonShop API",
-        Description = "@Copyright: Hồng Quân",
-        TermsOfService = new Uri("https://example.com/terms"),
-        Contact = new OpenApiContact
+        Name = "Authorization",
+        Description = "Enter the Bear Authorization string as following: `Bearer Generate-JWT-Token`",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            Name = "Example Contact",
-            Url = new Uri("https://example.com/contact")
-        },
-        License = new OpenApiLicense
+        new OpenApiSecurityScheme
         {
-            Name = "Example License",
-            Url = new Uri("https://example.com/license")
-        }
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = JwtBearerDefaults.AuthenticationScheme
+            }
+        }, new string[]{}
+    }
     });
 });
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services
+    .AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<MonShopContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        IssuerSigningKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+    
     };
+
 });
 var app = builder.Build();
 

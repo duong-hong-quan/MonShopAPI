@@ -9,7 +9,7 @@ namespace MonShop.Library.DTO
 {
     public class CartRequest
     {
-        public int AccountId {  get; set; }
+        public string ApplicationUserId {  get; set; }
         public CartItemDTO item { get; set; }  
     }
 }

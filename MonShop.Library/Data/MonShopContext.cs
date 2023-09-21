@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +8,7 @@ using MonShop.Library.Models;
 
 namespace MonShop.Library.Data
 {
-    public partial class MonShopContext : DbContext
+    public partial class MonShopContext : IdentityDbContext<ApplicationUser>
     {
         
 
@@ -16,7 +17,6 @@ namespace MonShop.Library.Data
         {
         }
 
-        public DbSet<Account> Account { get; set; } = null!;
         public DbSet<Category> Category { get; set; } = null!;
         public DbSet<Message> Message { get; set; } = null!;
         public DbSet<Order> Order { get; set; } = null!;
@@ -25,9 +25,7 @@ namespace MonShop.Library.Data
         public DbSet<PaymentResponse> PaymentResponse { get; set; } = null!;
         public DbSet<Product> Product { get; set; } = null!;
         public DbSet<ProductStatus> ProductStatus { get; set; } = null!;
-        public DbSet<Role> Role { get; set; } = null!;
         public DbSet<Room> Room { get; set; } = null!;
-        public DbSet<Token> Token { get; set; } = null!;
         public DbSet<PaymentType> PaymentType { get; set; } = null!;
         public DbSet<Cart> Cart { get; set; } = null!;
         public DbSet<CartItem> CartItem { get; set; } = null!;
@@ -37,20 +35,7 @@ namespace MonShop.Library.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Role>().HasData(new Role
-            {
-                RoleId = 1,
-                RoleName = "Admin",
-
-            });
-            modelBuilder.Entity<Role>().HasData(new Role
-            {
-                RoleId = 2,
-                RoleName = "User",
-
-            });
-
-
+          
             modelBuilder.Entity<PaymentType>().HasData(new PaymentType
             {
                 PaymentTypeId = 1,

@@ -8,7 +8,7 @@ namespace MonShop.Library.DTO
 {
     public class MessageRequest
     {
-        public int AccountID { get; set; }  
+        public string AccountID { get; set; }  
         public string Message { get; set; }
     }
 }

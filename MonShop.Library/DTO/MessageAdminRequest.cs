@@ -8,7 +8,7 @@ namespace MonShop.Library.DTO
 {
     public class MessageAdminRequest
     {
-        public int? Sender { get; set; }
+        public string? Sender { get; set; }
         public string? Content { get; set; }
         public int RoomId { get; set; }
     }

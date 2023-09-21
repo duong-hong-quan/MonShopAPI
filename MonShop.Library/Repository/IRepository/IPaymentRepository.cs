@@ -13,7 +13,7 @@ namespace MonShop.Library.Repository.IRepository
         public Task<IEnumerable<PaymentResponse>> GetAllPayment();
         public Task<IEnumerable<PaymentResponse>> GetAllPaymentById(string paymentId);
 
-        public Task<IEnumerable<PaymentResponse>> GetPaymentByAccountId(int accountId);
+        public Task<IEnumerable<PaymentResponse>> GetPaymentByAccountId(string accountId);
 
 
 
