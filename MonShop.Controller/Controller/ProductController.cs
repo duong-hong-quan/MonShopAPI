@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonShop.Controller.Model;
 using MonShop.Library.Models;
@@ -10,6 +11,7 @@ namespace MonShopAPI.Controller
 {
     [Route("Product")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;

@@ -100,6 +100,8 @@ builder.Services.AddAuthentication(options =>
     };
 
 });
+
+
 var app = builder.Build();
 
 app.UseSwagger(options =>
