@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MonShop.Controller.Model;
 using MonShop.Library.Models;
+using MonShop.Library.Repository.IRepository;
 using MonShopLibrary.DTO;
-using MonShopLibrary.Repository;
 using System.Collections.Generic;
 
 namespace MonShopAPI.Controller
@@ -13,177 +13,177 @@ namespace MonShopAPI.Controller
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        private readonly ResponeDTO _responeDTO;
+        private readonly ResponseDTO _response;
         public ProductController(IProductRepository productRepository)
         {
             _productRepository = productRepository;
-            _responeDTO = new ResponeDTO();
+            _response = new ResponseDTO();
         }
         [HttpGet]
         [Route("GetAllCategory")]
-        public async Task<ResponeDTO> GetAllCategory()
+        public async Task<ResponseDTO> GetAllCategory()
         {
             try
             {
                 var list = await _productRepository.GetAllCategory();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
         [Route("GetAllProduct")]
-        public async Task<ResponeDTO> GetAllProduct()
+        public async Task<ResponseDTO> GetAllProduct()
         {
             try
             {
                 var list = await _productRepository.GetAllProduct();
 
-                _responeDTO.Data = list;
+                _response.Data = list;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
         [Route("GetAllProductByManager")]
-        public async Task<ResponeDTO> GetAllProductByManager()
+        public async Task<ResponseDTO> GetAllProductByManager()
         {
             try
             {
 
                 var list = await _productRepository.GetAllProductByManager();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
         [Route("GetAllProductStatus")]
-        public async Task<ResponeDTO> GetAllProductStatus()
+        public async Task<ResponseDTO> GetAllProductStatus()
         {
             try
             {
                 var list = await _productRepository.GetAllProductStatus();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
-        [Route("GetProductByID")]
-        public async Task<ResponeDTO> GetProductByID(int id)
+        [Route("GetProductByID/{id}")]
+        public async Task<ResponseDTO> GetProductByID(int id)
         {
             try
             {
                 var product = await _productRepository.GetProductByID(id);
-                _responeDTO.Data = product;
+                _response.Data = product;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpPost]
         [Route("AddProduct")]
-        public async Task<ResponeDTO> AddProduct(ProductDTO dto)
+        public async Task<ResponseDTO> AddProduct(ProductDTO dto)
         {
             try
             {
                 await _productRepository.AddProduct(dto);
-                _responeDTO.Message = "Add product successfully";
-                _responeDTO.Data = dto;
+                _response.Message = "Add product successfully";
+                _response.Data = dto;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
 
         }
         [HttpPut]
         [Route("UpdateProduct")]
 
-        public async Task<ResponeDTO> UpdateProduct(ProductDTO dto)
+        public async Task<ResponseDTO> UpdateProduct(ProductDTO dto)
         {
             try
             {
                 await _productRepository.UpdateProduct(dto);
-                _responeDTO.Message = "Update Product Successfully";
-                _responeDTO.Data = dto;
+                _response.Message = "Update Product Successfully";
+                _response.Data = dto;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpDelete]
         [Route("DeleteProduct")]
 
-        public async Task<ResponeDTO> DeleteProduct(ProductDTO dto)
+        public async Task<ResponseDTO> DeleteProduct(ProductDTO dto)
         {
             try
             {
 
                 await _productRepository.DeleteProduct(dto);
-                _responeDTO.Data = dto;
-                _responeDTO.Message = "Delete Product Successfully";
+                _response.Data = dto;
+                _response.Message = "Delete Product Successfully";
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
         [Route("GetTop4")]
-        public async Task<ResponeDTO> GetTop4()
+        public async Task<ResponseDTO> GetTop4()
         {
             try
             {
                 List<Product> list = await _productRepository.GetTop4();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
     }
 }

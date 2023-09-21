@@ -5,95 +5,129 @@ using Microsoft.IdentityModel.Tokens;
 using MonShopAPI.Util;
 using MonShopLibrary.DTO;
 using MonShop.Library.Models;
-using MonShopLibrary.Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using MonShop.Library.DTO;
 using MonShopLibrary.Utils;
 using MonShop.Controller.Model;
+using MonShop.Library.Repository.IRepository;
 
 namespace MonShopAPI.Controller
 {
     [Route("Account")]
     [ApiController]
-
     public class AccountController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
-        private readonly ResponeDTO _responeDTO;
-        private readonly LoginRespone _loginRespone;
+        private readonly ResponseDTO _response;
+        private readonly LoginResponse _loginRespone;
         public AccountController(IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository;
-            _responeDTO = new ResponeDTO();
-            _loginRespone = new LoginRespone();
+            _response = new ResponseDTO();
+            _loginRespone = new LoginResponse();
 
         }
         [HttpGet]
         [Route("GetAllAccount")]
-        public async Task<ResponeDTO> GetAllAccount()
+        public async Task<ResponseDTO> GetAllAccount()
         {
             try
             {
-
-                _responeDTO.Data = await _accountRepository.GetAllAccount();
-
+                _response.Data = await _accountRepository.GetAllAccount();
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
         [Route("GetAllRole")]
-        public async Task<ResponeDTO> GetAllRole()
+        public async Task<ResponseDTO> GetAllRole()
         {
             try
             {
-                _responeDTO.Data = await _accountRepository.GetAllRole();
+                _response.Data = await _accountRepository.GetAllRole();
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpPost]
         [Route("AddAccount")]
-        public async Task<IActionResult> Add(AccountDTO dto)
+        public async Task<ResponseDTO> Add(AccountDTO dto)
         {
-            await _accountRepository.AddAccount(dto);
-            return Ok("Add account successfully");
+            try
+            {
+
+                await _accountRepository.AddAccount(dto);
+                _response.Message = "Add account successfully";
+                _response.Data = true;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+
+            }
+            return _response;
         }
 
         [HttpPut]
         [Route("UpdateAccount")]
-        public async Task<IActionResult> Update(AccountDTO dto)
+        public async Task<ResponseDTO> Update(AccountDTO dto)
         {
-            await _accountRepository.UpdateAccount(dto);
-            return Ok("Update account successfully");
+            try
+            {
+                await _accountRepository.UpdateAccount(dto);
+
+                _response.Message = "Update account successfully";
+                _response.Data = true;
+            }
+            catch (Exception ex)
+            {
+
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+
+            }
+            return _response;
         }
 
         [HttpDelete]
         [Route("DeleteAccount")]
-        public async Task<IActionResult> Delete(AccountDTO dto)
+        public async Task<ResponseDTO> Delete(AccountDTO dto)
         {
-            await _accountRepository.DeleteAccount(dto);
-            return Ok("Delete account successfully");
+            try
+            {
+                await _accountRepository.DeleteAccount(dto);
+                _response.Message = "Delete account successfully";
+                _response.Data = true;
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+
+            }
+            return _response;
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
-        public async Task<ResponeDTO> Login(LoginRequest userLogin)
+        public async Task<ResponseDTO> Login(LoginRequest userLogin)
         {
             try
             {
@@ -104,28 +138,28 @@ namespace MonShopAPI.Controller
 
                     _loginRespone.Token = token;
                     _loginRespone.RefreshToken = await _accountRepository.GenerateRefreshToken(user.AccountId);
-                    _responeDTO.Data = _loginRespone;
+                    _response.Data = _loginRespone;
                 }
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
 
 
 
 
-            return _responeDTO;
+            return _response;
         }
 
         [HttpGet]
-        [Route("GetNewToken")]
+        [Route("GetNewToken/{refreshToken}")]
 
-        public async Task<ResponeDTO> GetNewToken(string refreshToken)
+        public async Task<ResponseDTO> GetNewToken(string refreshToken)
         {
             try
             {
@@ -140,7 +174,7 @@ namespace MonShopAPI.Controller
 
                         _loginRespone.Token = newToken;
                         _loginRespone.RefreshToken = await _accountRepository.GenerateRefreshToken(token.AccountId);
-                        _responeDTO.Data = _loginRespone;
+                        _response.Data = _loginRespone;
 
                     }
                 }
@@ -148,67 +182,88 @@ namespace MonShopAPI.Controller
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
 
 
 
-            return _responeDTO;
+            return _response;
 
         }
 
         [HttpGet]
-        [Route("GetAccountByID")]
-        public async Task<ResponeDTO> GetAccountByID(int AccountID)
+        [Route("GetAccountByID/{AccountID}")]
+        public async Task<ResponseDTO> GetAccountByID(int AccountID)
         {
             try
             {
-                _responeDTO.Data = await _accountRepository.GetAccountByID(AccountID);
+                _response.Data = await _accountRepository.GetAccountByID(AccountID);
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
 
         }
         [HttpPost]
         [Route("SignUp")]
-        public async Task<IActionResult> SignUp(AccountDTO accountDTO)
+        public async Task<ResponseDTO> SignUp(AccountDTO accountDTO)
         {
-            await _accountRepository.SignUp(accountDTO);
-            return Ok("Sign up successfully !");
+            try
+            {
+                await _accountRepository.SignUp(accountDTO);
+                _response.Data = true;
+                _response.Message = "Sign up successfully !";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+
+            }
+            return _response;
         }
         [HttpPost]
         [Route("ChangePassword")]
-        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        public async Task<ResponseDTO> ChangePassword(ChangePasswordRequest request)
         {
-            Account account = await _accountRepository.GetAccountByID(request.AccountId);
-            if (account == null)
+            try
             {
-
-                return BadRequest($"No result for account with ID {request.AccountId}");
-            }
-            else
-            {
-                bool check = MonShopLibrary.Utils.Utility.VerifyPassword(request.OldPassword, account.Password);
-                if (check)
+                Account account = await _accountRepository.GetAccountByID(request.AccountId);
+                if (account == null)
                 {
-                    await _accountRepository.ChangePassword(request);
-                    return Ok();
+                    _response.Message = $"No result for account with ID {request.AccountId}";
+                    _response.IsSuccess = false;
+                    return _response;
                 }
                 else
                 {
-                    return BadRequest("The old password is wrong!");
+                    bool check = MonShopLibrary.Utils.Utility.VerifyPassword(request.OldPassword, account.Password);
+                    if (check)
+                    {
+                        await _accountRepository.ChangePassword(request);
+                        _response.Data = true;
+                    }
+                    else
+                    {
+                        _response.Message = "The old password is wrong!";
+                        _response.IsSuccess = false;
+                        return _response;
 
+                    }
                 }
             }
-
-
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
 
     }

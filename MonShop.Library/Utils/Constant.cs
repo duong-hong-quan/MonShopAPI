@@ -48,5 +48,14 @@ namespace MonShopLibrary.Utils
             public static int IN_ACTIVE = 2;
 
         }
+
+        public class PaymentType
+        {
+            public static int PAYMENT_MOMO = 1;
+            public static int PAYMENT_VNPAY = 2;
+            public static int PAYMENT_PAYPAL = 3;
+
+
+        }
     }
 }

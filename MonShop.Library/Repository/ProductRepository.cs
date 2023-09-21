@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MonShopLibrary.Utils;
+using MonShop.Library.Repository.IRepository;
+using MonShop.Library.Data;
 
 namespace MonShopLibrary.Repository
 {
@@ -22,23 +24,23 @@ namespace MonShopLibrary.Repository
 
         public async Task<List<MonShop.Library.Models.Category>> GetAllCategory()
         {
-            List<MonShop.Library.Models.Category> list = await _db.Categories.ToListAsync();
+            List<MonShop.Library.Models.Category> list = await _db.Category.ToListAsync();
             return list;
         }
         public async Task<List<ProductStatus>> GetAllProductStatus()
         {
-            List<ProductStatus> list = await _db.ProductStatuses.ToListAsync();
+            List<ProductStatus> list = await _db.ProductStatus.ToListAsync();
             return list;
         }
         public async Task<List<Product>> GetAllProduct()
         {
-            List<Product> list = await _db.Products.Include(p => p.Category).Include(p => p.ProductStatus).Where(o => o.ProductStatusId != Constant.Product.IN_ACTIVE && o.IsDeleted == false).ToListAsync();
+            List<Product> list = await _db.Product.Include(p => p.Category).Include(p => p.ProductStatus).Where(o => o.ProductStatusId != Constant.Product.IN_ACTIVE && o.IsDeleted == false).ToListAsync();
 
             return list;
         }
         public async Task<List<Product>> GetAllProductByManager()
         {
-            List<Product> list = await _db.Products.Include(p => p.Category).Include(p => p.ProductStatus).ToListAsync();
+            List<Product> list = await _db.Product.Include(p => p.Category).Include(p => p.ProductStatus).ToListAsync();
 
             return list;
         }
@@ -57,7 +59,7 @@ namespace MonShopLibrary.Repository
                 IsDeleted = false
 
             };
-            await _db.Products.AddAsync(product);
+            await _db.Product.AddAsync(product);
             await _db.SaveChangesAsync();
         }
 
@@ -79,25 +81,25 @@ namespace MonShopLibrary.Repository
         }
         public async Task DeleteProduct(ProductDTO dto)
         {
-            Product product = await _db.Products.FirstAsync(p => p.ProductId == dto.ProductId);
+            Product product = await _db.Product.FirstAsync(p => p.ProductId == dto.ProductId);
             product.IsDeleted = true;
             await _db.SaveChangesAsync();
         }
 
         public async Task<Product> GetProductByID(int id)
         {
-            Product product = await _db.Products.FirstAsync(p => p.ProductId == id);
+            Product product = await _db.Product.FirstAsync(p => p.ProductId == id);
             return product;
         }
 
         public async Task<List<Product>> GetTop4()
         {
-            var newProducts = await _db.Products
+            var newProduct = await _db.Product
                .Where(p => p.IsDeleted == false && p.ProductStatusId != Constant.Product.IN_ACTIVE)
                .OrderByDescending(p => p.ProductId)
                .Take(4)
                .ToListAsync();
-            return newProducts;
+            return newProduct;
         }
 
 

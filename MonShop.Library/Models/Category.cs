@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MonShop.Library.Models
 {
     public partial class Category
     {
-        public Category()
-        {
-            Products = new HashSet<Product>();
-        }
-
+        [Key]
         public int CategoryId { get; set; }
         public string CategoryName { get; set; } = null!;
-        [JsonIgnore]
-
-        public virtual ICollection<Product> Products { get; set; }
+       
     }
 }

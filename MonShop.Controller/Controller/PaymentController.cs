@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using MonShop.Controller.Model;
 using MonShop.Library.Models;
-using MonShopLibrary.Repository;
+using MonShop.Library.Repository.IRepository;
 using MonShopLibrary.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,7 +26,7 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly ResponeDTO _responeDTO;
+        private readonly ResponseDTO _response;
         public PaymentController(IMomoServices momoServices, IVnPayServices vnPayServices, IPayPalServices payPalServices, IOrderRepository orderRepository, IAccountRepository accountRepository, IPaymentRepository paymentRepository)
         {
             _momoServices = momoServices;
@@ -35,73 +35,37 @@ namespace MonShopAPI.Controller
             _accountRepository = accountRepository;
             _paymentRepository = paymentRepository;
             _vnPayServices = vnPayServices;
-            _responeDTO = new ResponeDTO();
+            _response = new ResponseDTO();
 
         }
 
 
 
+       
         [HttpGet]
-        [Route("GellAllPaymentMomo")]
-        public async Task<ResponeDTO> GetAllPaymentMomo()
-        {
-            try
-            {
-                var list = await _paymentRepository.GetAllPaymentMomo();
-                _responeDTO.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
-
-            }
-            return _responeDTO;
-        }
-
-        [HttpGet]
-        [Route("GellAllPaymentVNPay")]
-        public async Task<ResponeDTO> GellAllPaymentVNPay()
-        {
-            try
-            {
-                var list = await _paymentRepository.GetAllPaymenVNPay();
-                _responeDTO.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
-
-            }
-            return _responeDTO;
-        }
-        [HttpGet]
-        [Route("GellAllPaymentPayPal")]
-        public async Task<ResponeDTO> GellAllPaymentPayPal()
+        [Route("GellAllPayment")]
+        public async Task<ResponseDTO> GellAllPayment()
         {
             try
             {
 
-                var list = await _paymentRepository.GetAllPaymentPayPal();
-                _responeDTO.Data = list;
+                var list = await _paymentRepository.GetAllPayment();
+                _response.Data = list;
 
             }
             catch (Exception ex)
             {
 
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
 
-            return _responeDTO;
+            return _response;
         }
 
         [HttpPost]
-        [Route("GetPaymentURLMomo")]
-        public async Task<ResponeDTO> GetPaymentURLMomo(string OrderID)
+        [Route("GetPaymentURLMomo/{OrderID}")]
+        public async Task<ResponseDTO> GetPaymentURLMomo(string OrderID)
         {
             try
             {
@@ -109,12 +73,12 @@ namespace MonShopAPI.Controller
                 Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
                 if (order == null)
                 {
-                    _responeDTO.Message = $"No result order with ID {OrderID}";
+                    _response.Message = $"No result order with ID {OrderID}";
                 }
 
                 if (order?.OrderStatusId != Constant.Order.PENDING_PAY)
                 {
-                    _responeDTO.Message = $"No result for order {OrderID} with status pending";
+                    _response.Message = $"No result for order {OrderID} with status pending";
                 }
 
                 if (order?.OrderStatusId == Constant.Order.PENDING_PAY)
@@ -128,23 +92,23 @@ namespace MonShopAPI.Controller
                     };
 
                     string endpoint = _momoServices.CreatePaymentString(momo);
-                    _responeDTO.Data = endpoint;
+                    _response.Data = endpoint;
                 }
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
-            return _responeDTO;
+            return _response;
 
 
         }
         [HttpPost]
-        [Route("GetPaymentURLVNPay")]
-        public async Task<ResponeDTO> GetPaymentURLVNPay(string OrderID)
+        [Route("GetPaymentURLVNPay/{OrderID}")]
+        public async Task<ResponseDTO> GetPaymentURLVNPay(string OrderID)
         {
             try
             {
@@ -152,12 +116,12 @@ namespace MonShopAPI.Controller
                 Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
                 if (order == null)
                 {
-                    _responeDTO.Message = $"No result order with ID {OrderID}";
+                    _response.Message = $"No result order with ID {OrderID}";
                 }
 
                 if (order?.OrderStatusId != Constant.Order.PENDING_PAY)
                 {
-                    _responeDTO.Message = $"No result for order {OrderID} with status pending";
+                    _response.Message = $"No result for order {OrderID} with status pending";
                 }
 
                 if (order?.OrderStatusId == Constant.Order.PENDING_PAY)
@@ -171,23 +135,23 @@ namespace MonShopAPI.Controller
                     };
 
                     string endpoint = _vnPayServices.CreatePaymentUrl(model, HttpContext);
-                    _responeDTO.Data = endpoint;
+                    _response.Data = endpoint;
                 }
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
-            return _responeDTO;
+            return _response;
 
         }
 
         [HttpPost]
-        [Route("GetPaymentURLPayPal")]
-        public async Task<ResponeDTO> GetPaymentURLPayPal(string OrderID)
+        [Route("GetPaymentURLPayPal/{OrderID}")]
+        public async Task<ResponseDTO> GetPaymentURLPayPal(string OrderID)
         {
             try
             {
@@ -195,12 +159,12 @@ namespace MonShopAPI.Controller
                 Account account = await _accountRepository.GetAccountByID(order.BuyerAccountId);
                 if (order == null)
                 {
-                    _responeDTO.Message = $"No result order with ID {OrderID}";
+                    _response.Message = $"No result order with ID {OrderID}";
                 }
 
                 if (order.OrderStatusId != Constant.Order.PENDING_PAY)
                 {
-                    _responeDTO.Message = $"No result for order {OrderID} with status pending";
+                    _response.Message = $"No result for order {OrderID} with status pending";
                 }
 
                 if (order.OrderStatusId == Constant.Order.PENDING_PAY)
@@ -214,18 +178,18 @@ namespace MonShopAPI.Controller
                     };
 
                     string endpoint = await _payPalServices.CreatePaymentUrl(model, HttpContext);
-                    _responeDTO.Data = endpoint;
+                    _response.Data = endpoint;
                 }
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
 
             }
 
-            return _responeDTO;
+            return _response;
 
         }
 
@@ -241,15 +205,16 @@ namespace MonShopAPI.Controller
 
                 if (momo.resultCode == 0 && order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
-                    MomoPaymentResponse dto = new MomoPaymentResponse
+                    PaymentResponse dto = new PaymentResponse
                     {
-                        PaymentResponseId = (long)momo.transId,
+                        PaymentResponseId = Convert.ToString( momo.transId),
                         OrderId = momo.extraData,
                         Amount = momo.amount.ToString(),
                         OrderInfo = momo.orderInfo,
-                        Success = true
+                        Success = true,
+                        PaymentTypeId =Constant.PaymentType.PAYMENT_MOMO
                     };
-                    await _paymentRepository.AddPaymentMomo(dto);
+                    await _paymentRepository.AddPaymentRespone(dto);
 
                     await _orderRepository.UpdateStatusForOrder(momo.extraData, Constant.Order.SUCCESS_PAY);
                     await _orderRepository.UpdateQuantityAfterPay(momo.extraData);
@@ -282,19 +247,21 @@ namespace MonShopAPI.Controller
                     PayPalEventData eventData = JsonConvert.DeserializeObject<PayPalEventData>(requestBody);
                     Order order = await _orderRepository.GetOrderByID(eventData.resource.transactions[0].invoice_number);
 
-                    PayPalPaymentResponse dto = new PayPalPaymentResponse
+                    PaymentResponse dto = new PaymentResponse
                     {
                         PaymentResponseId = eventData.resource.id,
                         OrderId = eventData.resource.transactions[0].invoice_number,
                         Amount = eventData.resource.transactions[0].amount.total,
                         OrderInfo = eventData.resource.transactions[0].description,
-                        Success = true
+                        Success = true,
+                        PaymentTypeId = Constant.PaymentType.PAYMENT_PAYPAL
+
                     };
 
                     if (eventData.resource.payer.status == "VERIFIED" && order.OrderStatusId == Constant.Order.PENDING_PAY)
                     {
 
-                        await _paymentRepository.AddPaymentPaypal(dto);
+                        await _paymentRepository.AddPaymentRespone(dto);
 
                         await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
                         await _orderRepository.UpdateQuantityAfterPay(eventData.resource.transactions[0].invoice_number);
@@ -340,16 +307,19 @@ namespace MonShopAPI.Controller
 
                 if (response.VnPayResponseCode == "00" && order.OrderStatusId == Constant.Order.PENDING_PAY)
                 {
-                    VnpayPaymentResponse dto = new VnpayPaymentResponse
+                    PaymentResponse dto = new PaymentResponse
                     {
-                        PaymentResponseId = Convert.ToInt32(response.PaymentId),
+                        PaymentResponseId = Convert.ToString(response.PaymentId),
                         OrderId = response.OrderId,
                         Amount = response.Amount.ToString(),
                         OrderInfo = response.OrderDescription,
-                        Success = true
+                        Success = true,
+                        PaymentTypeId = Constant.PaymentType.PAYMENT_VNPAY
+                        
+
 
                     };
-                    await _paymentRepository.AddPaymentVNPay(dto);
+                    await _paymentRepository.AddPaymentRespone(dto);
 
                     await _orderRepository.UpdateStatusForOrder(dto.OrderId, Constant.Order.SUCCESS_PAY);
                     await _orderRepository.UpdateQuantityAfterPay(dto.OrderId);

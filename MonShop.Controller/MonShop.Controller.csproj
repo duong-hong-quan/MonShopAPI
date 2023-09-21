@@ -11,14 +11,18 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonShop.Chat\MonShop.Chat.csproj" />
     <ProjectReference Include="..\MonShop.Library\MonShop.Library.csproj" />
     <ProjectReference Include="..\MonShop.Payment\MonShop.Payment.csproj" />
+    <ProjectReference Include="..\MonShop.Realtime\MonShop.Realtime.csproj" />
   </ItemGroup>
 
 </Project>

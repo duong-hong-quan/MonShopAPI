@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using MonShopLibrary.DTO;
 using MonShop.Library.Models;
-using MonShopLibrary.Repository;
 using Microsoft.AspNetCore.Authorization;
 using MonShopLibrary.Utils;
 using MonShop.Library.DTO;
 using MonShop.Controller.Model;
 using System.Collections.Generic;
+using MonShop.Library.Repository.IRepository;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MonShopAPI.Controller
 {
@@ -18,136 +19,141 @@ namespace MonShopAPI.Controller
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly ResponeDTO _responeDTO;
+        private readonly ICartRepository _cartRepository;
+        private readonly ResponseDTO _response;
+
         public OrderController
             (
             IOrderRepository orderRepository,
             IProductRepository productRepository,
-            IPaymentRepository paymentRepository
+            IPaymentRepository paymentRepository,
+            ICartRepository cartRepository
             )
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _paymentRepository = paymentRepository;
-            _responeDTO = new ResponeDTO();
+            _cartRepository = cartRepository;
+            _response = new ResponseDTO();
         }
 
         [HttpGet]
         [Route("GetAllOrder")]
-        public async Task<ResponeDTO> GetAllOrder()
+        public async Task<ResponseDTO> GetAllOrder()
         {
             try
             {
                 var list = await _orderRepository.GetAllOrder();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
 
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
-        [Route("GetListItemByOrderID")]
-        public async Task<ResponeDTO> GetListItemByOrderID(string orderID)
+        [Route("GetListItemByOrderID/{orderID}")]
+        public async Task<ResponseDTO> GetListItemByOrderID(string orderID)
         {
             try
             {
                 var list = await _orderRepository.GetListItemByOrderID(orderID);
-                _responeDTO.Data = list;
+                _response.Data = list;
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
 
         [HttpGet]
         [Route("GetAllOrderStatus")]
-        public async Task<ResponeDTO> GetAllOrderStatus()
+        public async Task<ResponseDTO> GetAllOrderStatus()
         {
             try
             {
 
                 var list = await _orderRepository.GetAllOrderStatus();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpPost]
         [Route("AddOrderStatus")]
-        public async Task<ResponeDTO> AddOrderStatus(OrderStatusDTO dto)
+        public async Task<ResponseDTO> AddOrderStatus(OrderStatusDTO dto)
         {
             try
             {
                 await _orderRepository.AddOrderStatus(dto);
-                _responeDTO.Data = dto;
+                _response.Data = dto;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
 
         }
         [HttpPut]
         [Route("UpdateOrderStatus")]
-        public async Task<ResponeDTO> UpdateOrderStatus(OrderStatusDTO dto)
+        public async Task<ResponseDTO> UpdateOrderStatus(OrderStatusDTO dto)
         {
             try
             {
 
                 await _orderRepository.UpdateOrderStatus(dto);
-                _responeDTO.Data = dto;
+                _response.Data = dto;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpPost]
-        [Route("AddOrderRequest")]
-        public async Task<ResponeDTO> AddOrderRequest(OrderRequest dto)
+        [Route("AddOrderRequest/{cartId}")]
+        public async Task<ResponseDTO> AddOrderRequest(int cartId)
         {
             bool isError = false;
 
             try
             {
-                foreach (var item in dto.Items)
+                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(cartId);
+                foreach (var item in items)
                 {
                     if (item.Quantity == 0)
                     {
-                        _responeDTO.Message = $"The quantity must greater than 0";
+                        _response.Message = $"The quantity must greater than 0";
                         isError = true; // Set the error flag
                         break; // Exit the loop
                     }
-                    Product product = await _productRepository.GetProductByID(item.ProductId);
+                    Product product = await _productRepository.GetProductByID((int)item.ProductId);
                     if (product == null)
                     {
-                        _responeDTO.Message = $"No result Product with ID {item.ProductId}";
+                        _response.Message = $"No result Product with ID {item.ProductId}";
                         isError = true; // Set the error flag
                         break; // Exit the loop
 
                     }
                     if (item.Quantity > product?.Quantity)
                     {
-                        _responeDTO.Message = "This product doesn't have enough quantity";
+                        _response.Message = "This product doesn't have enough quantity";
                         isError = true; // Set the error flag
                         break; // Exit the loop
 
@@ -156,8 +162,8 @@ namespace MonShopAPI.Controller
                 }
                 if (!isError) // Only execute this block if no error occurred in the loop
                 {
-                    string OrderID = await _orderRepository.AddOrderRequest(dto);
-                    _responeDTO.Data = OrderID;
+                    string OrderID = await _orderRepository.AddOrderRequest(cartId);
+                    _response.Data = OrderID;
                 }
 
 
@@ -165,17 +171,17 @@ namespace MonShopAPI.Controller
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
 
 
-            return _responeDTO;
+            return _response;
         }
         [HttpPut]
         [Route("UpdateStatusForOrder")]
 
-        public async Task<ResponeDTO> UpdateStatusForOrder(string OrderID, int status)
+        public async Task<ResponseDTO> UpdateStatusForOrder(string OrderID, int status)
         {
             try
             {
@@ -184,18 +190,13 @@ namespace MonShopAPI.Controller
                     status == Constant.Order.FAILURE_PAY ||
                     status == Constant.Order.SUCCESS_PAY)
                 {
-                    _responeDTO.Message = "The system only accept when the order is payed success!";
+                    _response.Message = "The system only accept when the order is payed success!";
                 }
                 else
                 {
-                    MomoPaymentResponse momo = await _paymentRepository.GetPaymentMomoByOrderID(OrderID);
-                    VnpayPaymentResponse vnpay = await _paymentRepository.GetPaymentVNPayByOrderID(OrderID);
-                    PayPalPaymentResponse paypal = await _paymentRepository.GetPaymentPaypalByOrderID(OrderID);
-                    if (momo != null || vnpay != null || paypal != null)
-                    {
+                
                         await _orderRepository.UpdateStatusForOrder(OrderID, status);
-                        _responeDTO.Message = "Update successful";
-                    }
+                        _response.Message = "Update successful";
 
                 }
 
@@ -203,10 +204,10 @@ namespace MonShopAPI.Controller
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
 
 
 
@@ -216,44 +217,44 @@ namespace MonShopAPI.Controller
         //    [Authorize]
         [HttpGet]
         [Route("GetAllOrderByAccountID")]
-        public async Task<ResponeDTO> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
+        public async Task<ResponseDTO> GetAllOrderByAccountID(int AccountID, int OrderStatusID)
         {
             try
             {
 
                 List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
 
-                _responeDTO.Data = list;
+                _response.Data = list;
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
         [HttpGet]
-        [Route("GetOrderStatistic")]
-        public async Task<ResponeDTO> GetOrderStatistic(int AccountID)
+        [Route("GetOrderStatistic/{AccountID}")]
+        public async Task<ResponseDTO> GetOrderStatistic(int AccountID)
         {
             try
             {
                 OrderCount order = await _orderRepository.OrderStatistic(AccountID);
-                _responeDTO.Data = order;
+                _response.Data = order;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
 
         [HttpGet]
-        [Route("VerifyOrder")]
-        public async Task<ResponeDTO> VerifyOrder(string OrderID)
+        [Route("VerifyOrder/{OrderID}")]
+        public async Task<ResponseDTO> VerifyOrder(string OrderID)
         {
             try
             {
@@ -261,13 +262,13 @@ namespace MonShopAPI.Controller
                 bool res = await _orderRepository.VerifyOrder(OrderID);
                 if (res)
                 {
-                    _responeDTO.IsSuccess = true;
-                    _responeDTO.Message = "Payed successfully";
+                    _response.Data = true;
+                    _response.Message = "Payed successfully";
                 }
                 else
                 {
-                    _responeDTO.IsSuccess = false;
-                    _responeDTO.Message = "Payed failed";
+                    _response.Data = false;
+                    _response.Message = "Payed failed";
 
                 }
 
@@ -275,11 +276,11 @@ namespace MonShopAPI.Controller
             catch (Exception ex)
             {
 
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
 
-            return _responeDTO;
+            return _response;
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MonShop.Library.Repository.IRepository;
+using MonShop.Library.Data;
 
 namespace MonShopLibrary.Repository
 {
@@ -21,28 +23,28 @@ namespace MonShopLibrary.Repository
 
         public async Task<List<Category>> GetAllCategory()
         {
-            List<Category> list = await _db.Categories.ToListAsync();
+            List<Category> list = await _db.Category.ToListAsync();
             return list;
         }
 
         public async Task AddCategory(CategoryDTO dto)
         {
             Category category = new Category { CategoryId = dto.CategoryId, CategoryName = dto.CategoryName };
-            await _db.Categories.AddAsync(category);
+            await _db.Category.AddAsync(category);
             await _db.SaveChangesAsync();
         }
 
         public async Task UpdateCategory(CategoryDTO dto)
         {
             Category category = new Category { CategoryId = dto.CategoryId, CategoryName = dto.CategoryName };
-            _db.Categories.Update(category);
+            _db.Category.Update(category);
             await _db.SaveChangesAsync();
         }
 
         public async Task DeleteCategory(CategoryDTO dto)
         {
-            Category category = await _db.Categories.FirstAsync(c => c.CategoryId == dto.CategoryId);
-            _db.Categories.Remove(category);
+            Category category = await _db.Category.FirstAsync(c => c.CategoryId == dto.CategoryId);
+            _db.Category.Remove(category);
             await _db.SaveChangesAsync();
         }
 

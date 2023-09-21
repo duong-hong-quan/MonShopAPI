@@ -1,114 +1,117 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonShop.Controller.Model;
 using MonShop.Library.DTO;
 using MonShop.Library.Models;
-using MonShop.Library.Repository;
+using MonShop.Library.Repository.IRepository;
 using System.Collections.Generic;
 
 namespace MonShop.Controller.Controller
 {
     [Route("Message")]
     [ApiController]
+    [Authorize]
+
     public class MessageController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly ResponeDTO _responeDTO;
+        private readonly ResponseDTO _response;
 
         public MessageController(IMessageRepository messageRepository)
         {
             _messageRepository = messageRepository;
-            _responeDTO = new ResponeDTO();
+            _response = new ResponseDTO();
         }
 
         [HttpPost]
         [Route("AddMessage")]
-        public async Task<ResponeDTO> AddMessage(MessageAdminRequest request)
+        public async Task<ResponseDTO> AddMessage(MessageAdminRequest request)
         {
             try
             {
                 await _messageRepository.AddMessageAdmin(request);
-                _responeDTO.Data = request;
+                _response.Data = request;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
 
         }
         [HttpGet]
-        [Route("GetMessageByRoomID")]
+        [Route("GetMessageByRoomID/{roomID}")]
 
-        public async Task<ResponeDTO> GetMessageByRoomID(int roomID)
+        public async Task<ResponseDTO> GetMessageByRoomID(int roomID)
         {
             try { }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
             List<Message> list = await _messageRepository.GetAllMessageByRoomID(roomID);
-            return _responeDTO;
+            return _response;
         }
 
         [HttpGet]
-        [Route("GetAllMessageByAccountID")]
+        [Route("GetAllMessageByAccountID/{AccountID}")]
 
-        public async Task<ResponeDTO> GetAllMessageByAccountID(int AccountID)
+        public async Task<ResponseDTO> GetAllMessageByAccountID(int AccountID)
         {
             try
             {
 
                 List<Message> list = await _messageRepository.GetAllMessageByAccountID(AccountID);
-                _responeDTO.Data = list;
+                _response.Data = list;
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
 
-            return _responeDTO;
+            return _response;
         }
 
         [HttpGet]
         [Route("GetAllRoom")]
-        public async Task<ResponeDTO> GetAllRoom()
+        public async Task<ResponseDTO> GetAllRoom()
         {
             try
             {
                 List<Room> list = await _messageRepository.GetAllRoom();
-                _responeDTO.Data = list;
+                _response.Data = list;
 
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
 
         [HttpGet]
-        [Route("GetRoomByID")]
-        public async Task<ResponeDTO> GetRoomByID(int roomID)
+        [Route("GetRoomByID/{roomID}")]
+        public async Task<ResponseDTO> GetRoomByID(int roomID)
         {
             try { 
             Room room = await _messageRepository.GetRoomByID(roomID);
-                _responeDTO.Data = room;
+                _response.Data = room;
 
             }
             catch (Exception ex)
             {
-                _responeDTO.IsSuccess = false;
-                _responeDTO.Message = ex.Message;
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
-            return _responeDTO;
+            return _response;
         }
     }
 }

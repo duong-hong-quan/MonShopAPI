@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using MonShop.Library.DTO;
 using Microsoft.EntityFrameworkCore;
 using MonShopLibrary.Utils;
+using MonShop.Library.Repository.IRepository;
+using MonShop.Library.Data;
 
 namespace MonShopLibrary.Repository
 {
@@ -23,8 +25,8 @@ namespace MonShopLibrary.Repository
 
         public async Task<List<Account>> GetAllAccount()
         {
-            List<Account> accounts = await _db.Accounts.Include(a => a.Role).ToListAsync();
-            return accounts;
+            List<Account> Account = await _db.Account.Include(a => a.Role).ToListAsync();
+            return Account;
         }
 
         public async Task AddAccount(AccountDTO dto)
@@ -41,7 +43,7 @@ namespace MonShopLibrary.Repository
                 RoleId = dto.RoleId,
                 PhoneNumber = dto.PhoneNumber,
             };
-            await _db.Accounts.AddAsync(account);
+            await _db.Account.AddAsync(account);
             await _db.SaveChangesAsync();
         }
         public async Task SignUp(AccountDTO dto)
@@ -58,7 +60,7 @@ namespace MonShopLibrary.Repository
                 RoleId = 3,
                 PhoneNumber = dto.PhoneNumber,
             };
-            await _db.Accounts.AddAsync(account);
+            await _db.Account.AddAsync(account);
             await _db.SaveChangesAsync();
         }
 
@@ -91,7 +93,7 @@ namespace MonShopLibrary.Repository
         }
         public async Task DeleteAccount(AccountDTO dto)
         {
-            Account account = await _db.Accounts.FirstAsync(a => a.AccountId == dto.AccountId);
+            Account account = await _db.Account.FirstAsync(a => a.AccountId == dto.AccountId);
             account.IsDeleted = true;
             await _db.SaveChangesAsync();
 
@@ -99,23 +101,23 @@ namespace MonShopLibrary.Repository
 
         public async Task<List<Role>> GetAllRole()
         {
-            var list = await _db.Roles.ToListAsync();
+            var list = await _db.Role.ToListAsync();
             return list;
         }
 
         public async Task<Account> GetAccountByID(int id)
         {
-            Account account = await _db.Accounts.FirstAsync(a => a.AccountId == id);
+            Account account = await _db.Account.FirstAsync(a => a.AccountId == id);
             return account;
         }
         public async Task<Account> GetAccountByEmail(string email)
         {
-            Account account = await _db.Accounts.Where(a => a.Email == email).FirstAsync();
+            Account account = await _db.Account.Where(a => a.Email == email).FirstAsync();
             return account;
         }
         public async Task<Account> Login(LoginRequest loginRequest)
         {
-            Account account = await _db.Accounts.Where(a => a.Email == loginRequest.Email && a.IsDeleted == false).FirstAsync();
+            Account account = await _db.Account.Where(a => a.Email == loginRequest.Email && a.IsDeleted == false).FirstAsync();
             if (account != null && Utility.VerifyPassword(loginRequest.Password, account.Password))
             {
                 return account;
@@ -126,7 +128,8 @@ namespace MonShopLibrary.Repository
 
         public async Task<string> GenerateRefreshToken(int AccountID)
         {
-            Token token = await _db.Tokens.Where(a => a.AccountId == AccountID).FirstAsync();
+            Token token = await _db.Token.Where(a => a.AccountId == AccountID).FirstOrDefaultAsync();
+            string refToken = "";
             if (token == null)
             {
                 Token refreshToken = new Token
@@ -135,10 +138,8 @@ namespace MonShopLibrary.Repository
                     AccountId = AccountID,
                     ExpiresAt = DateTime.UtcNow.AddMonths(1),
                 };
-                await _db.Tokens.AddAsync(refreshToken);
+                await _db.Token.AddAsync(refreshToken);
                 await _db.SaveChangesAsync();
-                return refreshToken.RefreshToken;
-
             }
             else if (token.ExpiresAt <= Utility.getInstance().GetCurrentDateTimeInTimeZone())
             {
@@ -146,14 +147,16 @@ namespace MonShopLibrary.Repository
                 token.ExpiresAt = DateTime.UtcNow.AddMonths(1);
                 await _db.SaveChangesAsync();
             }
-            return token.RefreshToken;
+            refToken = token.RefreshToken;
+
+            return refToken;
 
 
         }
 
         public async Task<Token> GetToken(string token)
         {
-            Token tokenDTO = await _db.Tokens.FirstAsync(t => t.RefreshToken == token);
+            Token tokenDTO = await _db.Token.FirstAsync(t => t.RefreshToken == token);
 
             return tokenDTO;
 

@@ -2,13 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MonShop.Chat;
-using MonShop.Library.Models;
+using MonShop.Realtime;
+using MonShop.Library.Data;
 using MonShop.Library.Repository;
+using MonShop.Library.Repository.IRepository;
 using MonShopLibrary.Repository;
 using PaymentGateway.Momo;
 using PaymentGateway.Paypal;
 using PaymentGateway.VNPay;
+using System;
 using System.Text;
 using VNPay.Services;
 
@@ -34,6 +36,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IVnPayServices, VNPayServices>();
@@ -101,4 +105,18 @@ app.UseAuthorization();
 app.MapHub<ChatHub>("/chat");
 
 app.MapControllers();
+ApplyMigration();
 app.Run();
+
+void ApplyMigration()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var _db = scope.ServiceProvider.GetRequiredService<MonShopContext>();
+
+        if (_db.Database.GetPendingMigrations().Count() > 0)
+        {
+            _db.Database.Migrate();
+        }
+    }
+}
