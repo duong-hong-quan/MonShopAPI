@@ -16,6 +16,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Utility = MonShopLibrary.Utils.Utility;
+using System.Data;
 
 namespace MonShopLibrary.Repository
 {
@@ -36,27 +37,6 @@ namespace MonShopLibrary.Repository
             _configuration = configuration;
             _roleManager = roleManager;
         }
-
-        public  async Task AssignRole(SignUpRequest request)
-        {
-            var user = _db.Users.FirstOrDefault(u => u.Email.ToLower() == request.Email.ToLower());
-            if (user != null)
-            {
-                if (!await _roleManager.RoleExistsAsync(request.Role))
-                {
-                    _roleManager.CreateAsync(new IdentityRole(request.Role)).GetAwaiter().GetResult();
-                }
-                await _userManager.AddToRoleAsync(user, request.Role);
-            }
-        }
-
-        public async Task SignUp(SignUpRequest dto)
-        {
-            var user = new ApplicationUser { Email = dto.Email, UserName = dto.Email, FirstName = dto.FirstName, LastName = dto.LastName };
-            await _userManager.CreateAsync(user, dto.Password);
-            await AssignRole(dto);
-        }
-
         public async Task<string?> Login(LoginRequest loginRequest)
         {
             var result = await _signInManager.PasswordSignInAsync(loginRequest.Email, loginRequest.Password, false, false);
@@ -83,15 +63,66 @@ namespace MonShopLibrary.Repository
                 audience: _configuration["JWT:Audience"],
                 expires: DateTime.Now.AddDays(1),
                 claims: claims,
-                signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
+                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        public async Task SignUp(SignUpRequest dto)
+        {
+            var user = new ApplicationUser
+            {
+                Email = dto.Email,
+                UserName = dto.Email,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName
+            };
+            await _userManager.CreateAsync(user, dto.Password);
+        }
+        public async Task AssignRole(string userId, string roleName)
+        {
+            var user = _db.Users.FirstOrDefault(u => u.Id.ToLower() == userId);
+            var roleDb = await _db.Roles.SingleOrDefaultAsync(r => r.Name == roleName);
+
+            if (user != null && roleDb !=null)
+            {
+                await _userManager.AddToRoleAsync(user, roleName);
+            }
+        }
+
+       
+
+      
 
         public async Task<ApplicationUser> GetAccountById(string accountId)
         {
             return await _db.Users.FirstOrDefaultAsync(a => a.Id == accountId);
         }
+
+        public async Task<IEnumerable<ApplicationUser>> GetAllAccount()
+        {
+            return await _db.Users.ToListAsync();
+
+        }
+        public async Task<IEnumerable<IdentityRole>> GetAllRole()
+        {
+            return await _roleManager.Roles.ToListAsync();
+        }
+        public async Task<IdentityRole<string>> GetRoleForUserId(string userId)
+        {
+            IdentityUserRole<string> roleUser = await _db.UserRoles.FindAsync(userId);
+            IdentityRole<string> role = await _db.Roles.FindAsync(roleUser.RoleId);
+            return role;
+        }
+        public async Task AddRole(string role)
+        {
+            var roleDb = await _db.Roles.SingleOrDefaultAsync(r => r.Name == role);
+            if (roleDb == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+
+       
     }
 }

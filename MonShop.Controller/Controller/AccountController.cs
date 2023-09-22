@@ -12,6 +12,7 @@ using MonShop.Library.DTO;
 using MonShopLibrary.Utils;
 using MonShop.Controller.Model;
 using MonShop.Library.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 
 namespace MonShopAPI.Controller
 {
@@ -41,8 +42,8 @@ namespace MonShopAPI.Controller
                 var token = await _accountRepository.Login(userLogin);
                 if (token != string.Empty)
                 {
-                  
-                    _response.Data = token;
+                    _loginRespone.Token = token;
+                    _response.Data = _loginRespone;
                 }
 
 
@@ -81,8 +82,72 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
-       
+        [HttpGet("GetAllAccount")]
+        public async Task<ResponseDTO> GetAllAccount()
+        {
+            try {
+                var list = await _accountRepository.GetAllAccount();
+                _response.Data = list;
+            
+            }catch(Exception ex)
+            {
+                _response.IsSuccess=false;  
+                _response.Message = ex.Message; 
+            }
+            return _response;
+        }
 
+
+        [HttpGet("GetAllRole")]
+        public async Task<ResponseDTO> GetAllRole()
+        {
+            try
+            {
+                var list = await _accountRepository.GetAllRole();
+                _response.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+
+        [HttpGet("GetRoleForUserId/{accountId}")]
+        public async Task<ResponseDTO> GetRoleForUserId(string accountId)
+        {
+            try
+            {
+                var list = await _accountRepository.GetRoleForUserId(accountId);
+                _response.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [HttpPost]
+    public async Task<ResponseDTO> UpdateRole(IdentityRole<string> user)
+        {
+            try
+            {
+                _response.Data = user;
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
     }
 
 }
