@@ -37,6 +37,8 @@ namespace MonShopLibrary.Repository
             _configuration = configuration;
             _roleManager = roleManager;
         }
+
+        #region Account
         public async Task<string?> Login(LoginRequest loginRequest)
         {
             var result = await _signInManager.PasswordSignInAsync(loginRequest.Email, loginRequest.Password, false, false);
@@ -79,20 +81,15 @@ namespace MonShopLibrary.Repository
             };
             await _userManager.CreateAsync(user, dto.Password);
         }
-        public async Task AssignRole(string userId, string roleName)
-        {
-            var user = _db.Users.FirstOrDefault(u => u.Id.ToLower() == userId);
-            var roleDb = await _db.Roles.SingleOrDefaultAsync(r => r.Name == roleName);
-
-            if (user != null && roleDb !=null)
-            {
-                await _userManager.AddToRoleAsync(user, roleName);
-            }
-        }
-
        
-
-      
+        public async Task UpdateAccount(ApplicationUser user)
+        {
+            await _userManager.UpdateAsync(user);
+        }
+        public async Task DeleteAccount(ApplicationUser user)
+        {
+            await _userManager.DeleteAsync(user);
+        }
 
         public async Task<ApplicationUser> GetAccountById(string accountId)
         {
@@ -103,6 +100,20 @@ namespace MonShopLibrary.Repository
         {
             return await _db.Users.ToListAsync();
 
+        }
+
+        #endregion
+
+        #region Role
+        public async Task AssignRole(string userId, string roleName)
+        {
+            var user = _db.Users.FirstOrDefault(u => u.Id.ToLower() == userId);
+            var roleDb = await _db.Roles.SingleOrDefaultAsync(r => r.Name == roleName);
+
+            if (user != null && roleDb != null)
+            {
+                await _userManager.AddToRoleAsync(user, roleName);
+            }
         }
         public async Task<IEnumerable<IdentityRole>> GetAllRole()
         {
@@ -123,6 +134,17 @@ namespace MonShopLibrary.Repository
             }
         }
 
-       
+        public async Task UpdateRole(IdentityRole roleDto)
+        {
+            await _roleManager.UpdateAsync(roleDto);
+        }
+
+
+        public async Task DeleteRole(IdentityRole roleDto)
+        {
+            await _roleManager.DeleteAsync(roleDto);
+        }
+        #endregion
+
     }
 }

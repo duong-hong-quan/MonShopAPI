@@ -8,6 +8,7 @@ using MonShop.Library.Repository.IRepository;
 
 namespace MonShop.Controller.Controller
 {
+    [Authorize]
     [Route("Cart")]
     [ApiController]
     public class CartController : ControllerBase

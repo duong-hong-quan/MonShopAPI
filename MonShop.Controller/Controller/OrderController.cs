@@ -14,6 +14,7 @@ namespace MonShopAPI.Controller
 {
     [Route("Order")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;

@@ -11,7 +11,6 @@ namespace MonShopAPI.Controller
 {
     [Route("Product")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -110,6 +109,8 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpPost]
         [Route("AddProduct")]
         public async Task<ResponseDTO> AddProduct(ProductDTO dto)
@@ -130,6 +131,8 @@ namespace MonShopAPI.Controller
             return _response;
 
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpPut]
         [Route("UpdateProduct")]
 
@@ -150,6 +153,8 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpDelete]
         [Route("DeleteProduct")]
 
@@ -169,6 +174,8 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpGet]
         [Route("GetTop4")]
         public async Task<ResponseDTO> GetTop4()

@@ -39,6 +39,7 @@ namespace MonShopAPI.Controller
 
             return _response;
         }
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("AddCategory")]
         public async Task<ResponseDTO> AddCategory(CategoryDTO dto)
@@ -59,6 +60,7 @@ namespace MonShopAPI.Controller
 
             return _response;
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("UpdateCategory")]
         public async Task<ResponseDTO> UpdateCategory(CategoryDTO dto)
@@ -78,6 +80,9 @@ namespace MonShopAPI.Controller
 
             return _response;
         }
+
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("DeleteCategory")]
 

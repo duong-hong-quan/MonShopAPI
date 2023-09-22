@@ -11,7 +11,7 @@ namespace MonShop.Controller.Controller
 {
     [Route("Message")]
     [ApiController]
-
+    [Authorize]
     public class MessageController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
