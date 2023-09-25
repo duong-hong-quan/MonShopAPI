@@ -8,20 +8,16 @@ using System.Threading.Tasks;
 
 namespace MonShop.Library.Models
 {
-    public class CartItem
+    public class ProductInventory
     {
-        [Key]
-        public int CartItemId { get; set; }
-        public int? ProductId { get; set; }
+        [Key, Column(Order = 1)] 
+        public int ProductId { get; set; }
         [ForeignKey("ProductId")]
-        public Product? Product { get; set; }
-        public int Quantity { get; set; }   
+        public Product Product { get; set; }
+        [Key, Column(Order = 2)]
         public int SizeId { get; set; }
         [ForeignKey("SizeId")]
         public Size Size { get; set; }
-
-        public int CartId { get; set; }
-        [ForeignKey("CartId")]
-        public Cart Cart {  get; set; } 
+        public int Quantity { get; set; }
     }
 }

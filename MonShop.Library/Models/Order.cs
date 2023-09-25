@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace MonShop.Library.Models
 {
-    public partial class Order
+    public  class Order
     {
         [Key]
         public string OrderId { get; set; } = null!;

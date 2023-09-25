@@ -1,22 +1,12 @@
 ﻿using MonShopLibrary.DTO;
 using MonShop.Library.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MonShop.Library.DTO;
 using Microsoft.EntityFrameworkCore;
-using MonShopLibrary.Utils;
 using MonShop.Library.Repository.IRepository;
 using MonShop.Library.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Utility = MonShopLibrary.Utils.Utility;
-using System.Data;
+
 
 namespace MonShopLibrary.Repository
 {
@@ -27,61 +17,70 @@ namespace MonShopLibrary.Repository
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly TokenModel _loginResponse;
+        private readonly IJwtGenerator _jwtGenerator;
 
-
-        public AccountRepository(MonShopContext db, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+        public AccountRepository(
+            MonShopContext db,
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration,
+            RoleManager<IdentityRole> roleManager,
+            IJwtGenerator jwtGenerator
+            )
         {
             _db = db;
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
             _roleManager = roleManager;
+            _loginResponse = new TokenModel();
+            _jwtGenerator = jwtGenerator;
         }
 
         #region Account
-        public async Task<string?> Login(LoginRequest loginRequest)
+        public async Task<TokenModel> Login(LoginRequest loginRequest)
         {
             var result = await _signInManager.PasswordSignInAsync(loginRequest.Email, loginRequest.Password, false, false);
-            var user = _db.Users.FirstOrDefault(u => u.Email.ToLower() == loginRequest.Email.ToLower());
 
-            var roles = await _userManager.GetRolesAsync(user);
 
             if (!result.Succeeded)
             {
-                return string.Empty;
+                return _loginResponse;
 
             }
-            var claims = new List<Claim>
+            string token = await _jwtGenerator.GenerateAccessToken(loginRequest);
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequest.Email.ToLower());
+            string refreshToken = user.RefreshToken;
+
+            if (user?.RefreshToken == null || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-           new Claim (ClaimTypes.Email, loginRequest.Email),
-           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-           };
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+                user.RefreshToken = _jwtGenerator.GenerateRefreshToken();
+                await _db.SaveChangesAsync();
 
-
-            var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:Issuer"],
-                audience: _configuration["JWT:Audience"],
-                expires: DateTime.Now.AddDays(1),
-                claims: claims,
-                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            _loginResponse.Token = token;
+            _loginResponse.RefreshToken = refreshToken;
+            return _loginResponse;
         }
-        public async Task SignUp(SignUpRequest dto)
+
+
+        public async Task<ApplicationUser> SignUp(SignUpRequest dto)
         {
             var user = new ApplicationUser
             {
                 Email = dto.Email,
                 UserName = dto.Email,
                 FirstName = dto.FirstName,
-                LastName = dto.LastName
+                LastName = dto.LastName,
+                PhoneNumber = dto.PhoneNumber,
+
             };
             await _userManager.CreateAsync(user, dto.Password);
+            return await _userManager.FindByEmailAsync(dto.Email);
         }
-       
+
         public async Task UpdateAccount(ApplicationUser user)
         {
             await _userManager.UpdateAsync(user);

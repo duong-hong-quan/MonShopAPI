@@ -109,6 +109,25 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
+
+        [HttpGet]
+        [Route("GetProductInventory/{productId}/{sizeId}")]
+        public async Task<ResponseDTO> GetProductInventory(int productId, int sizeId)
+        {
+            try
+            {
+                var product = await _productRepository.GetProductInventory(productId,sizeId);
+                _response.Data = product;
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+
+            }
+            return _response;
+        }
         [Authorize(Roles = "Admin")]
 
         [HttpPost]

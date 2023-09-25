@@ -22,13 +22,14 @@ namespace MonShopAPI.Controller
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ResponseDTO _response;
-        private readonly LoginResponse _loginRespone;
-        public AccountController(IAccountRepository accountRepository)
+        private TokenModel _loginRespone;
+        private readonly IJwtGenerator _jwtGenerator;
+        public AccountController(IAccountRepository accountRepository, IJwtGenerator jwtGenerator)
         {
             _accountRepository = accountRepository;
             _response = new ResponseDTO();
-            _loginRespone = new LoginResponse();
-
+            _loginRespone = new TokenModel();
+            _jwtGenerator = jwtGenerator;
         }
 
         [HttpPost]
@@ -37,10 +38,10 @@ namespace MonShopAPI.Controller
         {
             try
             {
-                var token = await _accountRepository.Login(userLogin);
-                if (token != string.Empty)
+                _loginRespone = await _accountRepository.Login(userLogin);
+                if (_loginRespone.Token != null)
                 {
-                    _loginRespone.Token = token;
+
                     _response.Data = _loginRespone;
                 }
             }
@@ -52,15 +53,15 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
-        
+
         [HttpPost]
         [Route("SignUp")]
         public async Task<ResponseDTO> SignUp(SignUpRequest accountDTO)
         {
             try
             {
-                await _accountRepository.SignUp(accountDTO);
-                _response.Data = true;
+                _response.Data = await _accountRepository.SignUp(accountDTO);
+                _response.Message = "Sign up sucessfully";
             }
             catch (Exception ex)
             {
@@ -174,7 +175,6 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
-        [Authorize(Roles = "Admin")]
 
         [HttpPost("AddRole")]
         public async Task<ResponseDTO> AddRole(string role)
@@ -245,7 +245,25 @@ namespace MonShopAPI.Controller
             return _response;
         }
 
-      
+
+        [HttpGet("GetNewToken")]
+        public async Task<ResponseDTO> GetNewToken(string refreshToken, string accountId)
+        {
+            try
+            {
+                var token = await _jwtGenerator.GetNewToken(refreshToken, accountId);
+                _loginRespone = token;
+                _response.Data = _loginRespone;
+
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
     }
 
 }

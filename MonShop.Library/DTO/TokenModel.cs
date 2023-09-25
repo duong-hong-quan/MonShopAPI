@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonShopLibrary.DTO
 {
-    public class LoginResponse
+    public class TokenModel
     {
         public string Token { get; set; }
         public string RefreshToken { get; set; }

@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonShop.Controller.Model;
 using MonShop.Library.DTO;
 using MonShop.Library.Models;
 using MonShop.Library.Repository.IRepository;
-using System.Collections.Generic;
 
 namespace MonShop.Controller.Controller
 {

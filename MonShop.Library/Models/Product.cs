@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace MonShop.Library.Models
 {
-    public partial class Product
+    public  class Product
     {
         [Key]
         public int ProductId { get; set; }
@@ -14,7 +14,6 @@ namespace MonShop.Library.Models
         public string? ImageUrl { get; set; }
         public double Price { get; set; }
         public double? Discount { get; set; }
-        public int Quantity { get; set; }
         public string? Description { get; set; }
         public int? CategoryId { get; set; }
         [ForeignKey("CategoryId")]

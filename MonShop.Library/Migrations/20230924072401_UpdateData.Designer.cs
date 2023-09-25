@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonShop.Library.Data;
 
@@ -11,9 +12,10 @@ using MonShop.Library.Data;
 namespace MonShop.Library.Migrations
 {
     [DbContext(typeof(MonShopContext))]
-    partial class MonShopContextModelSnapshot : ModelSnapshot
+    [Migration("20230924072401_UpdateData")]
+    partial class UpdateData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

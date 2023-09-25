@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace MonShop.Library.Models
 {
-    public partial class Category
+    public  class Category
     {
         [Key]
         public int CategoryId { get; set; }

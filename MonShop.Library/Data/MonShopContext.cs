@@ -10,7 +10,7 @@ namespace MonShop.Library.Data
 {
     public partial class MonShopContext : IdentityDbContext<ApplicationUser>
     {
-        
+
 
         public MonShopContext(DbContextOptions<MonShopContext> options)
             : base(options)
@@ -29,13 +29,39 @@ namespace MonShop.Library.Data
         public DbSet<PaymentType> PaymentType { get; set; } = null!;
         public DbSet<Cart> Cart { get; set; } = null!;
         public DbSet<CartItem> CartItem { get; set; } = null!;
+        public DbSet<Size> Size { get; set; } = null!;
+        public DbSet<ProductInventory> ProductInventory { get; set; } = null!;
+
+
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-          
+            modelBuilder.Entity<ProductInventory>()
+               .HasKey(pi => new { pi.ProductId, pi.SizeId });
+
+            modelBuilder.Entity<Size>().HasData(new Size
+            {
+                SizeId = 1,
+                SizeName = "S"
+            });
+            modelBuilder.Entity<Size>().HasData(new Size
+            {
+                SizeId = 2,
+                SizeName = "M"
+            });
+            modelBuilder.Entity<Size>().HasData(new Size
+            {
+                SizeId = 3,
+                SizeName = "L"
+            });
+            modelBuilder.Entity<Size>().HasData(new Size
+            {
+                SizeId = 4,
+                SizeName = "XL"
+            });
             modelBuilder.Entity<PaymentType>().HasData(new PaymentType
             {
                 PaymentTypeId = 1,
@@ -58,8 +84,8 @@ namespace MonShop.Library.Data
 
             modelBuilder.Entity<ProductStatus>().HasData(new ProductStatus
             {
-               ProductStatusId = 1,
-               Status= "Active"
+                ProductStatusId = 1,
+                Status = "Active"
 
             });
             modelBuilder.Entity<ProductStatus>().HasData(new ProductStatus
@@ -74,7 +100,7 @@ namespace MonShop.Library.Data
                 OrderStatusId = 1,
                 Status = "Pending Pay"
             });
-          
+
             modelBuilder.Entity<OrderStatus>().HasData(new OrderStatus
             {
                 OrderStatusId = 2,
@@ -104,8 +130,8 @@ namespace MonShop.Library.Data
 
             modelBuilder.Entity<Category>().HasData(new Category
             {
-              CategoryId = 1,
-              CategoryName="Pants"
+                CategoryId = 1,
+                CategoryName = "Pants"
             });
 
             modelBuilder.Entity<Category>().HasData(new Category
@@ -124,6 +150,48 @@ namespace MonShop.Library.Data
                 CategoryId = 4,
                 CategoryName = "Accessories"
             });
+            modelBuilder.Entity<Product>().HasData(
+    new Product
+    {
+        ProductId = 1,
+        ProductName = "Product 1",
+        ImageUrl = "image1.jpg",
+        Price = 19.99,
+        Discount = 5.00,
+        Description = "This is the description for Product 1.",
+        CategoryId = 1,
+        ProductStatusId = 1,
+        IsDeleted = false
+    },
+    new Product
+    {
+        ProductId = 2,
+        ProductName = "Product 2",
+        ImageUrl = "image2.jpg",
+        Price = 29.99,
+        Discount = null,
+        Description = "This is the description for Product 2.",
+        CategoryId = 2,
+        ProductStatusId = 1,
+        IsDeleted = false
+    },
+
+    new Product
+    {
+        ProductId = 3,
+        ProductName = "Product 3",
+        ImageUrl = null,
+        Price = 9.99,
+        Discount = null,
+        Description = null,
+        CategoryId = 1,
+        ProductStatusId = 2,
+        IsDeleted = true
+    }
+
+);
+
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonShop.Library.Data;
 
@@ -11,9 +12,10 @@ using MonShop.Library.Data;
 namespace MonShop.Library.Migrations
 {
     [DbContext(typeof(MonShopContext))]
-    partial class MonShopContextModelSnapshot : ModelSnapshot
+    [Migration("20230923050213_updateField")]
+    partial class updateField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,16 +272,11 @@ namespace MonShop.Library.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("SizeId")
-                        .HasColumnType("int");
-
                     b.HasKey("CartItemId");
 
                     b.HasIndex("CartId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SizeId");
 
                     b.ToTable("CartItem");
                 });
@@ -401,9 +398,6 @@ namespace MonShop.Library.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("SizeId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Subtotal")
                         .HasColumnType("float");
 
@@ -412,8 +406,6 @@ namespace MonShop.Library.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SizeId");
 
                     b.ToTable("OrderItem");
                 });
@@ -564,6 +556,9 @@ namespace MonShop.Library.Migrations
                     b.Property<int?>("ProductStatusId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("ProductId");
 
                     b.HasIndex("CategoryId");
@@ -571,60 +566,6 @@ namespace MonShop.Library.Migrations
                     b.HasIndex("ProductStatusId");
 
                     b.ToTable("Product");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 1,
-                            Description = "This is the description for Product 1.",
-                            Discount = 5.0,
-                            ImageUrl = "image1.jpg",
-                            IsDeleted = false,
-                            Price = 19.989999999999998,
-                            ProductName = "Product 1",
-                            ProductStatusId = 1
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            CategoryId = 2,
-                            Description = "This is the description for Product 2.",
-                            ImageUrl = "image2.jpg",
-                            IsDeleted = false,
-                            Price = 29.989999999999998,
-                            ProductName = "Product 2",
-                            ProductStatusId = 1
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            CategoryId = 1,
-                            IsDeleted = true,
-                            Price = 9.9900000000000002,
-                            ProductName = "Product 3",
-                            ProductStatusId = 2
-                        });
-                });
-
-            modelBuilder.Entity("MonShop.Library.Models.ProductInventory", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    b.Property<int>("SizeId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(2);
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "SizeId");
-
-                    b.HasIndex("SizeId");
-
-                    b.ToTable("ProductInventory");
                 });
 
             modelBuilder.Entity("MonShop.Library.Models.ProductStatus", b =>
@@ -673,45 +614,6 @@ namespace MonShop.Library.Migrations
                     b.HasKey("RoomId");
 
                     b.ToTable("Room");
-                });
-
-            modelBuilder.Entity("MonShop.Library.Models.Size", b =>
-                {
-                    b.Property<int>("SizeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SizeId"), 1L, 1);
-
-                    b.Property<string>("SizeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SizeId");
-
-                    b.ToTable("Size");
-
-                    b.HasData(
-                        new
-                        {
-                            SizeId = 1,
-                            SizeName = "S"
-                        },
-                        new
-                        {
-                            SizeId = 2,
-                            SizeName = "M"
-                        },
-                        new
-                        {
-                            SizeId = 3,
-                            SizeName = "L"
-                        },
-                        new
-                        {
-                            SizeId = 4,
-                            SizeName = "XL"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -788,17 +690,9 @@ namespace MonShop.Library.Migrations
                         .WithMany()
                         .HasForeignKey("ProductId");
 
-                    b.HasOne("MonShop.Library.Models.Size", "Size")
-                        .WithMany()
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-
-                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("MonShop.Library.Models.Message", b =>
@@ -853,17 +747,9 @@ namespace MonShop.Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.Size", "Size")
-                        .WithMany()
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("MonShop.Library.Models.PaymentResponse", b =>
@@ -898,25 +784,6 @@ namespace MonShop.Library.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("ProductStatus");
-                });
-
-            modelBuilder.Entity("MonShop.Library.Models.ProductInventory", b =>
-                {
-                    b.HasOne("MonShop.Library.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MonShop.Library.Models.Size", "Size")
-                        .WithMany()
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Size");
                 });
 #pragma warning restore 612, 618
         }

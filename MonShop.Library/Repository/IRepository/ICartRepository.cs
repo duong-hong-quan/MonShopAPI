@@ -15,7 +15,9 @@ namespace MonShop.Library.Repository.IRepository
 
         public Task RemoveCart(int CartId);
 
-        public Task<IEnumerable<CartItem>> GetItemsByCartId(int CartId);
+        public Task<IEnumerable<CartItem>> GetItemsByAccountId(string accountId);
+        public  Task<IEnumerable<CartItem>> GetItemsByCartId(int CartId);
+
 
     }
 }

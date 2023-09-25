@@ -45,6 +45,12 @@ namespace MonShop.Library.Repository
             }
         }
 
+        public async Task<IEnumerable<CartItem>> GetItemsByAccountId(string AccountId)
+        {
+            Cart cart = await _db.Cart.FirstAsync(c => c.ApplicationUserId == AccountId);
+            return await _db.CartItem.Where(c => c.CartId == cart.CartId).ToListAsync();
+        }
+
         public async Task<IEnumerable<CartItem>> GetItemsByCartId(int CartId)
         {
             return await _db.CartItem.Where(c => c.CartId == CartId).ToListAsync();

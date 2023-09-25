@@ -152,7 +152,9 @@ namespace MonShopAPI.Controller
                         break; // Exit the loop
 
                     }
-                    if (item.Quantity > product?.Quantity)
+                    ProductInventory productInventory = await _productRepository.GetProductInventory((int)item.ProductId, item.SizeId);
+
+                    if (item.Quantity > productInventory?.Quantity)
                     {
                         _response.Message = "This product doesn't have enough quantity";
                         isError = true; // Set the error flag

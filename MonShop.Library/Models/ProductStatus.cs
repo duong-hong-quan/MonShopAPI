@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace MonShop.Library.Models
 {
-    public partial class ProductStatus
+    public  class ProductStatus
     {
         [Key]
 

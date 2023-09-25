@@ -30,7 +30,15 @@ namespace MonShopAPI.Controller
         private readonly IAccountRepository _accountRepository;
         private readonly IPaymentRepository _paymentRepository;
         private readonly ResponseDTO _response;
-        public PaymentController(IMomoServices momoServices, IVnPayServices vnPayServices, IPayPalServices payPalServices, IOrderRepository orderRepository, IAccountRepository accountRepository, IPaymentRepository paymentRepository)
+        public PaymentController
+            (
+            IMomoServices momoServices, 
+            IVnPayServices vnPayServices,
+            IPayPalServices payPalServices, 
+            IOrderRepository orderRepository,
+            IAccountRepository accountRepository,
+            IPaymentRepository paymentRepository
+            )
         {
             _momoServices = momoServices;
             _payPalServices = payPalServices;

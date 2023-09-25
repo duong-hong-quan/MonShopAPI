@@ -12,8 +12,8 @@ namespace MonShop.Library.Repository.IRepository
 {
     public interface IAccountRepository
     {
-        public Task<string> Login(LoginRequest loginRequest);
-        public Task SignUp(SignUpRequest dto);
+        public Task<TokenModel> Login(LoginRequest loginRequest);
+        public Task<ApplicationUser> SignUp(SignUpRequest dto);
         public  Task UpdateAccount(ApplicationUser user);
         public Task DeleteAccount(ApplicationUser user);
         public Task<ApplicationUser> GetAccountById(string accountId);

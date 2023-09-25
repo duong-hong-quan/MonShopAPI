@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MonShop.Library.Models
 {
-    public partial class OrderItem
+    public  class OrderItem
     {
         [Key]
         public int OrderItemId { get; set; }
@@ -17,6 +17,10 @@ namespace MonShop.Library.Models
         [ForeignKey("ProductId")]
 
         public Product Product { get; set; } = null!;
+
+        public int SizeId { get; set; }
+        [ForeignKey("SizeId")]
+        public Size Size { get; set; }  
 
         public int Quantity { get; set; }
         public double PricePerUnit { get; set; }

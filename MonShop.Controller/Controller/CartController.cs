@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonShop.Controller.Model;
 using MonShop.Library.DTO;
-using MonShop.Library.Models;
 using MonShop.Library.Repository.IRepository;
 
 namespace MonShop.Controller.Controller
@@ -75,13 +73,13 @@ namespace MonShop.Controller.Controller
             return _response;
 
         }
-        [HttpGet("GetItemsByCartId/{CartId}")]
+        [HttpGet("GetItemsByAccountId/{AccountId}")]
 
-        public async Task<ResponseDTO> GetItemsByCartId(int CartId)
+        public async Task<ResponseDTO> GetItemsByAccountId(string AccountId)
         {
             try
             {
-                var list = await _cartRepository.GetItemsByCartId(CartId);
+                var list = await _cartRepository.GetItemsByAccountId(AccountId);
                 _response.Data = list;
 
             }

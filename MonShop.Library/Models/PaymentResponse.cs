@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MonShop.Library.Models
 {
-    public partial class PaymentResponse
+    public  class PaymentResponse
     {
         [Key]
         public string PaymentResponseId { get; set; } = null!;

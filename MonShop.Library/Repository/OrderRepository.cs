@@ -64,8 +64,9 @@ namespace MonShopLibrary.Repository
                 IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(cartId);
                 foreach (CartItem itemDTO in items)
                 {
-                    Product product = await _db.Product.FirstAsync(i => i.ProductId == itemDTO.ProductId);
-                    if (product.Quantity >= itemDTO.Quantity) {
+                    ProductInventory productInventory = await _db.ProductInventory.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId && i.SizeId == itemDTO.SizeId) ;
+                    Product product = await _db.Product.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId);
+                    if (productInventory.Quantity >= itemDTO.Quantity) {
 
                         OrderItem item = new OrderItem
                         {
@@ -74,6 +75,7 @@ namespace MonShopLibrary.Repository
                             Quantity = itemDTO.Quantity,
                             PricePerUnit = product.Price,
                             Subtotal = itemDTO.Quantity * product.Price,
+                            SizeId = itemDTO.SizeId
                         };
                         total += item.Subtotal;
 
@@ -138,7 +140,7 @@ namespace MonShopLibrary.Repository
             foreach (OrderItem item in list)
             {
                 int quantity = item.Quantity;
-                Product product = await _db.Product.FirstAsync(i => i.ProductId == item.ProductId);
+                ProductInventory product = await _db.ProductInventory.FirstAsync(i => i.ProductId == item.ProductId);
                 if (product != null)
                 {
                     product.Quantity = product.Quantity - quantity;

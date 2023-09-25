@@ -51,7 +51,6 @@ namespace MonShopLibrary.Repository
                 ProductName = dto.ProductName,
                 ImageUrl = dto.ImageUrl,
                 Price = dto.Price,
-                Quantity = dto.Quantity,
                 Description = dto.Description,
                 CategoryId = dto.CategoryId,
                 ProductStatusId = dto.ProductStatusId,
@@ -70,7 +69,6 @@ namespace MonShopLibrary.Repository
             product.ProductName = dto.ProductName;
             product.ImageUrl = dto.ImageUrl;
             product.Price = dto.Price;
-            product.Quantity = dto.Quantity;
             product.Description = dto.Description;
             product.CategoryId = dto.CategoryId;
             product.ProductStatusId = dto.ProductStatusId;
@@ -102,6 +100,9 @@ namespace MonShopLibrary.Repository
             return newProduct;
         }
 
-
+        public async Task<ProductInventory> GetProductInventory(int ProductId, int SizeId)
+        {
+           return await _db.ProductInventory.Include(p=> p.Size).Include(p=> p.Product).FirstOrDefaultAsync(i=> i.ProductId == ProductId && i.SizeId == SizeId);
+        }
     }
 }
