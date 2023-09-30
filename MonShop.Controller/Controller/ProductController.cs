@@ -193,15 +193,33 @@ namespace MonShopAPI.Controller
             }
             return _response;
         }
-        [Authorize(Roles = "Admin")]
 
         [HttpGet]
-        [Route("GetTop4")]
-        public async Task<ResponseDTO> GetTop4()
+        [Route("GetTopXProduct/{x:int}")]
+        public async Task<ResponseDTO> GetTopXProduct(int x)
         {
             try
             {
-                List<Product> list = await _productRepository.GetTop4();
+                List<Product> list = await _productRepository.GetTopXProduct(x);
+                _response.Data = list;
+
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [HttpGet]
+        [Route("GetAllSize")]
+        public async Task<ResponseDTO> GetAllSize()
+        {
+            try
+            {
+                List<Size> list = await _productRepository.GetAllSize();
                 _response.Data = list;
 
 

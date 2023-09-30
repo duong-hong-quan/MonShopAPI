@@ -128,14 +128,14 @@ namespace MonShopAPI.Controller
             return _response;
         }
         [HttpPost]
-        [Route("AddOrderRequest/{cartId}")]
-        public async Task<ResponseDTO> AddOrderRequest(int cartId)
+        [Route("AddOrderRequest")]
+        public async Task<ResponseDTO> AddOrderRequest(OrderRequest orderRequest)
         {
             bool isError = false;
 
             try
             {
-                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(cartId);
+                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(orderRequest.CartId);
                 foreach (var item in items)
                 {
                     if (item.Quantity == 0)
@@ -165,7 +165,7 @@ namespace MonShopAPI.Controller
                 }
                 if (!isError) // Only execute this block if no error occurred in the loop
                 {
-                    string OrderID = await _orderRepository.AddOrderRequest(cartId);
+                    string OrderID = await _orderRepository.AddOrderRequest(orderRequest);
                     _response.Data = OrderID;
                 }
 

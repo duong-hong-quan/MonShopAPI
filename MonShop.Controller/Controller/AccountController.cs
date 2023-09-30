@@ -111,8 +111,8 @@ namespace MonShopAPI.Controller
         {
             try
             {
-                await _accountRepository.GetAccountById(accountId);
-                _response.Data = true;
+                _response.Data = await _accountRepository.GetAccountById(accountId);
+                
             }
             catch (Exception ex)
             {
@@ -254,7 +254,6 @@ namespace MonShopAPI.Controller
                 var token = await _jwtGenerator.GetNewToken(refreshToken, accountId);
                 _loginRespone = token;
                 _response.Data = _loginRespone;
-
 
             }
             catch (Exception ex)

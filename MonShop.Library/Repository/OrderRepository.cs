@@ -42,10 +42,10 @@ namespace MonShopLibrary.Repository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<string> AddOrderRequest(int cartId)
+        public async Task<string> AddOrderRequest(OrderRequest orderRequest)
         {
             string orderID = null;
-            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.CartId == cartId);
+            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.CartId == orderRequest.CartId);
             if (cart != null)
             {
                 double total = 0;
@@ -55,13 +55,14 @@ namespace MonShopLibrary.Repository
                     OrderDate = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
                     Total = total,
                     OrderStatusId = Constant.Order.PENDING_PAY,
-                    ApplicationUserId = cart.ApplicationUserId
+                    ApplicationUserId = cart.ApplicationUserId,
+                    DeliveryAddressId = orderRequest.DeliveryAddressId
                 };
                 await _db.Order.AddAsync(order);
                 await _db.SaveChangesAsync();
                  orderID = order.OrderId;
 
-                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(cartId);
+                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(orderRequest.CartId);
                 foreach (CartItem itemDTO in items)
                 {
                     ProductInventory productInventory = await _db.ProductInventory.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId && i.SizeId == itemDTO.SizeId) ;
@@ -85,7 +86,7 @@ namespace MonShopLibrary.Repository
                 }
                 order.Total = total;
                 await _db.SaveChangesAsync();
-                await _cartRepository.RemoveCart(cartId);
+                await _cartRepository.RemoveCart(orderRequest.CartId);
 
             }
 

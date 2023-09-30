@@ -38,13 +38,13 @@ namespace MonShop.Controller.Controller
             }
             return _response;
         }
-        [HttpPost("RemoveToCart")]
+        [HttpPost("RemoveFromCart")]
 
-        public async Task<ResponseDTO> RemoveToCart(CartRequest request)
+        public async Task<ResponseDTO> RemoveFromCart(CartRequest request)
         {
             try
             {
-                await _cartRepository.RemoveToCart(request);
+                await _cartRepository.RemoveFromCart(request);
 
             }
             catch (Exception ex)

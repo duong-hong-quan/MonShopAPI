@@ -11,7 +11,7 @@ namespace MonShop.Library.Repository.IRepository
     public interface ICartRepository
     {
        public Task AddToCart(CartRequest request);
-        public Task RemoveToCart(CartRequest request);
+        public Task RemoveFromCart(CartRequest request);
 
         public Task RemoveCart(int CartId);
 

@@ -86,23 +86,32 @@ namespace MonShopLibrary.Repository
 
         public async Task<Product> GetProductByID(int id)
         {
-            Product product = await _db.Product.FirstAsync(p => p.ProductId == id);
+            Product product = await _db.Product.Include(p => p.ProductStatus)
+               .Include(p => p.Category).FirstAsync(p => p.ProductId == id);
             return product;
         }
 
-        public async Task<List<Product>> GetTop4()
+        public async Task<List<Product>> GetTopXProduct(int x)
         {
             var newProduct = await _db.Product
                .Where(p => p.IsDeleted == false && p.ProductStatusId != Constant.Product.IN_ACTIVE)
                .OrderByDescending(p => p.ProductId)
-               .Take(4)
+               .Take(x)
+               .Include(p => p.ProductStatus)
+               .Include(p => p.Category)
+
                .ToListAsync();
             return newProduct;
         }
 
         public async Task<ProductInventory> GetProductInventory(int ProductId, int SizeId)
         {
-           return await _db.ProductInventory.Include(p=> p.Size).Include(p=> p.Product).FirstOrDefaultAsync(i=> i.ProductId == ProductId && i.SizeId == SizeId);
+           return await _db.ProductInventory.Include(p=> p.Size).Include(p=> p.Product).Include(p=> p.Product.ProductStatus).Include(p => p.Product.Category).FirstOrDefaultAsync(i=> i.ProductId == ProductId && i.SizeId == SizeId);
+        }
+
+        public async Task<List<Size>> GetAllSize()
+        {
+            return await _db.Size.ToListAsync();
         }
     }
 }

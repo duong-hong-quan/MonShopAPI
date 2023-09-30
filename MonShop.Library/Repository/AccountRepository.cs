@@ -6,6 +6,7 @@ using MonShop.Library.Repository.IRepository;
 using MonShop.Library.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 
 namespace MonShopLibrary.Repository
@@ -75,6 +76,7 @@ namespace MonShopLibrary.Repository
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.PhoneNumber,
+                Address = dto.Address
 
             };
             await _userManager.CreateAsync(user, dto.Password);
@@ -83,7 +85,18 @@ namespace MonShopLibrary.Repository
 
         public async Task UpdateAccount(ApplicationUser user)
         {
-            await _userManager.UpdateAsync(user);
+            var existingUser = await _userManager.FindByIdAsync(user.Id);
+
+            if (existingUser != null)
+            {
+                existingUser.Email = user.Email;
+                existingUser.FirstName = user.FirstName;
+                existingUser.LastName = user.LastName;
+                existingUser.PhoneNumber = user.PhoneNumber;
+                existingUser.Address = user.Address;
+                existingUser.UserName = user.Email;
+                await _userManager.UpdateAsync(existingUser);
+            }
         }
         public async Task DeleteAccount(ApplicationUser user)
         {
@@ -108,8 +121,12 @@ namespace MonShopLibrary.Repository
         {
             var user = _db.Users.FirstOrDefault(u => u.Id.ToLower() == userId);
             var roleDb = await _db.Roles.SingleOrDefaultAsync(r => r.Name == roleName);
+            if (roleDb == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(roleName));
 
-            if (user != null && roleDb != null)
+            }
+            if (user != null)
             {
                 await _userManager.AddToRoleAsync(user, roleName);
             }
@@ -129,7 +146,6 @@ namespace MonShopLibrary.Repository
             var roleDb = await _db.Roles.SingleOrDefaultAsync(r => r.Name == role);
             if (roleDb == null)
             {
-                await _roleManager.CreateAsync(new IdentityRole(role));
             }
         }
 
@@ -145,5 +161,39 @@ namespace MonShopLibrary.Repository
         }
         #endregion
 
+        #region address
+        public async Task AddAddress(DeliveryAddress addressDto)
+        {
+            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address);
+            if (address == null)
+            {
+                await _db.DeliveryAddresses.AddAsync(addressDto);
+                await _db.SaveChangesAsync();
+            }
+        }
+        public async Task UpdateAddress(DeliveryAddress addressDto)
+        {
+            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address);
+            if (address == null)
+            {
+                 _db.DeliveryAddresses.Update(addressDto);
+                await _db.SaveChangesAsync();
+            }
+        }
+        public async Task RemoveAddress(DeliveryAddress addressDto)
+        {
+            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address);
+            if (address == null)
+            {
+                _db.DeliveryAddresses.Remove(addressDto);
+                await _db.SaveChangesAsync();
+            }
+        }
+        public async Task <List<DeliveryAddress>> GetAllAddressByUserId(string userId)
+        {
+            List<DeliveryAddress> list = await _db.DeliveryAddresses.Where(a => a.ApplicationUserId == userId).ToListAsync();
+            return list;
+        }
+        #endregion
     }
 }

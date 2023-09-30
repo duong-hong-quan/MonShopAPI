@@ -163,6 +163,9 @@ namespace MonShop.Library.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -323,6 +326,26 @@ namespace MonShop.Library.Migrations
                         });
                 });
 
+            modelBuilder.Entity("MonShop.Library.Models.DeliveryAddress", b =>
+                {
+                    b.Property<string>("DeliveryAddressId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("DeliveryAddressId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("DeliveryAddresses");
+                });
+
             modelBuilder.Entity("MonShop.Library.Models.Message", b =>
                 {
                     b.Property<int>("MessageId")
@@ -359,13 +382,15 @@ namespace MonShop.Library.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DeliveryAddressId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OrderStatusId")
+                    b.Property<int?>("OrderStatusId")
                         .HasColumnType("int");
 
                     b.Property<double?>("Total")
@@ -374,6 +399,8 @@ namespace MonShop.Library.Migrations
                     b.HasKey("OrderId");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("OrderStatusId");
 
@@ -604,6 +631,316 @@ namespace MonShop.Library.Migrations
                             Price = 9.9900000000000002,
                             ProductName = "Product 3",
                             ProductStatusId = 2
+                        },
+                        new
+                        {
+                            ProductId = 4,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 4.",
+                            Discount = 2.5,
+                            ImageUrl = "image4.jpg",
+                            IsDeleted = false,
+                            Price = 24.989999999999998,
+                            ProductName = "Product 4",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 5,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 5.",
+                            ImageUrl = "image5.jpg",
+                            IsDeleted = false,
+                            Price = 14.99,
+                            ProductName = "Product 5",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 6,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 6.",
+                            ImageUrl = "image6.jpg",
+                            IsDeleted = false,
+                            Price = 17.989999999999998,
+                            ProductName = "Product 6",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 7,
+                            CategoryId = 1,
+                            Description = "This is the description for Product 7.",
+                            Discount = 3.0,
+                            ImageUrl = "image7.jpg",
+                            IsDeleted = false,
+                            Price = 22.989999999999998,
+                            ProductName = "Product 7",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 8.",
+                            ImageUrl = "image8.jpg",
+                            IsDeleted = false,
+                            Price = 10.99,
+                            ProductName = "Product 8",
+                            ProductStatusId = 2
+                        },
+                        new
+                        {
+                            ProductId = 9,
+                            CategoryId = 4,
+                            Description = "This is the description for Product 9.",
+                            Discount = 4.5,
+                            ImageUrl = "image9.jpg",
+                            IsDeleted = false,
+                            Price = 27.989999999999998,
+                            ProductName = "Product 9",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 10,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 10.",
+                            ImageUrl = "image10.jpg",
+                            IsDeleted = false,
+                            Price = 14.99,
+                            ProductName = "Product 10",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 11,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 11.",
+                            Discount = 6.0,
+                            ImageUrl = "image11.jpg",
+                            IsDeleted = false,
+                            Price = 32.990000000000002,
+                            ProductName = "Product 11",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 12,
+                            CategoryId = 1,
+                            Description = "This is the description for Product 12.",
+                            ImageUrl = "image12.jpg",
+                            IsDeleted = false,
+                            Price = 19.989999999999998,
+                            ProductName = "Product 12",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 13,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 13.",
+                            Discount = 2.0,
+                            ImageUrl = "image13.jpg",
+                            IsDeleted = false,
+                            Price = 14.99,
+                            ProductName = "Product 13",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 14,
+                            CategoryId = 4,
+                            Description = "This is the description for Product 14.",
+                            ImageUrl = "image14.jpg",
+                            IsDeleted = false,
+                            Price = 23.989999999999998,
+                            ProductName = "Product 14",
+                            ProductStatusId = 2
+                        },
+                        new
+                        {
+                            ProductId = 15,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 15.",
+                            Discount = 1.5,
+                            ImageUrl = "image15.jpg",
+                            IsDeleted = false,
+                            Price = 11.99,
+                            ProductName = "Product 15",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 16,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 16.",
+                            ImageUrl = "image16.jpg",
+                            IsDeleted = false,
+                            Price = 29.989999999999998,
+                            ProductName = "Product 16",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 17,
+                            CategoryId = 1,
+                            Description = "This is the description for Product 17.",
+                            Discount = 3.0,
+                            ImageUrl = "image17.jpg",
+                            IsDeleted = false,
+                            Price = 18.989999999999998,
+                            ProductName = "Product 17",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 18,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 18.",
+                            ImageUrl = "image18.jpg",
+                            IsDeleted = false,
+                            Price = 13.99,
+                            ProductName = "Product 18",
+                            ProductStatusId = 2
+                        },
+                        new
+                        {
+                            ProductId = 19,
+                            CategoryId = 4,
+                            Description = "This is the description for Product 19.",
+                            Discount = 4.5,
+                            ImageUrl = "image19.jpg",
+                            IsDeleted = false,
+                            Price = 26.989999999999998,
+                            ProductName = "Product 19",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 20,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 20.",
+                            ImageUrl = "image20.jpg",
+                            IsDeleted = false,
+                            Price = 12.99,
+                            ProductName = "Product 20",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 21,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 21.",
+                            Discount = 5.0,
+                            ImageUrl = "image21.jpg",
+                            IsDeleted = false,
+                            Price = 31.989999999999998,
+                            ProductName = "Product 21",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 22,
+                            CategoryId = 1,
+                            Description = "This is the description for Product 22.",
+                            ImageUrl = "image22.jpg",
+                            IsDeleted = false,
+                            Price = 16.989999999999998,
+                            ProductName = "Product 22",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 23,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 23.",
+                            Discount = 2.0,
+                            ImageUrl = "image23.jpg",
+                            IsDeleted = false,
+                            Price = 15.99,
+                            ProductName = "Product 23",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 24,
+                            CategoryId = 4,
+                            Description = "This is the description for Product 24.",
+                            ImageUrl = "image24.jpg",
+                            IsDeleted = false,
+                            Price = 28.989999999999998,
+                            ProductName = "Product 24",
+                            ProductStatusId = 2
+                        },
+                        new
+                        {
+                            ProductId = 25,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 25.",
+                            Discount = 1.5,
+                            ImageUrl = "image25.jpg",
+                            IsDeleted = false,
+                            Price = 10.99,
+                            ProductName = "Product 25",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 26,
+                            CategoryId = 1,
+                            Description = "This is the description for Product 26.",
+                            ImageUrl = "image26.jpg",
+                            IsDeleted = false,
+                            Price = 19.989999999999998,
+                            ProductName = "Product 26",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 27,
+                            CategoryId = 3,
+                            Description = "This is the description for Product 27.",
+                            Discount = 2.0,
+                            ImageUrl = "image27.jpg",
+                            IsDeleted = false,
+                            Price = 14.99,
+                            ProductName = "Product 27",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 28,
+                            CategoryId = 4,
+                            Description = "This is the description for Product 28.",
+                            ImageUrl = "image28.jpg",
+                            IsDeleted = false,
+                            Price = 23.989999999999998,
+                            ProductName = "Product 28",
+                            ProductStatusId = 2
+                        },
+                        new
+                        {
+                            ProductId = 29,
+                            CategoryId = 2,
+                            Description = "This is the description for Product 29.",
+                            Discount = 1.5,
+                            ImageUrl = "image29.jpg",
+                            IsDeleted = false,
+                            Price = 11.99,
+                            ProductName = "Product 29",
+                            ProductStatusId = 1
+                        },
+                        new
+                        {
+                            ProductId = 30,
+                            CategoryId = 1,
+                            Description = "This is the description for Product 30.",
+                            ImageUrl = "image30.jpg",
+                            IsDeleted = false,
+                            Price = 24.989999999999998,
+                            ProductName = "Product 30",
+                            ProductStatusId = 1
                         });
                 });
 
@@ -801,6 +1138,17 @@ namespace MonShop.Library.Migrations
                     b.Navigation("Size");
                 });
 
+            modelBuilder.Entity("MonShop.Library.Models.DeliveryAddress", b =>
+                {
+                    b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("MonShop.Library.Models.Message", b =>
                 {
                     b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
@@ -824,17 +1172,19 @@ namespace MonShop.Library.Migrations
                 {
                     b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("MonShop.Library.Models.DeliveryAddress", "DeliveryAddress")
+                        .WithMany()
+                        .HasForeignKey("DeliveryAddressId");
 
                     b.HasOne("MonShop.Library.Models.OrderStatus", "OrderStatus")
                         .WithMany()
-                        .HasForeignKey("OrderStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderStatusId");
 
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("DeliveryAddress");
 
                     b.Navigation("OrderStatus");
                 });

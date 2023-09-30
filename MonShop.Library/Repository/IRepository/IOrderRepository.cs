@@ -14,7 +14,7 @@ namespace MonShop.Library.Repository.IRepository
         public Task<List<OrderStatus>> GetAllOrderStatus();
         public Task AddOrderStatus(OrderStatusDTO dto);
         public Task UpdateOrderStatus(OrderStatusDTO dto);
-        public Task<string> AddOrderRequest(int cartId);
+        public Task<string> AddOrderRequest(OrderRequest orderRequest);
         public Task UpdateStatusForOrder(string OrderID, int status);
         public Task<Order> GetOrderByID(string OrderID);
         public Task<List<Order>> GetAllOrder();
