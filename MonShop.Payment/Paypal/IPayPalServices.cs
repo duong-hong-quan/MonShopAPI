@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MonShop.Payment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VNPay.Models;
 
 namespace PaymentGateway.Paypal
 {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using MonShop.Payment;
 using MonShopLibrary.Utils;
 using PaymentGateway.Momo;
 using System;
@@ -48,7 +49,7 @@ namespace PaymentGateway.VNPay
 
             return paymentUrl;
         }
-        public PaymentResponseModel PaymentExecute(IQueryCollection collections)
+        public VNPAYResponseModel PaymentExecute(IQueryCollection collections)
         {
             IConfiguration config = new ConfigurationBuilder()
                  .SetBasePath(Directory.GetCurrentDirectory())

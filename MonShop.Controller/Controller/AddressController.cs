@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonShop.Controller.Model;
+using MonShop.Library.DTO;
 using MonShop.Library.Models;
 using MonShop.Library.Repository.IRepository;
 using MonShopLibrary.DTO;
@@ -9,6 +11,7 @@ namespace MonShop.Controller.Controller
 {
     [Route("Address")]
     [ApiController]
+    [Authorize]
     public class AddressController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
@@ -29,7 +32,7 @@ namespace MonShop.Controller.Controller
         public  Task<List<DeliveryAddress>> GetAllAddressByUserId(string userId);*/
 
         [HttpPost("AddAddress")]
-        public async Task<ResponseDTO> AddAddress(DeliveryAddress addressDto)
+        public async Task<ResponseDTO> AddAddress(DeliveryAddressDTO addressDto)
         {
             try
             {
@@ -47,7 +50,7 @@ namespace MonShop.Controller.Controller
         }
 
         [HttpPut("UpdateAddress")]
-        public async Task<ResponseDTO> UpdateAddress(DeliveryAddress addressDto)
+        public async Task<ResponseDTO> UpdateAddress(DeliveryAddressDTO addressDto)
         {
             try
             {
@@ -65,8 +68,8 @@ namespace MonShop.Controller.Controller
         }
 
 
-        [HttpPost("RemoveAddress")]
-        public async Task<ResponseDTO> RemoveAddress(DeliveryAddress addressDto)
+        [HttpDelete("RemoveAddress")]
+        public async Task<ResponseDTO> RemoveAddress(DeliveryAddressDTO addressDto)
         {
             try
             {

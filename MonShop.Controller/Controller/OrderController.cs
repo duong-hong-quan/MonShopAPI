@@ -141,15 +141,18 @@ namespace MonShopAPI.Controller
                     if (item.Quantity == 0)
                     {
                         _response.Message = $"The quantity must greater than 0";
-                        isError = true; // Set the error flag
-                        break; // Exit the loop
+                        isError = true;
+                        _response.Data = null;
+                        break;
                     }
                     Product product = await _productRepository.GetProductByID((int)item.ProductId);
                     if (product == null)
                     {
                         _response.Message = $"No result Product with ID {item.ProductId}";
-                        isError = true; // Set the error flag
-                        break; // Exit the loop
+                        isError = true;
+                        _response.Data = null;
+
+                        break;
 
                     }
                     ProductInventory productInventory = await _productRepository.GetProductInventory((int)item.ProductId, item.SizeId);
@@ -157,13 +160,15 @@ namespace MonShopAPI.Controller
                     if (item.Quantity > productInventory?.Quantity)
                     {
                         _response.Message = "This product doesn't have enough quantity";
-                        isError = true; // Set the error flag
-                        break; // Exit the loop
+                        isError = true;
+                        _response.Data = null;
+
+                        break;
 
                     }
 
                 }
-                if (!isError) // Only execute this block if no error occurred in the loop
+                if (!isError)
                 {
                     string OrderID = await _orderRepository.AddOrderRequest(orderRequest);
                     _response.Data = OrderID;
@@ -197,9 +202,9 @@ namespace MonShopAPI.Controller
                 }
                 else
                 {
-                
-                        await _orderRepository.UpdateStatusForOrder(OrderID, status);
-                        _response.Message = "Update successful";
+
+                    await _orderRepository.UpdateStatusForOrder(OrderID, status);
+                    _response.Message = "Update successful";
 
                 }
 
@@ -219,13 +224,32 @@ namespace MonShopAPI.Controller
 
         //    [Authorize]
         [HttpGet]
-        [Route("GetAllOrderByAccountID")]
+        [Route("GetAllOrderByAccountID/{AccountID}/{OrderStatusID}")]
         public async Task<ResponseDTO> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
         {
             try
             {
 
                 List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
+
+                _response.Data = list;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [HttpGet]
+        [Route("GetAllOrderByAccountID/{AccountID}")]
+        public async Task<ResponseDTO> GetAllOrderByAccountID(string AccountID)
+        {
+            try
+            {
+
+                List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID);
 
                 _response.Data = list;
             }

@@ -76,7 +76,6 @@ namespace MonShopLibrary.Repository
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.PhoneNumber,
-                Address = dto.Address
 
             };
             await _userManager.CreateAsync(user, dto.Password);
@@ -93,7 +92,6 @@ namespace MonShopLibrary.Repository
                 existingUser.FirstName = user.FirstName;
                 existingUser.LastName = user.LastName;
                 existingUser.PhoneNumber = user.PhoneNumber;
-                existingUser.Address = user.Address;
                 existingUser.UserName = user.Email;
                 await _userManager.UpdateAsync(existingUser);
             }
@@ -162,30 +160,34 @@ namespace MonShopLibrary.Repository
         #endregion
 
         #region address
-        public async Task AddAddress(DeliveryAddress addressDto)
+        public async Task AddAddress(DeliveryAddressDTO addressDto)
         {
-            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address);
+            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address && a.ApplicationUserId == addressDto.ApplicationUserId);
             if (address == null)
             {
-                await _db.DeliveryAddresses.AddAsync(addressDto);
+                DeliveryAddress addressDb = new DeliveryAddress { DeliveryAddressId= Guid.NewGuid().ToString(), Address = addressDto.Address, ApplicationUserId = addressDto.ApplicationUserId };
+                await _db.DeliveryAddresses.AddAsync(addressDb);
                 await _db.SaveChangesAsync();
             }
         }
-        public async Task UpdateAddress(DeliveryAddress addressDto)
+        public async Task UpdateAddress(DeliveryAddressDTO addressDto)
         {
-            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address);
-            if (address == null)
+            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a =>a.DeliveryAddressId == addressDto.DeliveryAddressId);
+            if (address != null)
             {
-                 _db.DeliveryAddresses.Update(addressDto);
+                address.Address = addressDto.Address;
+                
+                _db.DeliveryAddresses.Update(address);
                 await _db.SaveChangesAsync();
             }
         }
-        public async Task RemoveAddress(DeliveryAddress addressDto)
+        public async Task RemoveAddress(DeliveryAddressDTO addressDto)
         {
-            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.Address == addressDto.Address);
-            if (address == null)
+            DeliveryAddress address = await _db.DeliveryAddresses.SingleOrDefaultAsync(a => a.DeliveryAddressId == addressDto.DeliveryAddressId);
+            if (address != null)
             {
-                _db.DeliveryAddresses.Remove(addressDto);
+
+                _db.DeliveryAddresses.Remove(address);
                 await _db.SaveChangesAsync();
             }
         }

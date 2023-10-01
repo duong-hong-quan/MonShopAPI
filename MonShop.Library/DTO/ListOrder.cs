@@ -11,7 +11,7 @@ namespace MonShop.Library.DTO
     {
         public Order order { get; set; }
         public List<OrderItem> orderItem { get; set; }
-        public PaymentType paymentMethod { get; set; }
+        public PaymentType? paymentMethod { get; set; }
 
     }
 

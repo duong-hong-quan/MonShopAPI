@@ -16,7 +16,7 @@ namespace MonShopLibrary.Repository
     public class OrderRepository : IOrderRepository
     {
         private readonly MonShopContext _db;
-        private readonly ICartRepository _cartRepository;   
+        private readonly ICartRepository _cartRepository;
 
         public OrderRepository(MonShopContext db, ICartRepository cartRepository)
         {
@@ -42,55 +42,82 @@ namespace MonShopLibrary.Repository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<string> AddOrderRequest(OrderRequest orderRequest)
+        public async Task<bool> IsOutStock(OrderRequest request)
         {
-            string orderID = null;
-            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.CartId == orderRequest.CartId);
+            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.CartId == request.CartId);
             if (cart != null)
             {
-                double total = 0;
-                Order order = new Order
+                List<CartItem> cartItems = await _db.CartItem.Where(c => c.CartId == request.CartId).ToListAsync();
+                foreach (CartItem cartItem in cartItems)
                 {
-                    OrderId = Guid.NewGuid().ToString(),
-                    OrderDate = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
-                    Total = total,
-                    OrderStatusId = Constant.Order.PENDING_PAY,
-                    ApplicationUserId = cart.ApplicationUserId,
-                    DeliveryAddressId = orderRequest.DeliveryAddressId
-                };
-                await _db.Order.AddAsync(order);
-                await _db.SaveChangesAsync();
-                 orderID = order.OrderId;
+                    ProductInventory productInventory = await _db.ProductInventory.Where(p => p.ProductId == cartItem.ProductId && p.SizeId == cartItem.SizeId).SingleOrDefaultAsync();
+                    if (productInventory != null && productInventory.Quantity < cartItem.Quantity)
+                    {
 
-                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(orderRequest.CartId);
-                foreach (CartItem itemDTO in items)
-                {
-                    ProductInventory productInventory = await _db.ProductInventory.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId && i.SizeId == itemDTO.SizeId) ;
-                    Product product = await _db.Product.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId);
-                    if (productInventory.Quantity >= itemDTO.Quantity) {
-
-                        OrderItem item = new OrderItem
-                        {
-                            OrderId = orderID,
-                            ProductId = (int)itemDTO.ProductId,
-                            Quantity = itemDTO.Quantity,
-                            PricePerUnit = product.Price,
-                            Subtotal = itemDTO.Quantity * product.Price,
-                            SizeId = itemDTO.SizeId
-                        };
-                        total += item.Subtotal;
-
-                        await _db.OrderItem.AddAsync(item);
+                        return true;
                     }
-                  
                 }
-                order.Total = total;
-                await _db.SaveChangesAsync();
-                await _cartRepository.RemoveCart(orderRequest.CartId);
 
             }
+            return false;
 
-            return orderID;
+        }
+
+        public async Task<string> AddOrderRequest(OrderRequest orderRequest)
+        {
+            if (!await IsOutStock(orderRequest))
+            {
+                string orderID = null;
+                Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.CartId == orderRequest.CartId);
+                if (cart != null)
+                {
+                    double total = 0;
+                    Order order = new Order
+                    {
+                        OrderId = Guid.NewGuid().ToString(),
+                        OrderDate = Utility.getInstance().GetCurrentDateTimeInTimeZone(),
+                        Total = total,
+                        OrderStatusId = Constant.Order.PENDING_PAY,
+                        ApplicationUserId = cart.ApplicationUserId,
+                        DeliveryAddressId = orderRequest.DeliveryAddressId
+                    };
+                    await _db.Order.AddAsync(order);
+                    await _db.SaveChangesAsync();
+                    orderID = order.OrderId;
+
+                    IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(orderRequest.CartId);
+                    foreach (CartItem itemDTO in items)
+                    {
+                        ProductInventory productInventory = await _db.ProductInventory.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId && i.SizeId == itemDTO.SizeId);
+                        Product product = await _db.Product.FirstOrDefaultAsync(i => i.ProductId == itemDTO.ProductId);
+                        if (productInventory != null && product != null && productInventory.Quantity >= itemDTO.Quantity)
+                        {
+
+                            OrderItem item = new OrderItem
+                            {
+                                OrderId = orderID,
+                                ProductId = (int)itemDTO.ProductId,
+                                Quantity = itemDTO.Quantity,
+                                PricePerUnit = product.Price,
+                                Subtotal = (double)(itemDTO.Quantity * product.Price * (100 - product.Discount) / 100),
+                                SizeId = itemDTO.SizeId
+                            };
+                            total += item.Subtotal;
+
+                            await _db.OrderItem.AddAsync(item);
+                        }
+
+                    }
+                    order.Total = total;
+                    await _db.SaveChangesAsync();
+                    await _cartRepository.RemoveCart(orderRequest.CartId);
+
+                }
+
+                return orderID;
+            }
+            return null;
+       
         }
 
         public async Task UpdateStatusForOrder(string OrderID, int status)
@@ -128,8 +155,13 @@ namespace MonShopLibrary.Repository
                 Where(o => o.OrderId == OrderID).
                 ToListAsync();
 
-            PaymentResponse paymentResponse = await _db.PaymentResponse.FirstOrDefaultAsync(p => p.OrderId == OrderID);
-            PaymentType paymentMethod = await _db.PaymentType.FirstOrDefaultAsync(p => p.PaymentTypeId == paymentResponse.PaymentTypeId);
+            PaymentResponse paymentResponse = await _db.PaymentResponse.SingleOrDefaultAsync(p => p.OrderId == OrderID);
+            PaymentType paymentMethod=null;
+            if (paymentResponse != null)
+            {
+                paymentMethod = await _db.PaymentType.SingleOrDefaultAsync(p => p.PaymentTypeId == paymentResponse.PaymentTypeId);
+
+            }
 
             ListOrder listOrder = new ListOrder { order = orderDTO, orderItem = OrderItem, paymentMethod = paymentMethod };
             return listOrder;
@@ -187,6 +219,10 @@ namespace MonShopLibrary.Repository
             return false;
         }
 
-     
+        public async Task<List<Order>> GetAllOrderByAccountID(string AccountID)
+        {
+            return await _db.Order.Where(a => a.ApplicationUserId == AccountID).Include(a=> a.OrderStatus).ToListAsync();
+          
+        }
     }
 }

@@ -26,10 +26,10 @@ namespace MonShop.Library.Repository.IRepository
         public Task<IdentityRole<string>> GetRoleForUserId(string userId);
 
 
-        public  Task AddAddress(DeliveryAddress addressDto);
-        public Task UpdateAddress(DeliveryAddress addressDto);
+        public  Task AddAddress(DeliveryAddressDTO addressDto);
+        public Task UpdateAddress(DeliveryAddressDTO addressDto);
 
-        public Task RemoveAddress(DeliveryAddress addressDto);
+        public Task RemoveAddress(DeliveryAddressDTO addressDto);
         public  Task<List<DeliveryAddress>> GetAllAddressByUserId(string userId);
 
 

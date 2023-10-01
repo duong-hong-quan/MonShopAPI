@@ -20,7 +20,7 @@ namespace PaymentGateway.VNPay
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
 
-        public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+        public VNPAYResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
         {
             var vnPay = new VnPayLibrary();
 
@@ -43,12 +43,12 @@ namespace PaymentGateway.VNPay
                 vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
             if (!checkSignature)
-                return new PaymentResponseModel()
+                return new VNPAYResponseModel()
                 {
                     Success = false
                 };
 
-            return new PaymentResponseModel()
+            return new VNPAYResponseModel()
             {
                 Success = true,
                 PaymentMethod = "VnPay",

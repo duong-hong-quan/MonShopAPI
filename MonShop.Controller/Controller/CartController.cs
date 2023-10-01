@@ -92,5 +92,24 @@ namespace MonShop.Controller.Controller
             return _response;
 
         }
+
+        [HttpPut("UpdateCartItem")]
+        public async Task<ResponseDTO> UpdateCartItemById(CartRequest request)
+        {
+            try
+            {
+                await _cartRepository.UpdateCartItemById(request);
+                _response.Data = true;
+
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+
+            return _response;
+        }
+
     }
 }

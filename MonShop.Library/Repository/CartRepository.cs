@@ -25,12 +25,12 @@ namespace MonShop.Library.Repository
             Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.ApplicationUserId == request.ApplicationUserId);
             CartItem item = await _db.CartItem.FirstOrDefaultAsync(i => i.ProductId == request.item.ProductId && i.SizeId == request.item.SizeId);
 
-            if (cart == null )
+            if (cart == null)
             {
                 cart = new Cart { ApplicationUserId = request.ApplicationUserId };
                 await _db.Cart.AddAsync(cart);
                 await _db.SaveChangesAsync();
-              
+
             }
             if (item == null)
             {
@@ -45,15 +45,79 @@ namespace MonShop.Library.Repository
 
             }
 
+        }
 
+        private async Task<bool> IsOutOfStock(int ProductId, int SizeId, int quantity)
+        {
+            var productInventory = await _db.ProductInventory.SingleOrDefaultAsync(p => p.ProductId == ProductId && p.SizeId == SizeId);
+            if (productInventory != null)
+            {
+                if (quantity > productInventory.Quantity)
+                {
+                    return true;
+
+                }
+                else if (quantity <= productInventory.Quantity)
+                {
+                    return false;
+
+                }
+            }
+            return true;
 
         }
 
         public async Task<IEnumerable<CartItem>> GetItemsByAccountId(string AccountId)
         {
-            Cart cart = await _db.Cart.FirstAsync(c => c.ApplicationUserId == AccountId);
-            return await _db.CartItem.Where(c => c.CartId == cart.CartId).ToListAsync();
+            double total = 0;
+            Cart cart = await _db.Cart.FirstOrDefaultAsync(c => c.ApplicationUserId == AccountId);
+            var list = await _db.CartItem.Where(c => c.CartId == cart.CartId).Include(c => c.Product).Include(c => c.Size).ToListAsync();
+
+
+
+            List<CartItem> itemsToRemove = new List<CartItem>();
+
+            foreach (var item1 in list)
+            {
+                var dupplicateList = await _db.CartItem.Where(c => c.ProductId == item1.ProductId && c.SizeId == item1.SizeId && c.CartItemId != item1.CartItemId).Include(c => c.Product).Include(c => c.Size).ToListAsync();
+
+                if (dupplicateList.Count() > 0)
+                {
+                    foreach (var item in dupplicateList)
+                    {
+                        var itemDelete = itemsToRemove.FirstOrDefault(c => c.ProductId == item.ProductId && c.SizeId == item.SizeId);
+                        if (itemDelete == null)
+                        {
+                            itemsToRemove.Add(item);
+                            item1.Quantity += item.Quantity;
+                        }
+                    }
+
+                }
+
+            }
+
+            foreach (var itemToRemove in itemsToRemove)
+            {
+                list.Remove(itemToRemove);
+                _db.CartItem.Remove(itemToRemove);
+            }
+
+            await _db.SaveChangesAsync();
+
+            foreach (var item in list)
+            {
+                item.IsOutOfStock = await IsOutOfStock((int)item.ProductId, item.SizeId, item.Quantity);
+                if ((bool)!item.IsOutOfStock)
+                {
+                    total += (double)(item.Quantity * item.Product.Price * (100 - item.Product.Discount) / 100);
+                }
+            }
+
+            cart.Total = total;
+            return list;
         }
+
 
         public async Task<IEnumerable<CartItem>> GetItemsByCartId(int CartId)
         {
@@ -85,12 +149,12 @@ namespace MonShop.Library.Repository
             CartItem item = await _db.CartItem.FirstOrDefaultAsync(i => i.ProductId == request.item.ProductId);
 
             List<CartItem> items = await _db.CartItem.Where(i => i.CartId == cart.CartId).ToListAsync();
-            if(items.Count() <= 0)
+            if (items.Count() <= 0)
             {
                 _db.Cart.Remove(cart);
                 await _db.SaveChangesAsync();
             }
-            if (cart != null )
+            if (cart != null)
             {
                 if (item != null && item.Quantity > 0)
                 {
@@ -104,6 +168,33 @@ namespace MonShop.Library.Repository
                 await _db.SaveChangesAsync();
 
             }
+        }
+
+
+        public async Task UpdateCartItemById(CartRequest request)
+        {
+            CartItem item = await _db.CartItem.FindAsync(request.item.CartItemId);
+            if (item != null)
+            {
+                item.ProductId = request.item.ProductId;
+                item.Quantity = request.item.Quantity;
+                item.SizeId = request.item.SizeId;
+                item.CartId = request.item.CartId;
+                try
+                {
+                    // Save changes asynchronously
+                    await _db.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Handle concurrency conflicts if necessary
+                    // You can choose to retry the operation or handle the conflict as needed
+                    // Depending on your application logic
+                    throw;
+                }
+
+            }
+
         }
     }
 }

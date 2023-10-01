@@ -26,5 +26,7 @@ namespace MonShop.Library.Models
         public double PricePerUnit { get; set; }
         public double Subtotal { get; set; }
 
+        
+
     }
 }

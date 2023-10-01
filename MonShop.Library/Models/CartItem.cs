@@ -22,6 +22,9 @@ namespace MonShop.Library.Models
 
         public int CartId { get; set; }
         [ForeignKey("CartId")]
-        public Cart Cart {  get; set; } 
+        public Cart Cart {  get; set; }
+
+        [NotMapped]
+        public bool? IsOutOfStock { get; set; }
     }
 }

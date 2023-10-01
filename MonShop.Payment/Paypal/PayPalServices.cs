@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using PayPal.Core;
 using PayPal.v1.Payments;
-using VNPay.Models;
 using System.Diagnostics;
+using MonShop.Payment;
 
 namespace PaymentGateway.Paypal
 {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using MonShop.Controller.Model;
 using MonShop.Library.Models;
 using MonShop.Library.Repository.IRepository;
+using MonShop.Payment;
 using MonShopLibrary.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -96,7 +97,7 @@ namespace MonShopAPI.Controller
                 {
                     Momo momo = new Momo
                     {
-                        AccountID =  int.Parse( order.ApplicationUserId),
+                        AccountID =   order.ApplicationUserId,
                         Amount = (double)order.Total,
                         CustomerName = $"{account.FirstName} {account.LastName}",
                         OrderID = OrderID
@@ -139,7 +140,7 @@ namespace MonShopAPI.Controller
                 {
                     PaymentInformationModel model = new PaymentInformationModel
                     {
-                        AccountID = int.Parse(order.ApplicationUserId),
+                        AccountID = order.ApplicationUserId,
                         Amount = (double)order.Total,
                         CustomerName = $"{account.FirstName} {account.LastName}",
                         OrderID = order.OrderId
@@ -182,7 +183,7 @@ namespace MonShopAPI.Controller
                 {
                     PaymentInformationModel model = new PaymentInformationModel
                     {
-                        AccountID = int.Parse(order.ApplicationUserId),
+                        AccountID = order.ApplicationUserId,
                         Amount = (double)order.Total,
                         CustomerName = $"{account.FirstName} {account.LastName}",
                         OrderID = order.OrderId
@@ -299,7 +300,7 @@ namespace MonShopAPI.Controller
             try
             {
 
-                var response = new PaymentResponseModel
+                var response = new VNPAYResponseModel
                 {
                     PaymentMethod = Request.Query["vnp_BankCode"],
                     OrderDescription = Request.Query["vnp_OrderInfo"],

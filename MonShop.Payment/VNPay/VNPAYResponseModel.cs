@@ -1,6 +1,6 @@
 ﻿namespace VNPay.Models;
 
-public class PaymentResponseModel
+public class VNPAYResponseModel
 {
     public string OrderDescription { get; set; }
     public string TransactionId { get; set; }
