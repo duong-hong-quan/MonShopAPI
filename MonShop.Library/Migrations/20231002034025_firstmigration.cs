@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MonShop.Library.Migrations
 {
-    public partial class addNewTableDeliveryAddresses : Migration
+    public partial class firstmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,6 @@ namespace MonShop.Library.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -546,36 +545,36 @@ namespace MonShop.Library.Migrations
                 columns: new[] { "ProductId", "CategoryId", "Description", "Discount", "ImageUrl", "IsDeleted", "Price", "ProductName", "ProductStatusId" },
                 values: new object[,]
                 {
-                    { 1, 1, "This is the description for Product 1.", 5.0, "image1.jpg", false, 19.989999999999998, "Product 1", 1 },
-                    { 2, 2, "This is the description for Product 2.", null, "image2.jpg", false, 29.989999999999998, "Product 2", 1 },
-                    { 3, 1, null, null, null, true, 9.9900000000000002, "Product 3", 2 },
-                    { 4, 2, "This is the description for Product 4.", 2.5, "image4.jpg", false, 24.989999999999998, "Product 4", 1 },
-                    { 5, 3, "This is the description for Product 5.", null, "image5.jpg", false, 14.99, "Product 5", 1 },
-                    { 6, 3, "This is the description for Product 6.", null, "image6.jpg", false, 17.989999999999998, "Product 6", 1 },
-                    { 7, 1, "This is the description for Product 7.", 3.0, "image7.jpg", false, 22.989999999999998, "Product 7", 1 },
-                    { 8, 2, "This is the description for Product 8.", null, "image8.jpg", false, 10.99, "Product 8", 2 },
-                    { 9, 4, "This is the description for Product 9.", 4.5, "image9.jpg", false, 27.989999999999998, "Product 9", 1 },
-                    { 10, 3, "This is the description for Product 10.", null, "image10.jpg", false, 14.99, "Product 10", 1 },
-                    { 11, 2, "This is the description for Product 11.", 6.0, "image11.jpg", false, 32.990000000000002, "Product 11", 1 },
-                    { 12, 1, "This is the description for Product 12.", null, "image12.jpg", false, 19.989999999999998, "Product 12", 1 },
-                    { 13, 3, "This is the description for Product 13.", 2.0, "image13.jpg", false, 14.99, "Product 13", 1 },
-                    { 14, 4, "This is the description for Product 14.", null, "image14.jpg", false, 23.989999999999998, "Product 14", 2 },
-                    { 15, 2, "This is the description for Product 15.", 1.5, "image15.jpg", false, 11.99, "Product 15", 1 },
-                    { 16, 3, "This is the description for Product 16.", null, "image16.jpg", false, 29.989999999999998, "Product 16", 1 },
-                    { 17, 1, "This is the description for Product 17.", 3.0, "image17.jpg", false, 18.989999999999998, "Product 17", 1 },
-                    { 18, 2, "This is the description for Product 18.", null, "image18.jpg", false, 13.99, "Product 18", 2 },
-                    { 19, 4, "This is the description for Product 19.", 4.5, "image19.jpg", false, 26.989999999999998, "Product 19", 1 },
-                    { 20, 3, "This is the description for Product 20.", null, "image20.jpg", false, 12.99, "Product 20", 1 },
-                    { 21, 2, "This is the description for Product 21.", 5.0, "image21.jpg", false, 31.989999999999998, "Product 21", 1 },
-                    { 22, 1, "This is the description for Product 22.", null, "image22.jpg", false, 16.989999999999998, "Product 22", 1 },
-                    { 23, 3, "This is the description for Product 23.", 2.0, "image23.jpg", false, 15.99, "Product 23", 1 },
-                    { 24, 4, "This is the description for Product 24.", null, "image24.jpg", false, 28.989999999999998, "Product 24", 2 },
-                    { 25, 2, "This is the description for Product 25.", 1.5, "image25.jpg", false, 10.99, "Product 25", 1 },
-                    { 26, 1, "This is the description for Product 26.", null, "image26.jpg", false, 19.989999999999998, "Product 26", 1 },
-                    { 27, 3, "This is the description for Product 27.", 2.0, "image27.jpg", false, 14.99, "Product 27", 1 },
-                    { 28, 4, "This is the description for Product 28.", null, "image28.jpg", false, 23.989999999999998, "Product 28", 2 },
-                    { 29, 2, "This is the description for Product 29.", 1.5, "image29.jpg", false, 11.99, "Product 29", 1 },
-                    { 30, 1, "This is the description for Product 30.", null, "image30.jpg", false, 24.989999999999998, "Product 30", 1 }
+                    { 1, 1, "This is the description for Product 1.", 5.0, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 19.989999999999998, "Product 1", 1 },
+                    { 2, 2, "This is the description for Product 2.", null, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 29.989999999999998, "Product 2", 1 },
+                    { 3, 1, null, null, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", true, 9.9900000000000002, "Product 3", 2 },
+                    { 4, 2, "This is the description for Product 4.", 2.5, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 24.989999999999998, "Product 4", 1 },
+                    { 5, 3, "This is the description for Product 5.", null, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 14.99, "Product 5", 1 },
+                    { 6, 3, "This is the description for Product 6.", null, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 17.989999999999998, "Product 6", 1 },
+                    { 7, 1, "This is the description for Product 7.", 3.0, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 22.989999999999998, "Product 7", 1 },
+                    { 8, 2, "This is the description for Product 8.", null, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 10.99, "Product 8", 2 },
+                    { 9, 4, "This is the description for Product 9.", 4.5, "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846", false, 27.989999999999998, "Product 9", 1 },
+                    { 10, 3, "This is the description for Product 10.", null, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 14.99, "Product 10", 1 },
+                    { 11, 2, "This is the description for Product 11.", 6.0, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 32.990000000000002, "Product 11", 1 },
+                    { 12, 1, "This is the description for Product 12.", null, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 19.989999999999998, "Product 12", 1 },
+                    { 13, 3, "This is the description for Product 13.", 2.0, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 14.99, "Product 13", 1 },
+                    { 14, 4, "This is the description for Product 14.", null, "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846", false, 23.989999999999998, "Product 14", 2 },
+                    { 15, 2, "This is the description for Product 15.", 1.5, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 11.99, "Product 15", 1 },
+                    { 16, 3, "This is the description for Product 16.", null, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 29.989999999999998, "Product 16", 1 },
+                    { 17, 1, "This is the description for Product 17.", 3.0, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 18.989999999999998, "Product 17", 1 },
+                    { 18, 2, "This is the description for Product 18.", null, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 13.99, "Product 18", 2 },
+                    { 19, 4, "This is the description for Product 19.", 4.5, "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846", false, 26.989999999999998, "Product 19", 1 },
+                    { 20, 3, "This is the description for Product 20.", null, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 12.99, "Product 20", 1 },
+                    { 21, 2, "This is the description for Product 21.", 5.0, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 31.989999999999998, "Product 21", 1 },
+                    { 22, 1, "This is the description for Product 22.", null, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 16.989999999999998, "Product 22", 1 },
+                    { 23, 3, "This is the description for Product 23.", 2.0, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 15.99, "Product 23", 1 },
+                    { 24, 4, "This is the description for Product 24.", null, "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846", false, 28.989999999999998, "Product 24", 2 },
+                    { 25, 2, "This is the description for Product 25.", 1.5, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 10.99, "Product 25", 1 },
+                    { 26, 1, "This is the description for Product 26.", null, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 19.989999999999998, "Product 26", 1 },
+                    { 27, 3, "This is the description for Product 27.", 2.0, "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1", false, 14.99, "Product 27", 1 },
+                    { 28, 4, "This is the description for Product 28.", null, "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846", false, 23.989999999999998, "Product 28", 2 },
+                    { 29, 2, "This is the description for Product 29.", 1.5, "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg", false, 11.99, "Product 29", 1 },
+                    { 30, 1, "This is the description for Product 30.", null, "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg", false, 24.989999999999998, "Product 30", 1 }
                 });
 
             migrationBuilder.CreateIndex(

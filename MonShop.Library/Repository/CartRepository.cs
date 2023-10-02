@@ -182,14 +182,10 @@ namespace MonShop.Library.Repository
                 item.CartId = request.item.CartId;
                 try
                 {
-                    // Save changes asynchronously
                     await _db.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    // Handle concurrency conflicts if necessary
-                    // You can choose to retry the operation or handle the conflict as needed
-                    // Depending on your application logic
                     throw;
                 }
 

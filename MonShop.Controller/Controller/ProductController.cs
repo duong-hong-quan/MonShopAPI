@@ -232,6 +232,22 @@ namespace MonShopAPI.Controller
             return _response;
         }
 
-        
+        [HttpGet("GetAllProductByCategoryId/{CategoryId:int}")]
+        public async Task<ResponseDTO> GetAllProductByCategoryId(int CategoryId)
+        {
+            try
+            {
+                List<Product> list = await _productRepository.GetAllProductByCategoryId(CategoryId);
+                _response.Data = list;
+
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
     }
 }

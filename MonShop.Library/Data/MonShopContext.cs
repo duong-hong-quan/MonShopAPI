@@ -158,7 +158,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 1,
                 ProductName = "Product 1",
-                ImageUrl = "image1.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 19.99,
                 Discount = 5.00,
                 Description = "This is the description for Product 1.",
@@ -170,7 +170,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 2,
                 ProductName = "Product 2",
-                ImageUrl = "image2.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 29.99,
                 Discount = null,
                 Description = "This is the description for Product 2.",
@@ -183,7 +183,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 3,
                 ProductName = "Product 3",
-                ImageUrl = null,
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 9.99,
                 Discount = null,
                 Description = null,
@@ -195,7 +195,7 @@ namespace MonShop.Library.Data
              {
                  ProductId = 4,
                  ProductName = "Product 4",
-                 ImageUrl = "image4.jpg",
+                 ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                  Price = 24.99,
                  Discount = 2.50,
                  Description = "This is the description for Product 4.",
@@ -207,7 +207,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 5,
                 ProductName = "Product 5",
-                ImageUrl = "image5.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 14.99,
                 Discount = null,
                 Description = "This is the description for Product 5.",
@@ -219,7 +219,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 6,
                 ProductName = "Product 6",
-                ImageUrl = "image6.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 17.99,
                 Discount = null,
                 Description = "This is the description for Product 6.",
@@ -231,7 +231,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 7,
                 ProductName = "Product 7",
-                ImageUrl = "image7.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 22.99,
                 Discount = 3.00,
                 Description = "This is the description for Product 7.",
@@ -243,7 +243,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 8,
                 ProductName = "Product 8",
-                ImageUrl = "image8.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 10.99,
                 Discount = null,
                 Description = "This is the description for Product 8.",
@@ -255,7 +255,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 9,
                 ProductName = "Product 9",
-                ImageUrl = "image9.jpg",
+                ImageUrl = "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846",
                 Price = 27.99,
                 Discount = 4.50,
                 Description = "This is the description for Product 9.",
@@ -267,7 +267,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 10,
                 ProductName = "Product 10",
-                ImageUrl = "image10.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 14.99,
                 Discount = null,
                 Description = "This is the description for Product 10.",
@@ -278,7 +278,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 11,
                 ProductName = "Product 11",
-                ImageUrl = "image11.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 32.99,
                 Discount = 6.00,
                 Description = "This is the description for Product 11.",
@@ -290,7 +290,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 12,
                 ProductName = "Product 12",
-                ImageUrl = "image12.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 19.99,
                 Discount = null,
                 Description = "This is the description for Product 12.",
@@ -302,7 +302,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 13,
                 ProductName = "Product 13",
-                ImageUrl = "image13.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 14.99,
                 Discount = 2.00,
                 Description = "This is the description for Product 13.",
@@ -314,7 +314,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 14,
                 ProductName = "Product 14",
-                ImageUrl = "image14.jpg",
+                ImageUrl = "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846",
                 Price = 23.99,
                 Discount = null,
                 Description = "This is the description for Product 14.",
@@ -326,7 +326,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 15,
                 ProductName = "Product 15",
-                ImageUrl = "image15.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 11.99,
                 Discount = 1.50,
                 Description = "This is the description for Product 15.",
@@ -337,7 +337,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 16,
                 ProductName = "Product 16",
-                ImageUrl = "image16.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 29.99,
                 Discount = null,
                 Description = "This is the description for Product 16.",
@@ -349,7 +349,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 17,
                 ProductName = "Product 17",
-                ImageUrl = "image17.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 18.99,
                 Discount = 3.00,
                 Description = "This is the description for Product 17.",
@@ -361,7 +361,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 18,
                 ProductName = "Product 18",
-                ImageUrl = "image18.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 13.99,
                 Discount = null,
                 Description = "This is the description for Product 18.",
@@ -373,7 +373,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 19,
                 ProductName = "Product 19",
-                ImageUrl = "image19.jpg",
+                ImageUrl = "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846",
                 Price = 26.99,
                 Discount = 4.50,
                 Description = "This is the description for Product 19.",
@@ -385,7 +385,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 20,
                 ProductName = "Product 20",
-                ImageUrl = "image20.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 12.99,
                 Discount = null,
                 Description = "This is the description for Product 20.",
@@ -397,7 +397,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 21,
                 ProductName = "Product 21",
-                ImageUrl = "image21.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 31.99,
                 Discount = 5.00,
                 Description = "This is the description for Product 21.",
@@ -409,7 +409,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 22,
                 ProductName = "Product 22",
-                ImageUrl = "image22.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 16.99,
                 Discount = null,
                 Description = "This is the description for Product 22.",
@@ -421,7 +421,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 23,
                 ProductName = "Product 23",
-                ImageUrl = "image23.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 15.99,
                 Discount = 2.00,
                 Description = "This is the description for Product 23.",
@@ -433,7 +433,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 24,
                 ProductName = "Product 24",
-                ImageUrl = "image24.jpg",
+                ImageUrl = "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846",
                 Price = 28.99,
                 Discount = null,
                 Description = "This is the description for Product 24.",
@@ -445,7 +445,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 25,
                 ProductName = "Product 25",
-                ImageUrl = "image25.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 10.99,
                 Discount = 1.50,
                 Description = "This is the description for Product 25.",
@@ -457,7 +457,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 26,
                 ProductName = "Product 26",
-                ImageUrl = "image26.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 19.99,
                 Discount = null,
                 Description = "This is the description for Product 26.",
@@ -469,7 +469,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 27,
                 ProductName = "Product 27",
-                ImageUrl = "image27.jpg",
+                ImageUrl = "https://images.lululemon.com/is/image/lululemon/LW9EPYS_061712_1",
                 Price = 14.99,
                 Discount = 2.00,
                 Description = "This is the description for Product 27.",
@@ -481,7 +481,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 28,
                 ProductName = "Product 28",
-                ImageUrl = "image28.jpg",
+                ImageUrl = "https://aldo.com.sa/cdn/shop/collections/s22_q1_w_vday_accessories_cluster_4467-547936.jpg?v=1644355846",
                 Price = 23.99,
                 Discount = null,
                 Description = "This is the description for Product 28.",
@@ -493,7 +493,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 29,
                 ProductName = "Product 29",
-                ImageUrl = "image29.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/April2023/somicfxam4.jpg",
                 Price = 11.99,
                 Discount = 1.50,
                 Description = "This is the description for Product 29.",
@@ -505,7 +505,7 @@ namespace MonShop.Library.Data
             {
                 ProductId = 30,
                 ProductName = "Product 30",
-                ImageUrl = "image30.jpg",
+                ImageUrl = "https://media.coolmate.me/cdn-cgi/image/width=672,height=990,quality=85,format=auto/uploads/December2021/1-copy-2_99.jpg",
                 Price = 24.99,
                 Discount = null,
                 Description = "This is the description for Product 30.",

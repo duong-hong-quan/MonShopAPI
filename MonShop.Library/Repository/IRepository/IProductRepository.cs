@@ -22,6 +22,8 @@ namespace MonShop.Library.Repository.IRepository
 
         public Task<ProductInventory> GetProductInventory(int ProductId, int SizeId);
         public  Task<List<Size>> GetAllSize();
+        public  Task<List<Product>> GetAllProductByCategoryId(int CategoryId);
+
 
     }
 }

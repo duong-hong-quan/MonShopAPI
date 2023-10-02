@@ -23,7 +23,7 @@ namespace MonShop.Library.Repository
 
         public async Task AddMessage(MessageRequest message)
         {
-            Message mess = await _db.Message.Where(m => m.ApplicationUserId == message.AccountID).FirstAsync();
+            Message mess = await _db.Message.Where(m => m.ApplicationUserId == message.AccountID).FirstOrDefaultAsync();
             if (mess != null)
             {
                 Message DTO = new Message
@@ -68,7 +68,7 @@ namespace MonShop.Library.Repository
 
         public async Task<Room> GetRoomByID(int roomID)
         {
-            Room Room = await _db.Room.FirstAsync(r => r.RoomId == roomID);
+            Room Room = await _db.Room.FirstOrDefaultAsync(r => r.RoomId == roomID);
             return Room;
         }
         public async Task AddMessageAdmin(MessageAdminRequest message)

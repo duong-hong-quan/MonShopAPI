@@ -45,13 +45,16 @@ namespace MonShop.Controller.Controller
 
         public async Task<ResponseDTO> GetMessageByRoomID(int roomID)
         {
-            try { }
+            try
+            {
+                List<Message> list = await _messageRepository.GetAllMessageByRoomID(roomID);
+                _response.Data = list;
+            }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.Message = ex.Message;
             }
-            List<Message> list = await _messageRepository.GetAllMessageByRoomID(roomID);
             return _response;
         }
 
@@ -98,8 +101,9 @@ namespace MonShop.Controller.Controller
         [Route("GetRoomByID/{roomID}")]
         public async Task<ResponseDTO> GetRoomByID(int roomID)
         {
-            try { 
-            Room room = await _messageRepository.GetRoomByID(roomID);
+            try
+            {
+                Room room = await _messageRepository.GetRoomByID(roomID);
                 _response.Data = room;
 
             }

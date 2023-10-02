@@ -70,7 +70,7 @@ namespace MonShop.Library.Repository
         public async Task<TokenModel> GetNewToken(string refreshToken, string accountId)
         {
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Id.ToLower() == accountId);
-            if (user.RefreshToken == refreshToken)
+            if (user?.RefreshToken == refreshToken)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 var claims = new List<Claim>

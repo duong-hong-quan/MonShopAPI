@@ -141,7 +141,7 @@ namespace MonShopLibrary.Repository
         }
         public async Task<List<Order>> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
         {
-            List<Order> order = await _db.Order.Where(a => a.ApplicationUserId == AccountID && a.OrderStatusId == OrderStatusID).ToListAsync();
+            List<Order> order = await _db.Order.Where(a => a.ApplicationUserId == AccountID && a.OrderStatusId == OrderStatusID).Include(o=> o.OrderStatus).ToListAsync();
             return order;
         }
         public async Task<ListOrder> GetListItemByOrderID(string OrderID)

@@ -113,5 +113,10 @@ namespace MonShopLibrary.Repository
         {
             return await _db.Size.ToListAsync();
         }
+
+        public async Task<List<Product>> GetAllProductByCategoryId(int CategoryId)
+        {
+            return await _db.Product.Where(p=> p.CategoryId == CategoryId && p.IsDeleted == false).Include(c=> c.Category).ToListAsync();
+        }
     }
 }
