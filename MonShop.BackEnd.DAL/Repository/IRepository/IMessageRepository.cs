@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonShop.BackEnd.DAL.Repository.IRepository
 {
-    public interface IMessageRepository
+    public interface IMessageRepository : IRepository<Message>
     {
         public Task AddMessage(MessageRequest message);
 

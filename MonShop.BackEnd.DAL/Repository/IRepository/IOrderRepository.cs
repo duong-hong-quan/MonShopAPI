@@ -8,7 +8,7 @@ using MonShop.BackEnd.DAL.Models;
 
 namespace MonShop.BackEnd.DAL.Repository.IRepository
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IRepository<Order>
     {
         public Task<List<OrderStatus>> GetAllOrderStatus();
         public Task AddOrderStatus(OrderStatusDTO dto);

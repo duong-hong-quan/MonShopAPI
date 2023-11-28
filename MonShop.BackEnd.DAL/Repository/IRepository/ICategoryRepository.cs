@@ -8,7 +8,7 @@ using MonShop.BackEnd.DAL.Models;
 
 namespace MonShop.BackEnd.DAL.Repository.IRepository
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository: IRepository<Category>
     {
         public Task<List<Category>> GetAllCategory();
 

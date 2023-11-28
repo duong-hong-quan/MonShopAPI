@@ -11,41 +11,37 @@ using MonShop.BackEnd.DAL.Data;
 
 namespace MonShop.BackEnd.DAL.Repository
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : Repository<Category>,ICategoryRepository
     {
-
-        private readonly MonShopContext _db;
-
-        public CategoryRepository(MonShopContext db)
+        public CategoryRepository(MonShopContext context) : base(context)
         {
-            _db = db;
         }
 
         public async Task<List<Category>> GetAllCategory()
         {
-            List<Category> list = await _db.Category.ToListAsync();
+            List<Category> list = await context.Category.ToListAsync();
             return list;
         }
 
         public async Task AddCategory(CategoryDTO dto)
         {
             Category category = new Category { CategoryId = dto.CategoryId, CategoryName = dto.CategoryName };
-            await _db.Category.AddAsync(category);
-            await _db.SaveChangesAsync();
+            await context.Category.AddAsync(category);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateCategory(CategoryDTO dto)
         {
             Category category = new Category { CategoryId = dto.CategoryId, CategoryName = dto.CategoryName };
-            _db.Category.Update(category);
-            await _db.SaveChangesAsync();
+            context.Category.Update(category);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteCategory(CategoryDTO dto)
         {
-            Category category = await _db.Category.FirstAsync(c => c.CategoryId == dto.CategoryId);
-            _db.Category.Remove(category);
-            await _db.SaveChangesAsync();
+            Category category = await context.Category.FirstAsync(c => c.CategoryId == dto.CategoryId);
+            context.Category.Remove(category);
+            await context.SaveChangesAsync();
         }
 
     }

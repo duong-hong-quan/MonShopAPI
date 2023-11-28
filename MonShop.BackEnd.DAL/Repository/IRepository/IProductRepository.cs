@@ -8,7 +8,7 @@ using MonShop.BackEnd.DAL.DTO;
 
 namespace MonShop.BackEnd.DAL.Repository.IRepository
 {
-    public interface IProductRepository
+    public interface IProductRepository : IRepository <Product>
     {
         public Task<List<Product>> GetAllProduct();
         public Task AddProduct(ProductDTO dto);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonShop.BackEnd.DAL.Repository.IRepository
 {
-    public interface IPaymentRepository
+    public interface IPaymentRepository 
     {
         public Task AddPaymentRespone(PaymentResponse payment);
         public Task<IEnumerable<PaymentResponse>> GetAllPayment();
