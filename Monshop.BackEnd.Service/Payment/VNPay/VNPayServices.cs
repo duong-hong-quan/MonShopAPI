@@ -22,7 +22,7 @@ namespace Monshop.BackEnd.Service.Payment.VNPay
 
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(config["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = Utility.Utils.Utility.GetInstance().GetCurrentDateTimeInTimeZone().Ticks.ToString();
+            var tick = MonShop.BackEnd.Utility.Utils.Utility.GetInstance().GetCurrentDateTimeInTimeZone().Ticks.ToString();
             var pay = new VnPayLibrary();
             var urlCallBack = $"{config["Vnpay:ReturnUrl"]}/{model.OrderID}";
 

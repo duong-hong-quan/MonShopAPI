@@ -8,6 +8,7 @@ namespace MonShop.BackEnd.DAL.DTO
 {
     public class RoomDTO
     {
+        public int RoomId { get; set; }
         public string? RoomName { get; set; }
         public string? RoomImg { get; set; }
     }

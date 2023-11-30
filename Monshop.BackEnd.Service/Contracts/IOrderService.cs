@@ -1,4 +1,5 @@
 ﻿using MonShop.BackEnd.DAL.DTO;
+using MonShop.BackEnd.DAL.DTO.Response;
 using MonShop.BackEnd.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -10,20 +11,20 @@ namespace Monshop.BackEnd.Service.Contracts
 {
     public interface IOrderService
     {
-        public Task<List<OrderStatus>> GetAllOrderStatus();
-        public Task AddOrderStatus(OrderStatusDTO dto);
-        public Task UpdateOrderStatus(OrderStatusDTO dto);
-        public Task<string> AddOrderRequest(OrderRequest orderRequest);
-        public Task UpdateStatusForOrder(string OrderID, int status);
-        public Task<Order> GetOrderByID(string OrderID);
-        public Task<List<Order>> GetAllOrder();
-        public Task<ListOrder> GetListItemByOrderID(string OrderID);
-        public Task UpdateQuantityAfterPay(string OrderID);
-        public Task<List<Order>> GetAllOrderByAccountID(string AccountID, int OrderStatusID);
-        public Task<List<Order>> GetAllOrderByAccountID(string AccountID);
+        public Task<AppActionResult> GetAllOrderStatus();
+        public Task<AppActionResult> AddOrderStatus(OrderStatusDTO dto);
+        public Task<AppActionResult> UpdateOrderStatus(OrderStatusDTO dto);
+        public Task<AppActionResult> AddOrderRequest(OrderRequest orderRequest);
+        public Task<AppActionResult> UpdateStatusForOrder(string OrderID, int status);
+        public Task<AppActionResult> GetOrderByID(string OrderID);
+        public Task<AppActionResult> GetAllOrder();
+        public Task<AppActionResult> GetListItemByOrderID(string OrderID);
+        public Task<AppActionResult> UpdateQuantityAfterPay(string OrderID);
+        public Task<AppActionResult> GetAllOrderByAccountID(string AccountID, int OrderStatusID);
+        public Task<AppActionResult> GetAllOrderByAccountID(string AccountID);
 
-        public Task<OrderCount> OrderStatistic(string AccountID);
-        public Task<bool> VerifyOrder(string OrderID);
-        public Task<bool> IsOutStock(OrderRequest request);
+        public Task<AppActionResult> OrderStatistic(string AccountID);
+        public Task<AppActionResult> VerifyOrder(string OrderID);
+        public Task<AppActionResult> IsOutStock(OrderRequest request);
     }
 }

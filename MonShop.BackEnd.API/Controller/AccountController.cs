@@ -1,18 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using MonShop.BackEnd.Utility.Utils;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
-using MonShop.BackEnd.API.Model;
 using MonShop.BackEnd.DAL.DTO;
 using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.DAL.IRepository;
-using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.DAL.DTO.Response;
+using Monshop.BackEnd.Service.Contracts;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -108,11 +100,7 @@ namespace MonShop.BackEnd.API.Controller
         }
 
 
-        [HttpGet("GetNewToken")]
-        public async Task<ResponseDTO> GetNewToken(string refreshToken, string accountId)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 
 }

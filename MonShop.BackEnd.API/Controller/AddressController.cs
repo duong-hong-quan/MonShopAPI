@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MonShop.BackEnd.API.Model;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.DAL.IRepository;
+using MonShop.BackEnd.DAL.DTO.Response;
+using Monshop.BackEnd.Service.Contracts;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -13,13 +11,11 @@ namespace MonShop.BackEnd.API.Controller
     [Authorize]
     public class AddressController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepository;
-        private readonly ResponseDTO _response;
+        private readonly IAccountService _accountService;
 
-        public AddressController(IAccountRepository accountRepository)
+        public AddressController(IAccountService accountService)
         {
-            _accountRepository = accountRepository;
-            _response = new ResponseDTO();
+            _accountService = accountService;
         }
 
         /*
@@ -31,75 +27,29 @@ namespace MonShop.BackEnd.API.Controller
         public  Task<List<DeliveryAddress>> GetAllAddressByUserId(string userId);*/
 
         [HttpPost("AddAddress")]
-        public async Task<ResponseDTO> AddAddress(DeliveryAddressDTO addressDto)
+        public async Task<AppActionResult> AddAddress(DeliveryAddressDTO addressDto)
         {
-            try
-            {
-                await _accountRepository.AddAddress(addressDto);
-                _response.Data = true;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
+            return await _accountService.AddAddress(addressDto);
         }
 
         [HttpPut("UpdateAddress")]
-        public async Task<ResponseDTO> UpdateAddress(DeliveryAddressDTO addressDto)
+        public async Task<AppActionResult> UpdateAddress(DeliveryAddressDTO addressDto)
         {
-            try
-            {
-                await _accountRepository.UpdateAddress(addressDto);
-                _response.Data = true;
+            return await _accountService.UpdateAddress(addressDto);
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
         }
 
 
         [HttpDelete("RemoveAddress")]
-        public async Task<ResponseDTO> RemoveAddress(DeliveryAddressDTO addressDto)
+        public async Task<AppActionResult> RemoveAddress(DeliveryAddressDTO addressDto)
         {
-            try
-            {
-                await _accountRepository.RemoveAddress(addressDto);
-                _response.Data = true;
+            return await _accountService.RemoveAddress(addressDto);
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
         }
         [HttpGet("GetAllAddressByUserId/{UserId}")]
-        public async Task<ResponseDTO> GetAllAddressByUserId(string UserId)
+        public async Task<AppActionResult> GetAllAddressByUserId(string UserId)
         {
-            try
-            {
-                _response.Data = await _accountRepository.GetAllAddressByUserId(UserId);
-
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
+            return await _accountService.GetAllAddressByUserId(UserId);
         }
 
 

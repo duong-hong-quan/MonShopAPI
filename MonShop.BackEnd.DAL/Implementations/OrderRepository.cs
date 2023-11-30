@@ -12,17 +12,11 @@ using MonShop.BackEnd.DAL.IRepository;
 
 namespace MonShop.BackEnd.DAL.Repository
 {
-    public class OrderRepository : Repository<Order>,IOrderRepository
+    public class OrderRepository : Repository<Order>, IOrderRepository
     {
-        private readonly MonShopContext _db;
-        private readonly ICartRepository _cartRepository;
 
-        public OrderRepository(MonShopContext db, ICartRepository cartRepository): base(db)
-        {
-            _db = db;
-            _cartRepository = cartRepository;
-        }
 
+        /*
         public async Task<List<OrderStatus>> GetAllOrderStatus()
         {
             List<OrderStatus> list = await _db.OrderStatus.ToListAsync();
@@ -83,7 +77,6 @@ namespace MonShop.BackEnd.DAL.Repository
                     await _db.Order.AddAsync(order);
                     await _db.SaveChangesAsync();
                     orderID = order.OrderId;
-
                     IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(orderRequest.CartId);
                     foreach (CartItem itemDTO in items)
                     {
@@ -222,6 +215,10 @@ namespace MonShop.BackEnd.DAL.Repository
         {
             return await _db.Order.Where(a => a.ApplicationUserId == AccountID).Include(a => a.OrderStatus).ToListAsync();
 
+        }
+        */
+        public OrderRepository(MonShopContext context) : base(context)
+        {
         }
     }
 }

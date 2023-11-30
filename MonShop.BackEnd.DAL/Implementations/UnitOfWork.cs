@@ -18,6 +18,27 @@ namespace MonShop.BackEnd.DAL.Repository
         }
 
 
+        public async Task BeginTransaction()
+        {
+            await _db.Database.BeginTransactionAsync();
+        }
+
+        public async Task SaveChangeAndCommitAsync()
+        {
+            await SaveChangeAsync();
+            await CommitAsync();
+        }
+
+        public async Task CommitAsync()
+        {
+            await _db.Database.CommitTransactionAsync();
+        }
+
+        public async Task RollBack()
+        {
+            await _db.Database.RollbackTransactionAsync();
+        }
+
         public async Task SaveChangeAsync()
         {
             await _db.SaveChangesAsync();

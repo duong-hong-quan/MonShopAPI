@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Monshop.BackEnd.Service.Implementations
 {
-    public class AccountService : GenericBackEndService, IAccountService
+    public class AccountService : GenericBackEndService, Contracts.IAccountService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -35,7 +35,7 @@ namespace Monshop.BackEnd.Service.Implementations
             IConfiguration configuration,
             TokenModel loginResponse,
             IJwtGenerator jwtGenerator,
-            IAccountRepository accountRepository,
+          IAccountRepository accountRepository,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IServiceProvider serviceProvider
@@ -370,7 +370,7 @@ namespace Monshop.BackEnd.Service.Implementations
             try
             {
                 bool isValid = true;
-                var account = await _accountRepository.GetAccountById(user.Id);
+                var account = await _accountRepository.GetById(user.Id);
                 if (account == null)
                 {
                     isValid = false;

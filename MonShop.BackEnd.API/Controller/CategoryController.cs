@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MonShop.BackEnd.API.Model;
+﻿using Microsoft.AspNetCore.Mvc;
+using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.IRepository;
+using MonShop.BackEnd.DAL.DTO.Response;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -11,96 +10,42 @@ namespace MonShop.BackEnd.API.Controller
 
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ResponseDTO _response;
-        public CategoryController(ICategoryRepository categoryRepository)
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
         {
 
-            _categoryRepository = categoryRepository;
-            _response = new ResponseDTO();
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         [Route("GetAllCategory")]
-        public async Task<ResponseDTO> GetAllCategory()
+        public async Task<AppActionResult> GetAllCategory()
         {
-            try
-            {
-                _response.Data = await _categoryRepository.GetAllCategory();
+            return await _categoryService.GetAllCategory();
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-
-            return _response;
         }
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("AddCategory")]
-        public async Task<ResponseDTO> AddCategory(CategoryDTO dto)
+        public async Task<AppActionResult> AddCategory(CategoryDTO dto)
         {
-            try
-            {
+            return await _categoryService.AddCategory(dto);
 
-                await _categoryRepository.AddCategory(dto);
-                _response.Data = dto;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-
-            return _response;
         }
-        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("UpdateCategory")]
-        public async Task<ResponseDTO> UpdateCategory(CategoryDTO dto)
+        public async Task<AppActionResult> UpdateCategory(CategoryDTO dto)
         {
-            try
-            {
-                await _categoryRepository.UpdateCategory(dto);
+            return await _categoryService.UpdateCategory(dto);
 
-                _response.Data = dto;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-
-            return _response;
         }
 
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("DeleteCategory")]
 
-        public async Task<ResponseDTO> DeleteCategory(CategoryDTO dto)
+        public async Task<AppActionResult> DeleteCategory(CategoryDTO dto)
         {
-            try
-            {
-                await _categoryRepository.DeleteCategory(dto);
-                _response.Data = dto;
-
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-
-            return _response;
+            return await _categoryService.DeleteCategory(dto);
         }
     }
 }

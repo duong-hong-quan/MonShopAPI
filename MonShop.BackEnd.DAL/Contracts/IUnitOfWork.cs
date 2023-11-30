@@ -8,7 +8,10 @@ namespace MonShop.BackEnd.DAL.Contracts
 {
     public interface IUnitOfWork
     {
+        Task BeginTransaction();
+        Task RollBack();
+        Task CommitAsync();
         Task SaveChangeAsync();
-
+        Task SaveChangeAndCommitAsync();
     }
 }

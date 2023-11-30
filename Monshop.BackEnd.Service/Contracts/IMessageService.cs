@@ -1,4 +1,5 @@
 ﻿using MonShop.BackEnd.DAL.DTO;
+using MonShop.BackEnd.DAL.DTO.Response;
 using MonShop.BackEnd.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,19 @@ namespace Monshop.BackEnd.Service.Contracts
 {
     public interface IMessageService
     {
-        public Task AddMessage(MessageRequest message);
+        public Task<AppActionResult> AddMessage(MessageRequest message);
 
 
-        public Task<List<Message>> GetAllMessageByAccountID(string AccountID);
+        public Task<AppActionResult> GetAllMessageByAccountID(string AccountID);
 
 
-        public Task<List<Message>> GetAllMessageByRoomID(int RoomID);
+        public Task<AppActionResult> GetAllMessageByRoomID(int RoomID);
 
-        public Task<List<Room>> GetAllRoom();
-        public Task AddMessageAdmin(MessageAdminRequest message);
-        public Task<Room> GetRoomByID(int roomID);
-        public Task CreateRoom(RoomDTO room);
-        public Task UpdateRoom(Room room);
-        public Task DeleteRoom(int RoomID);
+        public Task<AppActionResult> GetAllRoom();
+        public Task<AppActionResult> AddMessageAdmin(MessageAdminRequest message);
+        public Task<AppActionResult> GetRoomByID(int roomID);
+        public Task<AppActionResult> CreateRoom(RoomDTO room);
+        public Task<AppActionResult> UpdateRoom(Room room);
+        public Task<AppActionResult> DeleteRoom(int RoomID);
     }
 }

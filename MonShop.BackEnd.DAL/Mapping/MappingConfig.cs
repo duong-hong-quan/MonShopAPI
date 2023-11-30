@@ -21,6 +21,9 @@ namespace MonShop.BackEnd.DAL.Mapping
                 .ForMember(desc => desc.ApplicationUserId, act => act.MapFrom(src => src.ApplicationUserId))
                 .ForMember(desc => desc.Address, act => act.MapFrom(src => src.Address));
 
+                config.CreateMap<CategoryDTO, Category>().
+              ForMember(desc => desc.CategoryId, act => act.MapFrom(src => src.CategoryId))
+              .ForMember(desc => desc.CategoryName, act => act.MapFrom(src => src.CategoryName));
             });
             return mappingConfig;
         }

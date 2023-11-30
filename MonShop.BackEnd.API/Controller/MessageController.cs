@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MonShop.BackEnd.API.Model;
+using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.IRepository;
-using MonShop.BackEnd.DAL.Models;
+using MonShop.BackEnd.DAL.DTO.Response;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -12,107 +11,53 @@ namespace MonShop.BackEnd.API.Controller
     [Authorize]
     public class MessageController : ControllerBase
     {
-        private readonly IMessageRepository _messageRepository;
-        private readonly ResponseDTO _response;
+        private readonly IMessageService _messageService;
 
-        public MessageController(IMessageRepository messageRepository)
+        public MessageController(IMessageService messageService)
         {
-            _messageRepository = messageRepository;
-            _response = new ResponseDTO();
+            _messageService = messageService;
         }
 
         [HttpPost]
         [Route("AddMessage")]
-        public async Task<ResponseDTO> AddMessage(MessageAdminRequest request)
+        public async Task<AppActionResult> AddMessage(MessageAdminRequest request)
         {
-            try
-            {
-                await _messageRepository.AddMessageAdmin(request);
-                _response.Data = request;
+          return  await _messageService.AddMessageAdmin(request);
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
 
         }
         [HttpGet]
         [Route("GetMessageByRoomID/{roomID}")]
 
-        public async Task<ResponseDTO> GetMessageByRoomID(int roomID)
+        public async Task<AppActionResult> GetMessageByRoomID(int roomID)
         {
-            try
-            {
-                List<Message> list = await _messageRepository.GetAllMessageByRoomID(roomID);
-                _response.Data = list;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
+            return await _messageService.GetAllMessageByRoomID(roomID);
+
         }
 
         [HttpGet]
         [Route("GetAllMessageByAccountID/{AccountID}")]
 
-        public async Task<ResponseDTO> GetAllMessageByAccountID(string AccountID)
+        public async Task<AppActionResult> GetAllMessageByAccountID(string AccountID)
         {
-            try
-            {
+            return await _messageService.GetAllMessageByAccountID(AccountID);
 
-                List<Message> list = await _messageRepository.GetAllMessageByAccountID(AccountID);
-                _response.Data = list;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-
-            return _response;
         }
 
         [HttpGet]
         [Route("GetAllRoom")]
-        public async Task<ResponseDTO> GetAllRoom()
+        public async Task<AppActionResult> GetAllRoom()
         {
-            try
-            {
-                List<Room> list = await _messageRepository.GetAllRoom();
-                _response.Data = list;
+            return await _messageService.GetAllRoom();
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
 
         [HttpGet]
         [Route("GetRoomByID/{roomID}")]
-        public async Task<ResponseDTO> GetRoomByID(int roomID)
+        public async Task<AppActionResult> GetRoomByID(int roomID)
         {
-            try
-            {
-                Room room = await _messageRepository.GetRoomByID(roomID);
-                _response.Data = room;
+            return await _messageService.GetRoomByID(roomID);
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
     }
 }

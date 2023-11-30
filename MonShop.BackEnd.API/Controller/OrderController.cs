@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.SignalR;
-using MonShop.BackEnd.API.Model;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.Utility;
+using MonShop.BackEnd.DAL.DTO.Response;
+using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.DAL.IRepository;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -16,207 +12,67 @@ namespace MonShop.BackEnd.API.Controller
     [Authorize]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderRepository _orderRepository;
-        private readonly IProductRepository _productRepository;
-        private readonly IPaymentRepository _paymentRepository;
-        private readonly ICartRepository _cartRepository;
-        private readonly ResponseDTO _response;
+     private IOrderService _orderService;
 
-        public OrderController
-            (
-            IOrderRepository orderRepository,
-            IProductRepository productRepository,
-            IPaymentRepository paymentRepository,
-            ICartRepository cartRepository
-            )
+        public OrderController(IOrderService orderService)
         {
-            _orderRepository = orderRepository;
-            _productRepository = productRepository;
-            _paymentRepository = paymentRepository;
-            _cartRepository = cartRepository;
-            _response = new ResponseDTO();
+            _orderService = orderService;
         }
 
         [HttpGet]
         [Route("GetAllOrder")]
-        public async Task<ResponseDTO> GetAllOrder()
+        public async Task<AppActionResult> GetAllOrder()
         {
-            try
-            {
-                var list = await _orderRepository.GetAllOrder();
-                _response.Data = list;
+           return await _orderService.GetAllOrder();
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-
-            return _response;
         }
         [HttpGet]
         [Route("GetListItemByOrderID/{orderID}")]
-        public async Task<ResponseDTO> GetListItemByOrderID(string orderID)
+        public async Task<AppActionResult> GetListItemByOrderID(string orderID)
         {
-            try
-            {
-                var list = await _orderRepository.GetListItemByOrderID(orderID);
-                _response.Data = list;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
+            return await _orderService.GetListItemByOrderID(orderID);
+
         }
 
         [HttpGet]
         [Route("GetAllOrderStatus")]
-        public async Task<ResponseDTO> GetAllOrderStatus()
+        public async Task<AppActionResult> GetAllOrderStatus()
         {
-            try
-            {
+            return await _orderService.GetAllOrderStatus();
 
-                var list = await _orderRepository.GetAllOrderStatus();
-                _response.Data = list;
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [HttpPost]
         [Route("AddOrderStatus")]
-        public async Task<ResponseDTO> AddOrderStatus(OrderStatusDTO dto)
+        public async Task<AppActionResult> AddOrderStatus(OrderStatusDTO dto)
         {
-            try
-            {
-                await _orderRepository.AddOrderStatus(dto);
-                _response.Data = dto;
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
+            return await _orderService.AddOrderStatus(dto);
+
 
         }
         [HttpPut]
         [Route("UpdateOrderStatus")]
-        public async Task<ResponseDTO> UpdateOrderStatus(OrderStatusDTO dto)
+        public async Task<AppActionResult   > UpdateOrderStatus(OrderStatusDTO dto)
         {
-            try
-            {
+            return await _orderService.UpdateOrderStatus(dto);
 
-                await _orderRepository.UpdateOrderStatus(dto);
-                _response.Data = dto;
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [HttpPost]
         [Route("AddOrderRequest")]
-        public async Task<ResponseDTO> AddOrderRequest(OrderRequest orderRequest)
+        public async Task<AppActionResult> AddOrderRequest(OrderRequest orderRequest)
         {
-            bool isError = false;
-
-            try
-            {
-                IEnumerable<CartItem> items = await _cartRepository.GetItemsByCartId(orderRequest.CartId);
-                foreach (var item in items)
-                {
-                    if (item.Quantity == 0)
-                    {
-                        _response.Message = $"The quantity must greater than 0";
-                        isError = true;
-                        _response.Data = null;
-                        break;
-                    }
-                    Product product = await _productRepository.GetProductByID((int)item.ProductId);
-                    if (product == null)
-                    {
-                        _response.Message = $"No result Product with ID {item.ProductId}";
-                        isError = true;
-                        _response.Data = null;
-
-                        break;
-
-                    }
-                    ProductInventory productInventory = await _productRepository.GetProductInventory((int)item.ProductId, item.SizeId);
-
-                    if (item.Quantity > productInventory?.Quantity)
-                    {
-                        _response.Message = "This product doesn't have enough quantity";
-                        isError = true;
-                        _response.Data = null;
-
-                        break;
-
-                    }
-
-                }
-                if (!isError)
-                {
-                    string OrderID = await _orderRepository.AddOrderRequest(orderRequest);
-                    _response.Data = OrderID;
-                }
+            return await _orderService.AddOrderRequest(orderRequest);
 
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-
-
-            return _response;
         }
         [HttpPut]
         [Route("UpdateStatusForOrder")]
 
-        public async Task<ResponseDTO> UpdateStatusForOrder(string OrderID, int status)
+        public async Task<AppActionResult> UpdateStatusForOrder(string OrderID, int status)
         {
-            try
-            {
-                if (status == Utility.Utils.Constant.Order.FAILURE_PAY ||
-                    status == Utility.Utils.Constant.Order.PENDING_PAY ||
-                    status == Utility.Utils.Constant.Order.FAILURE_PAY ||
-                    status == Utility.Utils.Constant.Order.SUCCESS_PAY)
-                {
-                    _response.Message = "The system only accept when the order is payed success!";
-                }
-                else
-                {
-
-                    await _orderRepository.UpdateStatusForOrder(OrderID, status);
-                    _response.Message = "Update successful";
-
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-
-
+            return await _orderService.UpdateStatusForOrder(OrderID,status);
 
 
         }
@@ -224,89 +80,37 @@ namespace MonShop.BackEnd.API.Controller
         //    [Authorize]
         [HttpGet]
         [Route("GetAllOrderByAccountID/{AccountID}/{OrderStatusID}")]
-        public async Task<ResponseDTO> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
+        public async Task<AppActionResult> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
         {
-            try
-            {
+            return await _orderService.GetAllOrderByAccountID(AccountID, OrderStatusID);
 
-                List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID, OrderStatusID);
-
-                _response.Data = list;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
 
         [HttpGet]
         [Route("GetAllOrderByAccountID/{AccountID}")]
-        public async Task<ResponseDTO> GetAllOrderByAccountID(string AccountID)
+        public async Task<AppActionResult> GetAllOrderByAccountID(string AccountID)
         {
-            try
-            {
+            return await _orderService.GetAllOrderByAccountID(AccountID);
 
-                List<Order> list = await _orderRepository.GetAllOrderByAccountID(AccountID);
 
-                _response.Data = list;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [HttpGet]
         [Route("GetOrderStatistic/{AccountID}")]
-        public async Task<ResponseDTO> GetOrderStatistic(string AccountID)
+        public async Task<AppActionResult> GetOrderStatistic(string AccountID)
         {
-            try
-            {
-                OrderCount order = await _orderRepository.OrderStatistic(AccountID);
-                _response.Data = order;
+          //  return await _orderService.GetOrderStatistic(AccountID);
+          throw new NotImplementedException();
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
 
         [HttpGet]
         [Route("VerifyOrder/{OrderID}")]
-        public async Task<ResponseDTO> VerifyOrder(string OrderID)
+        public async Task<AppActionResult> VerifyOrder(string OrderID)
         {
-            try
-            {
+            return await _orderService.VerifyOrder(OrderID);
 
-                bool res = await _orderRepository.VerifyOrder(OrderID);
-                if (res)
-                {
-                    _response.Data = true;
-                    _response.Message = "Payed successfully";
-                }
-                else
-                {
-                    _response.Data = false;
-                    _response.Message = "Payed failed";
 
-                }
 
-            }
-            catch (Exception ex)
-            {
-
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-
-            return _response;
         }
     }
 }

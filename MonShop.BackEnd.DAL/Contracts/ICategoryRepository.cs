@@ -10,15 +10,6 @@ namespace MonShop.BackEnd.DAL.IRepository
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        public Task<List<Category>> GetAllCategory();
-
-
-        public Task AddCategory(CategoryDTO dto);
-
-
-        public Task UpdateCategory(CategoryDTO dto);
-
-
-        public Task DeleteCategory(CategoryDTO dto);
+        
     }
 }

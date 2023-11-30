@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MonShop.BackEnd.API.Model;
+using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.IRepository;
+using MonShop.BackEnd.DAL.DTO.Response;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -11,104 +11,47 @@ namespace MonShop.BackEnd.API.Controller
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartRepository _cartRepository;
-        private readonly ResponseDTO _response;
+        private readonly ICartService _cartService;
 
-        public CartController(ICartRepository cartRepository)
+        public CartController(ICartService cartService)
         {
-            _cartRepository = cartRepository;
-            _response = new ResponseDTO();
+            _cartService = cartService;
         }
         [HttpPost("AddToCart")]
-        public async Task<ResponseDTO> AddToCart(CartRequest request)
-
+        public async Task<AppActionResult> AddToCart(CartRequest request)
         {
-            try
-            {
-
-                await _cartRepository.AddToCart(request);
-                _response.Data = true;
-            }
-            catch (Exception ex)
-
-            {
-
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-            }
-            return _response;
+            return await _cartService.AddToCart(request);
         }
         [HttpPost("RemoveFromCart")]
 
-        public async Task<ResponseDTO> RemoveFromCart(CartRequest request)
+        public async Task<AppActionResult> RemoveFromCart(CartRequest request)
         {
-            try
-            {
-                await _cartRepository.RemoveFromCart(request);
+            return await _cartService.RemoveFromCart(request);
 
-            }
-            catch (Exception ex)
-            {
-
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-            }
-            return _response;
 
         }
         [HttpPost("RemoveCart")]
 
-        public async Task<ResponseDTO> RemoveCart(int CartId)
+        public async Task<AppActionResult> RemoveCart(int CartId)
         {
+            return await _cartService.RemoveCart(CartId);
 
-            try
-            {
-                await _cartRepository.RemoveCart(CartId);
-            }
-            catch (Exception ex)
-            {
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-            }
-            return _response;
 
         }
         [HttpGet("GetItemsByAccountId/{AccountId}")]
 
-        public async Task<ResponseDTO> GetItemsByAccountId(string AccountId)
+        public async Task<AppActionResult> GetItemsByAccountId(string AccountId)
         {
-            try
-            {
-                var list = await _cartRepository.GetItemsByAccountId(AccountId);
-                _response.Data = list;
+            return await _cartService.GetItemsByAccountId(AccountId);
 
-            }
-            catch (Exception ex)
-            {
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-
-            }
-            return _response;
 
         }
 
         [HttpPut("UpdateCartItem")]
-        public async Task<ResponseDTO> UpdateCartItemById(CartRequest request)
+        public async Task<AppActionResult> UpdateCartItemById(CartRequest request)
         {
-            try
-            {
-                await _cartRepository.UpdateCartItemById(request);
-                _response.Data = true;
+            return await _cartService.UpdateCartItemById(request);
 
-            }
-            catch (Exception ex)
-            {
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-            }
-
-            return _response;
         }
 
     }

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MonShop.BackEnd.API.Model;
+using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.IRepository;
-using MonShop.BackEnd.DAL.Models;
-using System.Collections.Generic;
+using MonShop.BackEnd.DAL.DTO.Response;
 
 namespace MonShop.BackEnd.API.Controller
 {
@@ -13,141 +10,61 @@ namespace MonShop.BackEnd.API.Controller
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
-        private readonly ResponseDTO _response;
-        public ProductController(IProductRepository productRepository)
+        private readonly IProductService _productService;
+        public ProductController(IProductService productService)
         {
-            _productRepository = productRepository;
-            _response = new ResponseDTO();
+            _productService = productService;
         }
         [HttpGet]
         [Route("GetAllCategory")]
-        public async Task<ResponseDTO> GetAllCategory()
+        public async Task<AppActionResult> GetAllCategory()
         {
-            try
-            {
-                var list = await _productRepository.GetAllCategory();
-                _response.Data = list;
+            return await _productService.GetAllCategory();
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [HttpGet]
         [Route("GetAllProduct")]
-        public async Task<ResponseDTO> GetAllProduct()
+        public async Task<AppActionResult> GetAllProduct()
         {
-            try
-            {
-                var list = await _productRepository.GetAllProduct();
+            return await _productService.GetAllProduct();
 
-                _response.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [HttpGet]
         [Route("GetAllProductByManager")]
-        public async Task<ResponseDTO> GetAllProductByManager()
+        public async Task<AppActionResult> GetAllProductByManager()
         {
-            try
-            {
+            return await _productService.GetAllProductByManager();
 
-                var list = await _productRepository.GetAllProductByManager();
-                _response.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [HttpGet]
         [Route("GetAllProductStatus")]
-        public async Task<ResponseDTO> GetAllProductStatus()
+        public async Task<AppActionResult> GetAllProductStatus()
         {
-            try
-            {
-                var list = await _productRepository.GetAllProductStatus();
-                _response.Data = list;
-
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
+            return await _productService.GetAllProductStatus();
         }
         [HttpGet]
         [Route("GetProductByID/{id}")]
-        public async Task<ResponseDTO> GetProductByID(int id)
+        public async Task<AppActionResult> GetProductByID(int id)
         {
-            try
-            {
-                var product = await _productRepository.GetProductByID(id);
-                _response.Data = product;
+            return await _productService.GetProductByID(id);
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
         }
 
         [HttpGet]
         [Route("GetProductInventory/{productId}/{sizeId}")]
-        public async Task<ResponseDTO> GetProductInventory(int productId, int sizeId)
+        public async Task<AppActionResult> GetProductInventory(int productId, int sizeId)
         {
-            try
-            {
-                var product = await _productRepository.GetProductInventory(productId, sizeId);
-                _response.Data = product;
+            return await _productService.GetProductInventory(productId, sizeId);
 
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
         }
         [Authorize(Roles = "Admin")]
 
         [HttpPost]
         [Route("AddProduct")]
-        public async Task<ResponseDTO> AddProduct(ProductDTO dto)
+        public async Task<AppActionResult> AddProduct(ProductDTO dto)
         {
-            try
-            {
-                await _productRepository.AddProduct(dto);
-                _response.Message = "Add product successfully";
-                _response.Data = dto;
+            return await _productService.AddProduct(dto);
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
 
         }
         [Authorize(Roles = "Admin")]
@@ -155,99 +72,43 @@ namespace MonShop.BackEnd.API.Controller
         [HttpPut]
         [Route("UpdateProduct")]
 
-        public async Task<ResponseDTO> UpdateProduct(ProductDTO dto)
+        public async Task<AppActionResult> UpdateProduct(ProductDTO dto)
         {
-            try
-            {
-                await _productRepository.UpdateProduct(dto);
-                _response.Message = "Update Product Successfully";
-                _response.Data = dto;
+            return await _productService.UpdateProduct(dto);
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
         [Authorize(Roles = "Admin")]
 
         [HttpDelete]
         [Route("DeleteProduct")]
 
-        public async Task<ResponseDTO> DeleteProduct(ProductDTO dto)
+        public async Task<AppActionResult> DeleteProduct(ProductDTO dto)
         {
-            try
-            {
+            return await _productService.DeleteProduct(dto);
 
-                await _productRepository.DeleteProduct(dto);
-                _response.Data = dto;
-                _response.Message = "Delete Product Successfully";
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
 
         [HttpGet]
         [Route("GetTopXProduct/{x:int}")]
-        public async Task<ResponseDTO> GetTopXProduct(int x)
+        public async Task<AppActionResult> GetTopXProduct(int x)
         {
-            try
-            {
-                List<Product> list = await _productRepository.GetTopXProduct(x);
-                _response.Data = list;
+            return await _productService.GetTopXProduct(x);
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
 
         [HttpGet]
         [Route("GetAllSize")]
-        public async Task<ResponseDTO> GetAllSize()
+        public async Task<AppActionResult> GetAllSize()
         {
-            try
-            {
-                List<Size> list = await _productRepository.GetAllSize();
-                _response.Data = list;
+            return await _productService.GetAllSize();
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
 
         [HttpGet("GetAllProductByCategoryId/{CategoryId:int}")]
-        public async Task<ResponseDTO> GetAllProductByCategoryId(int CategoryId)
+        public async Task<AppActionResult> GetAllProductByCategoryId(int CategoryId)
         {
-            try
-            {
-                List<Product> list = await _productRepository.GetAllProductByCategoryId(CategoryId);
-                _response.Data = list;
+            return await _productService.GetAllProductByCategoryId(CategoryId);
 
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
         }
     }
 }

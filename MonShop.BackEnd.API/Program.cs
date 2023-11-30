@@ -16,6 +16,7 @@ using MonShop.BackEnd.DAL.Contracts;
 using Monshop.BackEnd.Service.Payment.Paypal;
 using Monshop.BackEnd.Service.Payment.VNPay;
 using Monshop.BackEnd.Service.Payment.Momo;
+using MonShop.BackEnd.DAL.Implementations;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -47,7 +48,7 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentResponseRepository, PaymentResponseRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IVnPayServices, VNPayServices>();
 builder.Services.AddScoped<IMomoServices, MomoServices>();
