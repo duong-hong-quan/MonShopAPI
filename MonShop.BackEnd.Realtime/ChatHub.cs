@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MonShop.BackEnd.DAL.DTO;
+using MonShop.BackEnd.DAL.IRepository;
 using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.DAL.Repository.IRepository;
 
 namespace MonShop.BackEnd.Realtime
 {

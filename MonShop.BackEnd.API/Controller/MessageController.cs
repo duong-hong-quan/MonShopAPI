@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MonShop.BackEnd.API.Model;
 using MonShop.BackEnd.DAL.DTO;
+using MonShop.BackEnd.DAL.IRepository;
 using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.DAL.Repository.IRepository;
 
 namespace MonShop.BackEnd.API.Controller
 {

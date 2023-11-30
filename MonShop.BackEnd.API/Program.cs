@@ -6,13 +6,16 @@ using MonShop.BackEnd.Realtime;
 using System;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using MonShop.BackEnd.DAL.Repository.IRepository;
 using MonShop.BackEnd.DAL.Repository;
 using MonShop.BackEnd.DAL.Models;
 using MonShop.BackEnd.DAL.Data;
-using MonShop.BackEnd.Payment.VNPay;
-using MonShop.BackEnd.Payment.Paypal;
-using MonShop.BackEnd.Payment.Momo;
+using AutoMapper;
+using MonShop.BackEnd.DAL.Mapping;
+using MonShop.BackEnd.DAL.IRepository;
+using MonShop.BackEnd.DAL.Contracts;
+using Monshop.BackEnd.Service.Payment.Paypal;
+using Monshop.BackEnd.Service.Payment.VNPay;
+using Monshop.BackEnd.Service.Payment.Momo;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -28,11 +31,14 @@ builder.Services.AddCors(p => p.AddPolicy(MyAllowSpecificOrigins, builder =>
 
 
 }));
+
 builder.Services.AddDbContext<MonShopContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:DB"));
 });
-
+IMapper mapper = MappingConfig.RegisterMap().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 
@@ -46,6 +52,7 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IVnPayServices, VNPayServices>();
 builder.Services.AddScoped<IMomoServices, MomoServices>();
 builder.Services.AddScoped<IPayPalServices, PayPalServices>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();

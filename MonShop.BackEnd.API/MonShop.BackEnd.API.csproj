@@ -21,9 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonShop.BackEnd.DAL\MonShop.BackEnd.DAL.csproj" />
-    <ProjectReference Include="..\MonShop.BackEnd.Payment\MonShop.BackEnd.Payment.csproj" />
     <ProjectReference Include="..\MonShop.BackEnd.Realtime\MonShop.BackEnd.Realtime.csproj" />
-    <ProjectReference Include="..\MonShop.BackEnd.Utility\MonShop.BackEnd.Utility.csproj" />
+    <ProjectReference Include="..\Monshop.BackEnd.Service\Monshop.BackEnd.Service.csproj" />
   </ItemGroup>
 
 </Project>

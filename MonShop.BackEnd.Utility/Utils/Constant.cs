@@ -57,5 +57,24 @@ namespace MonShop.BackEnd.Utility.Utils
 
 
         }
+        public class ResponseMessage
+        {
+            public static string CREATE_SUCCESSFUL = "CREATE_SUCCESSFULLY";
+            public static string UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFULLY";
+            public static string DELETE_SUCCESSFUL = "DELETE_SUCCESSFULLY";
+            public static string CREATE_FAILED = "CREATE_FAILED";
+            public static string UPDATE_FAILED = "UPDATE_FAILED";
+            public static string DELETE_FAILED = "DELETE_FAILED";
+            public static string LOGIN_FAILED = "LOGIN_FAILED";
+
+            public static string NOTFOUND(object id, string entity)
+            {
+                return $"The {entity} with id {id} not found".ToUpper();
+            }
+            public static string NOTFOUND_BY_FIELDNAME(string fieldName, string entity)
+            {
+                return $"The {entity} with field name {fieldName} not found".ToUpper();
+            }
+        }
     }
 }

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.SignalR;
 using MonShop.BackEnd.API.Model;
 using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.Repository.IRepository;
 using MonShop.BackEnd.Utility;
 using MonShop.BackEnd.DAL.Models;
+using MonShop.BackEnd.DAL.IRepository;
 
 namespace MonShop.BackEnd.API.Controller
 {

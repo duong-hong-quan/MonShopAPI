@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using MonShop.BackEnd.API.Model;
 using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.DAL.Repository.IRepository;
 using MonShop.BackEnd.Utility.Utils;
-using MonShop.BackEnd.Payment;
-using MonShop.BackEnd.Payment.Momo;
-using MonShop.BackEnd.Payment.Paypal;
-using MonShop.BackEnd.Payment.VNPay;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using static MonShop.BackEnd.Payment.Paypal.PayPalResponeModel;
+using static Monshop.BackEnd.Service.Payment.Paypal.PayPalResponeModel;
+using MonShop.BackEnd.DAL.IRepository;
+using Monshop.BackEnd.Service.Payment.Paypal;
+using Monshop.BackEnd.Service.Payment.Momo;
+using Monshop.BackEnd.Service.Payment.VNPay;
+using Monshop.BackEnd.Service.Payment;
 
 namespace MonShop.BackEnd.API.Controller
 {
