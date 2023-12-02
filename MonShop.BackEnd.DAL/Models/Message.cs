@@ -9,15 +9,11 @@ namespace MonShop.BackEnd.DAL.Models
     {
         [Key]
         public int MessageId { get; set; }
-        public string ApplicationUserId { get; set; }
-        [ForeignKey("ApplicationUserId")]
-        public ApplicationUser ApplicationUser { get; set; }
-
         public string? Content { get; set; }
         public DateTime? SendTime { get; set; }
-        public int RoomId { get; set; }
-        [ForeignKey("RoomId")]
-
-        public Room Room { get; set; } = null!;
+       
+        public int RoomMemberChatId { get; set; }
+        [ForeignKey(nameof(RoomMemberChatId))]
+        public RoomMemberChat memberChat { get; set; }
     }
 }

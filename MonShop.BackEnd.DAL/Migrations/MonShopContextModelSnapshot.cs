@@ -6,10 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonShop.BackEnd.DAL.Data;
 
-
 #nullable disable
 
-namespace MonShop.Library.Migrations
+namespace MonShop.BackEnd.DAL.Migrations
 {
     [DbContext(typeof(MonShopContext))]
     partial class MonShopContextModelSnapshot : ModelSnapshot
@@ -48,6 +47,29 @@ namespace MonShop.Library.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "874ea9b8-6be5-48e5-9faf-288bc9ba6997",
+                            ConcurrencyStamp = "61fad947-1892-468e-9a3c-cf557f6edc57",
+                            Name = "ADMIN",
+                            NormalizedName = "admin"
+                        },
+                        new
+                        {
+                            Id = "9a840661-cf41-480b-9897-f5641ba3028a",
+                            ConcurrencyStamp = "7ee6c14f-494e-4200-a942-8ad49e125d99",
+                            Name = "STAFF",
+                            NormalizedName = "staff"
+                        },
+                        new
+                        {
+                            Id = "e8d68a76-f121-4013-9526-11101935b27c",
+                            ConcurrencyStamp = "9f92cee0-b910-47e2-b025-ddbc398bdeed",
+                            Name = "USER",
+                            NormalizedName = "user"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -156,7 +178,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.ApplicationUser", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -176,11 +198,18 @@ namespace MonShop.Library.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("Gender")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsVerified")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -222,6 +251,9 @@ namespace MonShop.Library.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("VerifyCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -235,7 +267,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Cart", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Cart", b =>
                 {
                     b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
@@ -244,7 +276,6 @@ namespace MonShop.Library.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"), 1L, 1);
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CartId");
@@ -254,7 +285,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("Cart");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.CartItem", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.CartItem", b =>
                 {
                     b.Property<int>("CartItemId")
                         .ValueGeneratedOnAdd()
@@ -285,7 +316,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("CartItem");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Category", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -293,9 +324,18 @@ namespace MonShop.Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"), 1L, 1);
 
+                    b.Property<string>("CategoryDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryImgUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("CategoryId");
 
@@ -305,26 +345,30 @@ namespace MonShop.Library.Migrations
                         new
                         {
                             CategoryId = 1,
-                            CategoryName = "Pants"
+                            CategoryName = "Pants",
+                            IsDeleted = false
                         },
                         new
                         {
                             CategoryId = 2,
-                            CategoryName = "Shirt"
+                            CategoryName = "Shirt",
+                            IsDeleted = false
                         },
                         new
                         {
                             CategoryId = 3,
-                            CategoryName = "Shoes"
+                            CategoryName = "Shoes",
+                            IsDeleted = false
                         },
                         new
                         {
                             CategoryId = 4,
-                            CategoryName = "Accessories"
+                            CategoryName = "Accessories",
+                            IsDeleted = false
                         });
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.DeliveryAddress", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.DeliveryAddress", b =>
                 {
                     b.Property<string>("DeliveryAddressId")
                         .HasColumnType("nvarchar(450)");
@@ -344,7 +388,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("DeliveryAddresses");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Message", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Message", b =>
                 {
                     b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd()
@@ -352,14 +396,10 @@ namespace MonShop.Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"), 1L, 1);
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int>("RoomMemberChatId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("SendTime")
@@ -367,14 +407,12 @@ namespace MonShop.Library.Migrations
 
                     b.HasKey("MessageId");
 
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("RoomId");
+                    b.HasIndex("RoomMemberChatId");
 
                     b.ToTable("Message");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Order", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Order", b =>
                 {
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(450)");
@@ -405,7 +443,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.OrderItem", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.OrderItem", b =>
                 {
                     b.Property<int>("OrderItemId")
                         .ValueGeneratedOnAdd()
@@ -443,7 +481,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("OrderItem");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.OrderStatus", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.OrderStatus", b =>
                 {
                     b.Property<int>("OrderStatusId")
                         .ValueGeneratedOnAdd()
@@ -492,7 +530,7 @@ namespace MonShop.Library.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.PaymentResponse", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.PaymentResponse", b =>
                 {
                     b.Property<string>("PaymentResponseId")
                         .HasColumnType("nvarchar(450)");
@@ -522,7 +560,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("PaymentResponse");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.PaymentType", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.PaymentType", b =>
                 {
                     b.Property<int>("PaymentTypeId")
                         .ValueGeneratedOnAdd()
@@ -556,7 +594,7 @@ namespace MonShop.Library.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Product", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -943,7 +981,7 @@ namespace MonShop.Library.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.ProductInventory", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.ProductInventory", b =>
                 {
                     b.Property<int>("ProductId")
                         .HasColumnType("int")
@@ -963,7 +1001,7 @@ namespace MonShop.Library.Migrations
                     b.ToTable("ProductInventory");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.ProductStatus", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.ProductStatus", b =>
                 {
                     b.Property<int>("ProductStatusId")
                         .ValueGeneratedOnAdd()
@@ -992,7 +1030,7 @@ namespace MonShop.Library.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Room", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Room", b =>
                 {
                     b.Property<int>("RoomId")
                         .ValueGeneratedOnAdd()
@@ -1011,7 +1049,31 @@ namespace MonShop.Library.Migrations
                     b.ToTable("Room");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Size", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.RoomMemberChat", b =>
+                {
+                    b.Property<int>("RoomMemberChatID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomMemberChatID"), 1L, 1);
+
+                    b.Property<int>("RoomID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RoomMemberChatID");
+
+                    b.HasIndex("RoomID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RoomMemberChats");
+                });
+
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Size", b =>
                 {
                     b.Property<int>("SizeId")
                         .ValueGeneratedOnAdd()
@@ -1061,7 +1123,7 @@ namespace MonShop.Library.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", null)
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1070,7 +1132,7 @@ namespace MonShop.Library.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", null)
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1085,7 +1147,7 @@ namespace MonShop.Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", null)
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1094,37 +1156,35 @@ namespace MonShop.Library.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", null)
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Cart", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Cart", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
 
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.CartItem", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.CartItem", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.Cart", "Cart")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Cart", "Cart")
                         .WithMany()
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.Product", "Product")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
 
-                    b.HasOne("MonShop.Library.Models.Size", "Size")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Size", "Size")
                         .WithMany()
                         .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1137,9 +1197,9 @@ namespace MonShop.Library.Migrations
                     b.Navigation("Size");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.DeliveryAddress", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.DeliveryAddress", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1148,36 +1208,28 @@ namespace MonShop.Library.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Message", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Message", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.RoomMemberChat", "memberChat")
                         .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                        .HasForeignKey("RoomMemberChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Room");
+                    b.Navigation("memberChat");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Order", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Order", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("MonShop.Library.Models.DeliveryAddress", "DeliveryAddress")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.DeliveryAddress", "DeliveryAddress")
                         .WithMany()
                         .HasForeignKey("DeliveryAddressId");
 
-                    b.HasOne("MonShop.Library.Models.OrderStatus", "OrderStatus")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.OrderStatus", "OrderStatus")
                         .WithMany()
                         .HasForeignKey("OrderStatusId");
 
@@ -1188,21 +1240,21 @@ namespace MonShop.Library.Migrations
                     b.Navigation("OrderStatus");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.OrderItem", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.OrderItem", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.Order", "Order")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.Product", "Product")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.Size", "Size")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Size", "Size")
                         .WithMany()
                         .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1215,15 +1267,15 @@ namespace MonShop.Library.Migrations
                     b.Navigation("Size");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.PaymentResponse", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.PaymentResponse", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.Order", "Order")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.PaymentType", "PaymentType")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.PaymentType", "PaymentType")
                         .WithMany()
                         .HasForeignKey("PaymentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1234,13 +1286,13 @@ namespace MonShop.Library.Migrations
                     b.Navigation("PaymentType");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.Product", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.Product", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.Category", "Category")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("MonShop.Library.Models.ProductStatus", "ProductStatus")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ProductStatus", "ProductStatus")
                         .WithMany()
                         .HasForeignKey("ProductStatusId");
 
@@ -1249,15 +1301,15 @@ namespace MonShop.Library.Migrations
                     b.Navigation("ProductStatus");
                 });
 
-            modelBuilder.Entity("MonShop.Library.Models.ProductInventory", b =>
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.ProductInventory", b =>
                 {
-                    b.HasOne("MonShop.Library.Models.Product", "Product")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MonShop.Library.Models.Size", "Size")
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Size", "Size")
                         .WithMany()
                         .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1266,6 +1318,25 @@ namespace MonShop.Library.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("MonShop.BackEnd.DAL.Models.RoomMemberChat", b =>
+                {
+                    b.HasOne("MonShop.BackEnd.DAL.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MonShop.BackEnd.DAL.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
