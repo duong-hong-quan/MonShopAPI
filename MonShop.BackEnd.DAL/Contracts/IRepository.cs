@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonShop.BackEnd.DAL.IRepository
+namespace MonShop.BackEnd.DAL.Contracts
 {
     public interface IRepository<T> where T : class
     {
@@ -15,6 +15,8 @@ namespace MonShop.BackEnd.DAL.IRepository
         Task<IOrderedQueryable<T>> GetListByExpression(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties);
         Task<T> Insert(T entity);
         Task<IEnumerable<T>> InsertRange(IEnumerable<T> entities);
+        Task<IEnumerable<T>> DeleteRange(IEnumerable<T> entities);
+
         Task Update(T entity);
         Task DeleteById(object id);
 

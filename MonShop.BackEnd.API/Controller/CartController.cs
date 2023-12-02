@@ -1,57 +1,30 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monshop.BackEnd.Service.Contracts;
-using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.DTO.Response;
+using MonShop.BackEnd.Common.Dto.Request;
 
 namespace MonShop.BackEnd.API.Controller
 {
-    [Authorize]
-    [Route("Cart")]
+    [Route("cart")]
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartService _cartService;
+        private ICartService _cartService;
 
         public CartController(ICartService cartService)
         {
             _cartService = cartService;
         }
-        [HttpPost("AddToCart")]
-        public async Task<AppActionResult> AddToCart(CartRequest request)
+
+        [HttpPost("update-cart-items")]
+        public async Task<AppActionResult> UpdateCartItems(string accountId, IEnumerable<CartItemDto> cartItemDtos)
         {
-            return await _cartService.AddToCart(request);
+            return await _cartService.UpdateCartItem(accountId, cartItemDtos);
         }
-        [HttpPost("RemoveFromCart")]
-
-        public async Task<AppActionResult> RemoveFromCart(CartRequest request)
+        [HttpPost("get-cart-items")]
+        public async Task<AppActionResult> GeCartItems(string accountId)
         {
-            return await _cartService.RemoveFromCart(request);
-
-
-        }
-        [HttpPost("RemoveCart")]
-
-        public async Task<AppActionResult> RemoveCart(int CartId)
-        {
-            return await _cartService.RemoveCart(CartId);
-
-
-        }
-        [HttpGet("GetItemsByAccountId/{AccountId}")]
-
-        public async Task<AppActionResult> GetItemsByAccountId(string AccountId)
-        {
-            return await _cartService.GetItemsByAccountId(AccountId);
-
-
-        }
-
-        [HttpPut("UpdateCartItem")]
-        public async Task<AppActionResult> UpdateCartItemById(CartRequest request)
-        {
-            return await _cartService.UpdateCartItemById(request);
-
+            return await _cartService.GeCartItems(accountId);
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MonShop.BackEnd.DAL.Contracts;
 using MonShop.BackEnd.DAL.Data;
-using MonShop.BackEnd.DAL.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonShop.BackEnd.DAL.Repository
+namespace MonShop.BackEnd.DAL.Implementations
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -78,19 +78,28 @@ namespace MonShop.BackEnd.DAL.Repository
 
         public async Task<T> GetByExpression(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties)
         {
+            IQueryable<T> query = _dbSet;
+
             if (includeProperties != null)
             {
                 foreach (var includeProperty in includeProperties)
                 {
-                    _dbSet.Include(includeProperty);
+                    query = query.Include(includeProperty);
                 }
             }
-            return await _dbSet.SingleOrDefaultAsync(filter);
+
+            return await query.SingleOrDefaultAsync(filter);
         }
+
 
         public async Task<IEnumerable<T>> InsertRange(IEnumerable<T> entities)
         {
             _dbSet.AddRange(entities);
+            return entities;
+        }
+        public async Task<IEnumerable<T>> DeleteRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
             return entities;
         }
     }

@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonShop.BackEnd.DAL", "MonS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonShop.BackEnd.Utility", "MonShop.BackEnd.Utility\MonShop.BackEnd.Utility.csproj", "{A03B2CBB-5689-46BE-97C5-15E812128F20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monshop.BackEnd.Service", "Monshop.BackEnd.Service\Monshop.BackEnd.Service.csproj", "{5E812220-AA4A-4D7D-BD09-E49B582414EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monshop.BackEnd.Service", "Monshop.BackEnd.Service\Monshop.BackEnd.Service.csproj", "{5E812220-AA4A-4D7D-BD09-E49B582414EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonShop.BackEnd.Realtime", "MonShop.BackEnd.Realtime\MonShop.BackEnd.Realtime.csproj", "{06176EED-2B10-4720-94A8-48F9566D4A05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonShop.BackEnd.Common", "MonShop.BackEnd.Common\MonShop.BackEnd.Common.csproj", "{3F1E18E5-6F19-4DF6-9745-982AE40367A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{06176EED-2B10-4720-94A8-48F9566D4A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06176EED-2B10-4720-94A8-48F9566D4A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06176EED-2B10-4720-94A8-48F9566D4A05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F1E18E5-6F19-4DF6-9745-982AE40367A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F1E18E5-6F19-4DF6-9745-982AE40367A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F1E18E5-6F19-4DF6-9745-982AE40367A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F1E18E5-6F19-4DF6-9745-982AE40367A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

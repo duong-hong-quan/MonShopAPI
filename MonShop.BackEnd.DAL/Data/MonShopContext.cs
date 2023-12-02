@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using MonShop.BackEnd.DAL.Models;
+using MonShop.BackEnd.Utility.Utils;
 
 namespace MonShop.BackEnd.DAL.Data
 {
@@ -17,6 +19,7 @@ namespace MonShop.BackEnd.DAL.Data
         {
         }
 
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
         public DbSet<Category> Category { get; set; } = null!;
         public DbSet<Message> Message { get; set; } = null!;
         public DbSet<Order> Order { get; set; } = null!;
@@ -34,7 +37,7 @@ namespace MonShop.BackEnd.DAL.Data
 
         public DbSet<DeliveryAddress> DeliveryAddresses { get; set; } = null!;
 
-
+        public DbSet<RoomMemberChat> RoomMemberChats { get; set; } = null!; 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,7 +45,16 @@ namespace MonShop.BackEnd.DAL.Data
             modelBuilder.Entity<ProductInventory>()
                .HasKey(pi => new { pi.ProductId, pi.SizeId });
 
+            modelBuilder.Entity<IdentityRole>().HasData(
+            new IdentityRole { Id = Guid.NewGuid().ToString(), Name = Permission.ADMIN, NormalizedName = Permission.ADMIN.ToLower() });
 
+            modelBuilder.Entity<IdentityRole>().HasData(
+               new IdentityRole { Id = Guid.NewGuid().ToString(), Name = Permission.STAFF, NormalizedName = Permission.STAFF.ToLower() });
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                         new IdentityRole { Id = Guid.NewGuid().ToString(), Name = Permission.USER, NormalizedName = Permission.USER.ToLower() });
+
+           
 
 
             modelBuilder.Entity<Size>().HasData(new Size

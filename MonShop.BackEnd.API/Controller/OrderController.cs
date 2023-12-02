@@ -1,116 +1,43 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.DTO.Response;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Monshop.BackEnd.Service.Contracts;
-using MonShop.BackEnd.DAL.Models;
+using MonShop.BackEnd.Common.Dto.Request;
 
 namespace MonShop.BackEnd.API.Controller
 {
-    [Route("Order")]
+    [Route("order")]
     [ApiController]
-    [Authorize]
     public class OrderController : ControllerBase
     {
-     private IOrderService _orderService;
+        private IOrderService _orderService;
 
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
         }
 
-        [HttpGet]
-        [Route("GetAllOrder")]
+        [HttpGet("get-all-order-by-accountId/{accountId}")]
+        public async Task<AppActionResult> GetAllOrderByAccountId(string accountId)
+        {
+            return await _orderService.GetAllOrderByAccountId(accountId);
+        }
+
+        [HttpGet("get-all-order")]
         public async Task<AppActionResult> GetAllOrder()
         {
-           return await _orderService.GetAllOrder();
-
+            return await _orderService.GetAllOrder();
         }
-        [HttpGet]
-        [Route("GetListItemByOrderID/{orderID}")]
-        public async Task<AppActionResult> GetListItemByOrderID(string orderID)
+       
+        [HttpPost("create-order-with-payment-url")]
+        public async Task<AppActionResult> CreateOrderWithPaymentUrl(int cartId, int paymentChoice)
         {
-            return await _orderService.GetListItemByOrderID(orderID);
-
+            return await _orderService.CreateOrderWithPaymentUrl(cartId, paymentChoice, HttpContext);
         }
 
-        [HttpGet]
-        [Route("GetAllOrderStatus")]
-        public async Task<AppActionResult> GetAllOrderStatus()
+        [HttpPut("update-status")]
+        public async Task<AppActionResult> UpdateStatus(string orderId, int status)
         {
-            return await _orderService.GetAllOrderStatus();
-
-
-        }
-        [HttpPost]
-        [Route("AddOrderStatus")]
-        public async Task<AppActionResult> AddOrderStatus(OrderStatusDTO dto)
-        {
-
-            return await _orderService.AddOrderStatus(dto);
-
-
-        }
-        [HttpPut]
-        [Route("UpdateOrderStatus")]
-        public async Task<AppActionResult   > UpdateOrderStatus(OrderStatusDTO dto)
-        {
-            return await _orderService.UpdateOrderStatus(dto);
-
-
-        }
-        [HttpPost]
-        [Route("AddOrderRequest")]
-        public async Task<AppActionResult> AddOrderRequest(OrderRequest orderRequest)
-        {
-            return await _orderService.AddOrderRequest(orderRequest);
-
-
-        }
-        [HttpPut]
-        [Route("UpdateStatusForOrder")]
-
-        public async Task<AppActionResult> UpdateStatusForOrder(string OrderID, int status)
-        {
-            return await _orderService.UpdateStatusForOrder(OrderID,status);
-
-
-        }
-
-        //    [Authorize]
-        [HttpGet]
-        [Route("GetAllOrderByAccountID/{AccountID}/{OrderStatusID}")]
-        public async Task<AppActionResult> GetAllOrderByAccountID(string AccountID, int OrderStatusID)
-        {
-            return await _orderService.GetAllOrderByAccountID(AccountID, OrderStatusID);
-
-        }
-
-        [HttpGet]
-        [Route("GetAllOrderByAccountID/{AccountID}")]
-        public async Task<AppActionResult> GetAllOrderByAccountID(string AccountID)
-        {
-            return await _orderService.GetAllOrderByAccountID(AccountID);
-
-
-        }
-        [HttpGet]
-        [Route("GetOrderStatistic/{AccountID}")]
-        public async Task<AppActionResult> GetOrderStatistic(string AccountID)
-        {
-          //  return await _orderService.GetOrderStatistic(AccountID);
-          throw new NotImplementedException();
-
-        }
-
-        [HttpGet]
-        [Route("VerifyOrder/{OrderID}")]
-        public async Task<AppActionResult> VerifyOrder(string OrderID)
-        {
-            return await _orderService.VerifyOrder(OrderID);
-
-
-
+            return await _orderService.UpdateStatus(orderId,status);
         }
     }
 }

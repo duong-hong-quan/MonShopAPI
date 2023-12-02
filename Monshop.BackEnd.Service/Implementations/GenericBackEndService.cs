@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Monshop.BackEnd.Service.Implementations
 {
-    public class GenericBackEndService
+    public class GenericBackendService
     {
         private IServiceProvider _serviceProvider;
 
-        public GenericBackEndService(IServiceProvider serviceProvider)
+        public GenericBackendService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }

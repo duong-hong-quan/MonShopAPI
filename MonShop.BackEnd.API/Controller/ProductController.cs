@@ -1,114 +1,58 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monshop.BackEnd.Service.Contracts;
-using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.DTO.Response;
+using MonShop.BackEnd.Common.Dto.Request;
 
 namespace MonShop.BackEnd.API.Controller
 {
-    [Route("Product")]
+    [Route("product")]
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private IProductService _productService;
+
         public ProductController(IProductService productService)
         {
             _productService = productService;
         }
-        [HttpGet]
-        [Route("GetAllCategory")]
-        public async Task<AppActionResult> GetAllCategory()
-        {
-            return await _productService.GetAllCategory();
 
-        }
-        [HttpGet]
-        [Route("GetAllProduct")]
-        public async Task<AppActionResult> GetAllProduct()
+        [HttpPost("add-product")]
+        public async Task<AppActionResult> AddProduct([FromForm] ProductDto productDto)
         {
-            return await _productService.GetAllProduct();
-
+            return await _productService.AddProduct(productDto);
         }
-        [HttpGet]
-        [Route("GetAllProductByManager")]
-        public async Task<AppActionResult> GetAllProductByManager()
+
+        [HttpPut("update-product")]
+        public async Task<AppActionResult> UpdateProduct([FromForm] ProductDto productDto)
         {
-            return await _productService.GetAllProductByManager();
-
+            return await _productService.UpdateProduct(productDto);
         }
-        [HttpGet]
-        [Route("GetAllProductStatus")]
+
+        [HttpDelete("delete-product-by-id/{id:int}")]
+        public async Task<AppActionResult> DeleteProduct(int id)
+        {
+            return await _productService.DeleteProduct(id);
+        }
+        [HttpGet("get-product-by-id/{id:int}")]
+        public async Task<AppActionResult> GetProductById(int id)
+        {
+            return await _productService.GetProductById(id);
+        }
+
+        [HttpGet("get-product-status")]
         public async Task<AppActionResult> GetAllProductStatus()
         {
             return await _productService.GetAllProductStatus();
         }
-        [HttpGet]
-        [Route("GetProductByID/{id}")]
-        public async Task<AppActionResult> GetProductByID(int id)
+        [HttpGet("get-product-inventory")]
+        public async Task<AppActionResult> GetAllProductInventory()
         {
-            return await _productService.GetProductByID(id);
-
+            return await _productService.GetAllProductInventory();
         }
-
-        [HttpGet]
-        [Route("GetProductInventory/{productId}/{sizeId}")]
-        public async Task<AppActionResult> GetProductInventory(int productId, int sizeId)
+        [HttpGet("get-product-by-manager")]
+        public async Task<AppActionResult> GetProductByManager()
         {
-            return await _productService.GetProductInventory(productId, sizeId);
-
-        }
-        [Authorize(Roles = "Admin")]
-
-        [HttpPost]
-        [Route("AddProduct")]
-        public async Task<AppActionResult> AddProduct(ProductDTO dto)
-        {
-            return await _productService.AddProduct(dto);
-
-
-        }
-        [Authorize(Roles = "Admin")]
-
-        [HttpPut]
-        [Route("UpdateProduct")]
-
-        public async Task<AppActionResult> UpdateProduct(ProductDTO dto)
-        {
-            return await _productService.UpdateProduct(dto);
-
-        }
-        [Authorize(Roles = "Admin")]
-
-        [HttpDelete]
-        [Route("DeleteProduct")]
-
-        public async Task<AppActionResult> DeleteProduct(ProductDTO dto)
-        {
-            return await _productService.DeleteProduct(dto);
-
-        }
-
-        [HttpGet]
-        [Route("GetTopXProduct/{x:int}")]
-        public async Task<AppActionResult> GetTopXProduct(int x)
-        {
-            return await _productService.GetTopXProduct(x);
-
-        }
-
-        [HttpGet]
-        [Route("GetAllSize")]
-        public async Task<AppActionResult> GetAllSize()
-        {
-            return await _productService.GetAllSize();
-
-        }
-
-        [HttpGet("GetAllProductByCategoryId/{CategoryId:int}")]
-        public async Task<AppActionResult> GetAllProductByCategoryId(int CategoryId)
-        {
-            return await _productService.GetAllProductByCategoryId(CategoryId);
-
+            return await _productService.GetProductByManager();
         }
     }
 }

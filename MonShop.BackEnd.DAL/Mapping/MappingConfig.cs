@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using MonShop.BackEnd.DAL.DTO;
+using MonShop.BackEnd.Common.Dto.Request;
 using MonShop.BackEnd.DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Metadata;
 
 namespace MonShop.BackEnd.DAL.Mapping
 {
@@ -16,14 +12,20 @@ namespace MonShop.BackEnd.DAL.Mapping
 
             var mappingConfig = new MapperConfiguration(config =>
             {
-                config.CreateMap<DeliveryAddressDTO, DeliveryAddress>().
-                ForMember(desc => desc.DeliveryAddressId, act => act.MapFrom(src => src.DeliveryAddressId))
-                .ForMember(desc => desc.ApplicationUserId, act => act.MapFrom(src => src.ApplicationUserId))
-                .ForMember(desc => desc.Address, act => act.MapFrom(src => src.Address));
+                config.CreateMap<CartItemDto, CartItem>()
+              .ForMember(desc => desc.ProductId, act => act.MapFrom(src => src.ProductId))
+              .ForMember(desc => desc.Quantity, act => act.MapFrom(src => src.Quantity))
+              .ForMember(desc => desc.SizeId, act => act.MapFrom(src => src.SizeId));
 
-                config.CreateMap<CategoryDTO, Category>().
-              ForMember(desc => desc.CategoryId, act => act.MapFrom(src => src.CategoryId))
-              .ForMember(desc => desc.CategoryName, act => act.MapFrom(src => src.CategoryName));
+                config.CreateMap<ProductDto, Product>()
+            .ForMember(desc => desc.ProductId, act => act.MapFrom(src => src.ProductId))
+            .ForMember(desc => desc.ProductStatusId, act => act.MapFrom(src => src.ProductStatusId))
+            .ForMember(desc => desc.ProductName, act => act.MapFrom(src => src.ProductName))
+            .ForMember(desc => desc.CategoryId, act => act.MapFrom(src => src.CategoryId))
+            .ForMember(desc => desc.Description, act => act.MapFrom(src => src.Description))
+            .ForMember(desc => desc.Discount, act => act.MapFrom(src => src.Discount))
+            ;
+
             });
             return mappingConfig;
         }

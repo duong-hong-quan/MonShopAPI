@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MonShop.BackEnd.Common\MonShop.BackEnd.Common.csproj" />
     <ProjectReference Include="..\MonShop.BackEnd.Utility\MonShop.BackEnd.Utility.csproj" />
   </ItemGroup>
 

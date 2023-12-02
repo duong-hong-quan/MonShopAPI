@@ -1,102 +1,160 @@
 ﻿using AutoMapper;
 using Monshop.BackEnd.Service.Contracts;
+using MonShop.BackEnd.Common.Dto.Request;
+using MonShop.BackEnd.Common.Dto.Response;
 using MonShop.BackEnd.DAL.Contracts;
-using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.DTO.Response;
-using MonShop.BackEnd.DAL.IRepository;
 using MonShop.BackEnd.DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MonShop.BackEnd.Utility.Utils;
+using System.Transactions;
 
 namespace Monshop.BackEnd.Service.Implementations
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : GenericBackendService, ICategoryService
     {
         private ICategoryRepository _categoryRepository;
         private IUnitOfWork _unitOfWork;
         private AppActionResult _result;
         private IMapper _mapper;
-        public CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork, IMapper mapper)
+
+        public CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider) : base(serviceProvider)
         {
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
-            _result = new();
             _mapper = mapper;
+            _result = new();
         }
 
-        public async Task<AppActionResult> AddCategory(CategoryDTO dto)
+        public async Task<AppActionResult> AddCategory(CategoryDto categoryDto)
         {
-            try
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                bool isValid = true;
-                await _unitOfWork.BeginTransaction();
-                if (await _categoryRepository.GetByExpression(c => c.CategoryName == dto.CategoryName) != null)
+                try
                 {
-                    isValid = false;
-                    _result.Messages.Add("The category with name is existed");
+                    var fileService = Resolve<IFileService>();
+                    bool isVaLid = true;
+                    var categoryDb = await _categoryRepository.GetByExpression(c => c.CategoryName == categoryDto.CategoryName);
+                    if (categoryDb != null)
+                    {
+                        isVaLid = false;
+                        _result.Messages.Add("The category is existed");
+                    }
+                    else if (categoryDb == null && isVaLid)
+                    {
+                        var categoryMapper = _mapper.Map<Category>(categoryDto);
+                        categoryMapper.IsDeleted = false;
+                        await _categoryRepository.Insert(categoryMapper);
+                        await _unitOfWork.SaveChangeAsync();
+                        var pathName = SD.FirebasePathName.CATEGORY_PREFIX + categoryMapper.CategoryId;
+                        var result = await fileService.UploadImageToFirebase(categoryDto.CategoryImgUrl, pathName);
+                        if (result.IsSuccess && result.Result.Data != null)
+                        {
+                            _result.Messages.Add("Upload image to firebase successful");
+                        }
+                        categoryMapper.CategoryImgUrl = pathName;
+                        await _categoryRepository.Update(categoryDb);
+                        await _unitOfWork.SaveChangeAsync();
+                        scope.Complete();
+                    }
                 }
-                else if (isValid)
+                catch (Exception ex)
                 {
-                    await _categoryRepository.Insert(_mapper.Map<Category>(dto));
-                    await _unitOfWork.SaveChangeAndCommitAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                _result.IsSuccess = false;
-                _result.Messages.Add(ex.Message);
+                    _result.IsSuccess = false;
+                    _result.Messages.Add(ex.Message);
 
+                }
             }
+
             return _result;
         }
 
-        public async Task<AppActionResult> DeleteCategory(CategoryDTO dto)
+        public async Task<AppActionResult> DeleteCategory(int id)
         {
-            try
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                _result.Messages.Add("Not implement");
-
-
-            }
-            catch (Exception ex)
-            {
-                _result.IsSuccess = false;
-                _result.Messages.Add(ex.Message);
+                try
+                {
+                    bool isValid = true;
+                    var categoryDb = await _categoryRepository.GetById(id);
+                    if (categoryDb == null)
+                    {
+                        isValid = false;
+                        _result.Messages.Add("The category is not existed");
+                    }
+                    else if (categoryDb != null && isValid)
+                    {
+                        categoryDb.IsDeleted = true;
+                        await _categoryRepository.Update(categoryDb);
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+                    scope.Complete();
+                }
+                catch (Exception ex)
+                {
+                    _result.IsSuccess = false;
+                    _result.Messages.Add(ex.Message);
+                }
             }
             return _result;
+
         }
 
         public async Task<AppActionResult> GetAllCategory()
         {
             try
             {
-                _result.Data = await _categoryRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
+                _result.Result.Data = await _categoryRepository.GetAll();   
 
+            }
+            catch (Exception ex) {
                 _result.IsSuccess = false;
                 _result.Messages.Add(ex.Message);
             }
             return _result;
         }
 
-        public async Task<AppActionResult> UpdateCategory(CategoryDTO dto)
+        public async Task<AppActionResult> UpdateCategory(CategoryDto categoryDto)
         {
-            try
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _unitOfWork.BeginTransaction();
-                await _categoryRepository.Update(_mapper.Map<Category>(dto));
-                await _unitOfWork.SaveChangeAndCommitAsync();
-            }
-            catch (Exception ex)
-            {
+                try
+                {
+                    bool isValid = true;
+                    var fileService = Resolve<IFileService>();
+                    var categoryDb = await _categoryRepository.GetById(categoryDto.CategoryId);
+                    if (categoryDb == null)
+                    {
+                        isValid = false;
+                        _result.Messages.Add("The category is not existed");
+                    }
+                    else if (categoryDb != null && isValid)
+                    {
+                        var pathName = categoryDb.CategoryImgUrl;
+                        var categoryMapper = _mapper.Map<Category>(categoryDto);
+                        categoryDb = categoryMapper;
+                        categoryDb.IsDeleted = false;
+                        await _categoryRepository.Update(categoryDb);
 
-                _result.IsSuccess = false;
-                _result.Messages.Add(ex.Message);
+                        var resultDelete = await fileService.DeleteImageFromFirebase(pathName);
+                        if (resultDelete.IsSuccess && resultDelete.Result.Data != null)
+                        {
+                            _result.Messages.Add("Delete image to firebase successful");
+                        }
+                        var result = await fileService.UploadImageToFirebase(categoryDto.CategoryImgUrl, pathName);
+                        if (result.IsSuccess && result.Result.Data != null)
+                        {
+                            _result.Messages.Add("Upload image to firebase successful");
+                        }
+                        await _unitOfWork.SaveChangeAsync();
+                    }
+                    scope.Complete();
+
+                }
+                catch (Exception ex)
+                {
+                    _result.IsSuccess = false;
+                    _result.Messages.Add(ex.Message);
+
+                }
             }
             return _result;
         }

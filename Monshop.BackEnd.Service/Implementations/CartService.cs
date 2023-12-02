@@ -1,67 +1,45 @@
-﻿using Monshop.BackEnd.Service.Contracts;
+﻿using AutoMapper;
+using Monshop.BackEnd.Service.Contracts;
+using MonShop.BackEnd.Common.Dto.Request;
 using MonShop.BackEnd.DAL.Contracts;
-using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.DTO.Response;
-using MonShop.BackEnd.DAL.IRepository;
 using MonShop.BackEnd.DAL.Models;
-using MonShop.BackEnd.Utility.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Monshop.BackEnd.Service.Implementations
 {
-    public class CartService : GenericBackEndService, ICartService
+    public class CartService : GenericBackendService, ICartService
     {
         private ICartRepository _cartRepository;
+        private ICartItemRepository _cartItemRepository;
         private IUnitOfWork _unitOfWork;
         private AppActionResult _result;
-        public CartService(IServiceProvider serviceProvider, ICartRepository cartRepository, IUnitOfWork unitOfWork) : base(serviceProvider)
+        private IMapper _mapper;
+
+        public CartService
+        (
+        ICartRepository cartRepository,
+        ICartItemRepository cartItemRepository,
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IServiceProvider serviceProvider
+        ) : base(serviceProvider)
         {
             _cartRepository = cartRepository;
+            _cartItemRepository = cartItemRepository;
             _unitOfWork = unitOfWork;
-            _result = new();
+            _result = new AppActionResult();
+            _mapper = mapper;
         }
 
-        public async Task<AppActionResult> AddToCart(CartRequest request)
+        public async Task<AppActionResult> GeCartItems(string accountId)
         {
             try
             {
-                var cart = await _cartRepository.GetByExpression(c => c.ApplicationUserId == request.ApplicationUserId);
-              
-                var cartItemRepository = Resolve<ICartItemRepository>();
-                var item = await cartItemRepository.GetByExpression(i => i.ProductId == request.item.ProductId && i.SizeId == request.item.SizeId);
-
-                if (cart == null)
+                _result.Result.Data = new
                 {
-                    cart = new Cart
-                    { 
-                        ApplicationUserId = request.ApplicationUserId 
-                    };
-                    await _cartRepository.Insert(cart);
-                    await _unitOfWork.SaveChangeAsync();
-
-                }
-                if (item == null)
-                {
-                    item = new CartItem
-                    {
-                        CartId = cart.CartId, 
-                        ProductId = request.item.ProductId, 
-                        Quantity = request.item.Quantity,
-                        SizeId = request.item.SizeId
-                    };
-                    await cartItemRepository.Insert(item);
-                }
-                else
-                {
-                    item.Quantity += request.item.Quantity;
-
-                }
-                await _unitOfWork.SaveChangeAsync();
-                _result.Messages.Add(Constant.ResponseMessage.CREATE_SUCCESSFUL);
+                    Cart = await _cartRepository.GetByExpression(c => c.ApplicationUserId == accountId),
+                    Items = await _cartItemRepository.GetListByExpression(c => c.Cart.ApplicationUserId == accountId)
+                };
             }
             catch (Exception ex)
             {
@@ -71,161 +49,89 @@ namespace Monshop.BackEnd.Service.Implementations
             return _result;
         }
 
-        public async Task<AppActionResult> GetItemsByAccountId(string accountId)
+        public async Task<AppActionResult> UpdateCartItem(string accountId, IEnumerable<CartItemDto> cartItemDto)
         {
-            try
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var cartItemRepository = Resolve<ICartItemRepository>();
-                double total = 0;
-                var cart = await _cartRepository.GetByExpression(c => c.ApplicationUserId == accountId);
-                var list = await cartItemRepository.GetListByExpression(c => c.CartId == cart.CartId, 
-                                                                       c => c.Product, c => c.Size);
-                List<CartItem> itemsToRemove = new List<CartItem>();
-
-                foreach (var item1 in list)
+                try
                 {
-                    var dupplicateList = await cartItemRepository.GetListByExpression(c => c.ProductId == item1.ProductId && 
-                                                                                                c.SizeId == item1.SizeId && 
-                                                                                                c.CartItemId != item1.CartItemId, 
-                                                                                                c => c.Product, c => c.Size);
-
-                    if (dupplicateList.Count() > 0)
+                    var productInventoryRepository = Resolve<IProductInventoryRepository>();
+                    var cart = await _cartRepository.GetByExpression(c => c.ApplicationUserId == accountId);
+                    if (cart != null)
                     {
-                        foreach (var item in dupplicateList)
+                        var itemsIncart = await _cartItemRepository.GetListByExpression(c => c.CartId == cart.CartId);
+                        if (itemsIncart.Count() > 0)
                         {
-                            var itemDelete = itemsToRemove.FirstOrDefault(c => c.ProductId == item.ProductId &&
-                                                                               c.SizeId == item.SizeId);
-                            if (itemDelete == null)
+                            foreach (var item in itemsIncart)
                             {
-                                itemsToRemove.Add(item);
-                                item1.Quantity += item.Quantity;
+                                foreach (var cartItem in cartItemDto)
+                                {
+                                    if (cartItem.ProductId == item.ProductId && cartItem.SizeId == item.SizeId)
+                                    {
+                                        var productInventory = await productInventoryRepository.GetByExpression(p => p.ProductId == cartItem.ProductId && p.SizeId == cartItem.SizeId);
+                                        if (productInventory.Quantity < cartItem.Quantity)
+                                        {
+                                            _result.Messages.Add($"The product with id {cartItem.ProductId} and size id{cartItem.SizeId} is out of stock");
+                                        }
+                                        else
+                                        {
+                                            if (item.Quantity - cartItem.Quantity > 0)
+                                            {
+                                                item.Quantity += cartItem.Quantity;
+                                                if (item.Quantity <= 0)
+                                                {
+                                                    await _cartItemRepository.DeleteById(item.CartItemId);
+                                                    await _unitOfWork.SaveChangeAsync();
+                                                }
+                                            }
+
+                                            else if (item.Quantity - cartItem.Quantity <= 0)
+                                            {
+                                                await _cartItemRepository.DeleteById(item.CartItemId);
+                                                await _unitOfWork.SaveChangeAsync();
+
+                                            }
+                                        }
+                                    }
+                                }
                             }
+                            if (!itemsIncart.Any())
+                            {
+                                await _cartRepository.DeleteById(cart.CartId);
+                                await _unitOfWork.SaveChangeAsync();
+                            }
+                            await _unitOfWork.SaveChangeAsync();
+
                         }
-
                     }
-                }
-                foreach (var itemToRemove in itemsToRemove)
-                {
-                    await cartItemRepository.DeleteById(itemToRemove.CartItemId);
-                }
-
-                await _unitOfWork.SaveChangeAsync();
-                foreach (var item in list)
-                {
-                    item.IsOutOfStock = await IsOutOfStock((int)item.ProductId, item.SizeId, item.Quantity);
-                    if ((bool)!item.IsOutOfStock)
+                    else
                     {
-                        total += (double)(item.Quantity * item.Product.Price * (100 - item.Product.Discount) / 100);
+                        Cart cartForUser = new Cart { ApplicationUserId = accountId };
+                        await _cartRepository.Insert(cartForUser);
+                        await _unitOfWork.SaveChangeAsync();
+                        IEnumerable<CartItem> cartItemInsert = _mapper.Map<IEnumerable<CartItem>>(cartItemDto);
+                        foreach (var cartItem in cartItemInsert)
+                        {
+                            cartItem.CartId = cartForUser.CartId;
+                        }
+                        await _cartItemRepository.InsertRange(cartItemInsert);
+                        await _unitOfWork.SaveChangeAsync();
                     }
+                    _result.Result.Data = await _cartItemRepository.GetListByExpression(c => c.Cart.ApplicationUserId == accountId);
+                    scope.Complete();
+
+                }
+                catch (Exception ex)
+                {
+                    _result.IsSuccess = false;
+                    _result.Messages.Add(ex.Message);
+
                 }
 
-                cart.Total = total;
-                _result.Data = list;
             }
-            catch (Exception ex)
-            {
-                _result.IsSuccess = false;
-                _result.Messages.Add(ex.Message);
-            }
+
             return _result;
         }
 
-        private async Task<bool?> IsOutOfStock(int productId, int sizeId, int quantity)
-        {
-            var productInventoryRepository = Resolve<IProductInventoryRepository>();
-            var productInventory = await productInventoryRepository.GetByExpression(p => p.ProductId == productId && p.SizeId == sizeId);
-            if (productInventory != null)
-            {
-                if (quantity > productInventory.Quantity)
-                {
-                    return true;
-
-                }
-                else if (quantity <= productInventory.Quantity)
-                {
-                    return false;
-
-                }
-            }
-            return true;
-        }
-
-        public async Task<AppActionResult> GetItemsByCartId(int CartId)
-        {
-            var cartItemRepository = Resolve<ICartItemRepository>();
-            _result.Data = await cartItemRepository.GetListByExpression(c => c.CartId == CartId);
-            return _result;
-        }
-
-        public async Task<AppActionResult> RemoveCart(int CartId)
-        {
-            var cartItemRepository = Resolve<ICartItemRepository>();
-            var cart = await _cartRepository.GetById(CartId);
-            if (cart != null)
-            {
-                var items = await cartItemRepository.GetListByExpression(i => i.CartId == cart.CartId);
-                if (items.Count() > 0)
-                {
-                    foreach (CartItem item in items)
-                    {
-                        await cartItemRepository.DeleteById(item.CartItemId);
-                    }
-                }
-
-                await _cartRepository.DeleteById(CartId);
-                await _unitOfWork.SaveChangeAsync();
-            }
-            return _result;
-        }
-
-        public async Task<AppActionResult> RemoveFromCart(CartRequest request)
-        {
-            var cartItemRepository = Resolve<ICartItemRepository>();
-
-            var cart = await _cartRepository.GetByExpression(c => c.ApplicationUserId == request.ApplicationUserId);
-            var item = await cartItemRepository.GetByExpression(i => i.ProductId == request.item.ProductId);
-
-            var items = await cartItemRepository.GetListByExpression(i => i.CartId == cart.CartId);
-            if (items.Count() <= 0)
-            {
-                await _cartRepository.DeleteById(cart.CartId);
-                await _unitOfWork.SaveChangeAsync();
-            }
-            if (cart != null)
-            {
-                if (item != null && item.Quantity > 0)
-                {
-                    item.Quantity -= request.item.Quantity;
-                }
-                if (item.Quantity <= 0)
-                {
-                    await cartItemRepository.DeleteById(item.CartItemId);
-                }
-
-                await _unitOfWork.SaveChangeAsync();
-
-
-            }
-            return _result;
-        }
-
-        public async Task<AppActionResult> UpdateCartItemById(CartRequest request)
-        {
-            var cartItemRepository = Resolve<ICartItemRepository>();
-
-            CartItem item = await cartItemRepository.GetById(request.item.CartItemId);
-            if (item != null)
-            {
-                item.ProductId = request.item.ProductId;
-                item.Quantity = request.item.Quantity;
-                item.SizeId = request.item.SizeId;
-                item.CartId = request.item.CartId;
-                await _unitOfWork.SaveChangeAsync();
-
-
-            }
-            return _result;
-
-        }
     }
 }

@@ -1,14 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System.Data;
-using MonShop.BackEnd.DAL.DTO;
-using MonShop.BackEnd.DAL.Models;
+﻿using MonShop.BackEnd.DAL.Models;
 using MonShop.BackEnd.DAL.Data;
-using MonShop.BackEnd.DAL.IRepository;
+using MonShop.BackEnd.DAL.Contracts;
 
 
-namespace MonShop.BackEnd.DAL.Repository
+namespace MonShop.BackEnd.DAL.Implementations
 {
     public class AccountRepository : Repository<ApplicationUser>, IAccountRepository
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonShop.BackEnd.DAL.Repository
+namespace MonShop.BackEnd.DAL.Implementations
 {
     public class UnitOfWork : IUnitOfWork
     {

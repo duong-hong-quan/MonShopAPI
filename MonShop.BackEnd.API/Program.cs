@@ -3,20 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonShop.BackEnd.Realtime;
-using System;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using MonShop.BackEnd.DAL.Repository;
 using MonShop.BackEnd.DAL.Models;
 using MonShop.BackEnd.DAL.Data;
 using AutoMapper;
 using MonShop.BackEnd.DAL.Mapping;
-using MonShop.BackEnd.DAL.IRepository;
 using MonShop.BackEnd.DAL.Contracts;
-using Monshop.BackEnd.Service.Payment.Paypal;
-using Monshop.BackEnd.Service.Payment.VNPay;
-using Monshop.BackEnd.Service.Payment.Momo;
 using MonShop.BackEnd.DAL.Implementations;
+using Monshop.BackEnd.Service.Contracts;
+using Monshop.BackEnd.Service.Implementations;
+using Monshop.BackEnd.Service.Payment.PaymentService;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -41,19 +38,37 @@ IMapper mapper = MappingConfig.RegisterMap().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
-
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
+builder.Services.AddScoped<IIdentityRoleRepository, IdentityRoleRepository>();
 
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
 builder.Services.AddScoped<IPaymentResponseRepository, PaymentResponseRepository>();
+builder.Services.AddScoped<IProductInventoryRepository, ProductInventoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IVnPayServices, VNPayServices>();
-builder.Services.AddScoped<IMomoServices, MomoServices>();
-builder.Services.AddScoped<IPayPalServices, PayPalServices>();
+builder.Services.AddScoped<IProductStatusRepository, ProductStatusRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<ISizeRepository, SizeRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
