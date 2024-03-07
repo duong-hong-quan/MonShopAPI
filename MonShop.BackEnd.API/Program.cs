@@ -14,6 +14,11 @@ using MonShop.BackEnd.DAL.Implementations;
 using Monshop.BackEnd.Service.Contracts;
 using Monshop.BackEnd.Service.Implementations;
 using Monshop.BackEnd.Service.Payment.PaymentService;
+using Monshop.BackEnd.Service.Services.Firebase;
+using CorePush.Apple;
+using CorePush.Google;
+using Microsoft.Extensions.Configuration;
+using Monshop.BackEnd.Service.Services;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -62,12 +67,19 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 
+builder.Services.AddTransient<ICloudMessagingService, CloudMessagingService>();
+builder.Services.AddHttpClient<FcmSender>();
+builder.Services.AddHttpClient<ApnSender>();
+
+// Configure strongly typed settings objects
+var appSettingsSection = builder.Configuration.GetSection("FcmNotification");
+builder.Services.Configure<FcmNotificationSetting>(appSettingsSection);
 
 
 builder.Services.AddControllers();

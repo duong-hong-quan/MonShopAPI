@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Monshop.BackEnd.Service.Contracts;
+using Monshop.BackEnd.Service.Services.Firebase;
 using MonShop.BackEnd.Common.Dto.Request;
 using MonShop.BackEnd.DAL.Contracts;
 using MonShop.BackEnd.DAL.Models;
@@ -30,7 +31,7 @@ namespace Monshop.BackEnd.Service.Implementations
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 try
                 {
-                    var fileService = Resolve<IFileService>();
+                    var fileService = Resolve<IFirebaseService>();
                     var productInventoryRepository = Resolve<IProductInventoryRepository>();
                     bool isValid = true;
                     if (await _productRepository.GetByExpression(p => p.ProductName.ToLower() == product.ProductName.ToLower()) != null)
@@ -192,7 +193,7 @@ namespace Monshop.BackEnd.Service.Implementations
             {
                 try
                 {
-                    var fileService = Resolve<IFileService>();
+                    var fileService = Resolve<IFirebaseService>();
                     bool isValid = true;
                     var productDb = await _productRepository.GetById(product.ProductId);
                     if (productDb == null)

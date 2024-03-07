@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Monshop.BackEnd.Service.Contracts
+namespace Monshop.BackEnd.Service.Services.Firebase
 {
-    public interface IFileService
+    public interface IFirebaseService
     {
         public Task<AppActionResult> UploadImageToFirebase(IFormFile file, string pathFileName);
         public Task<string> GetUrlImageFromFirebase(string pathFileName);

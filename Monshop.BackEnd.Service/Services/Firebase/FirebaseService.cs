@@ -2,20 +2,19 @@
 using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Monshop.BackEnd.Service.Contracts;
 using MonShop.BackEnd.Common.Dto.Request;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
 
-namespace Monshop.BackEnd.Service.Implementations
+namespace Monshop.BackEnd.Service.Services.Firebase
 {
-    public class FileService : IFileService
+    public class FirebaseService : IFirebaseService
     {
         private IConfiguration _configuration;
         private AppActionResult _result;
 
-        public FileService(IConfiguration configuration)
+        public FirebaseService(IConfiguration configuration)
         {
             _configuration = configuration;
             _result = new();
