@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Monshop.BackEnd.Service.Contracts;
+using Monshop.BackEnd.Service.Services.Firebase;
 using MonShop.BackEnd.Common.Dto.Request;
 using MonShop.BackEnd.Common.Dto.Response;
 using MonShop.BackEnd.DAL.Contracts;
@@ -30,7 +31,7 @@ namespace Monshop.BackEnd.Service.Implementations
             {
                 try
                 {
-                    var fileService = Resolve<IFileService>();
+                    var fileService = Resolve<IFirebaseService>();
                     bool isVaLid = true;
                     var categoryDb = await _categoryRepository.GetByExpression(c => c.CategoryName == categoryDto.CategoryName);
                     if (categoryDb != null)
@@ -119,7 +120,7 @@ namespace Monshop.BackEnd.Service.Implementations
                 try
                 {
                     bool isValid = true;
-                    var fileService = Resolve<IFileService>();
+                    var fileService = Resolve<IFirebaseService>();
                     var categoryDb = await _categoryRepository.GetById(categoryDto.CategoryId);
                     if (categoryDb == null)
                     {
