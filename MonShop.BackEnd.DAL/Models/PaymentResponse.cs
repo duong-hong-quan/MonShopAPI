@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MonShop.BackEnd.DAL.Models
+namespace MonShop.BackEnd.DAL.Models;
+
+public class PaymentResponse
 {
-    public class PaymentResponse
-    {
-        [Key]
-        public string PaymentResponseId { get; set; } = null!;
-        public string OrderId { get; set; } = null!;
-        [ForeignKey("OrderId")]
+    [Key] public string PaymentResponseId { get; set; } = null!;
 
-        public Order Order { get; set; } = null!;
+    public string OrderId { get; set; } = null!;
 
-        public string? Amount { get; set; }
-        public string? OrderInfo { get; set; }
-        public bool Success { get; set; }
+    [ForeignKey("OrderId")] public Order Order { get; set; } = null!;
 
-        public int PaymentTypeId { get; set; }
-        [ForeignKey("PaymentTypeId")]
-        public PaymentType PaymentType { get; set; } = null!;
+    public string? Amount { get; set; }
+    public string? OrderInfo { get; set; }
+    public bool Success { get; set; }
 
+    public int PaymentTypeId { get; set; }
 
-
-    }
+    [ForeignKey("PaymentTypeId")] public PaymentType PaymentType { get; set; } = null!;
 }

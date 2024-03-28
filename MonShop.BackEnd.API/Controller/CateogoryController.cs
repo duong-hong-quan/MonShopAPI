@@ -1,42 +1,41 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Monshop.BackEnd.Service.Contracts;
+﻿using Microsoft.AspNetCore.Mvc;
 using MonShop.BackEnd.Common.Dto.Request;
+using Monshop.BackEnd.Service.Contracts;
 
-namespace MonShop.BackEnd.API.Controller
+namespace MonShop.BackEnd.API.Controller;
+
+[Route("category")]
+[ApiController]
+public class CateogoryController : ControllerBase
 {
-    [Route("category")]
-    [ApiController]
-    public class CateogoryController : ControllerBase
+    private readonly ICategoryService _categoryService;
+
+    public CateogoryController(ICategoryService categoryService)
     {
-        private ICategoryService _categoryService;
+        _categoryService = categoryService;
+    }
 
-        public CateogoryController(ICategoryService categoryService)
-        {
-            _categoryService = categoryService;
-        }
-        [HttpPost("add-category")]
+    [HttpPost("add-category")]
+    public async Task<AppActionResult> AddCategory(CategoryDto categoryDto)
+    {
+        return await _categoryService.AddCategory(categoryDto);
+    }
 
-        public async Task<AppActionResult> AddCategory(CategoryDto categoryDto)
-        {
-            return await _categoryService.AddCategory(categoryDto);
-        }
+    [HttpGet("get-all-category")]
+    public async Task<AppActionResult> GetAllCategory()
+    {
+        return await _categoryService.GetAllCategory();
+    }
 
-        [HttpGet("get-all-category")]
-        public async Task<AppActionResult> GetAllCategory()
-        {
-            return await _categoryService.GetAllCategory();
-        }
+    [HttpPut("update-category")]
+    public async Task<AppActionResult> UpdateCategory(CategoryDto categoryDto)
+    {
+        return await _categoryService.UpdateCategory(categoryDto);
+    }
 
-        [HttpPut("update-category")]
-        public async Task<AppActionResult> UpdateCategory(CategoryDto categoryDto)
-        {
-            return await _categoryService.UpdateCategory(categoryDto);
-        }
-        [HttpDelete("delete-category-by-id/{id:int}")]
-        public async Task<AppActionResult> UpdateCategory(int id)
-        {
-            return await _categoryService.DeleteCategory(id);
-        }
+    [HttpDelete("delete-category-by-id/{id:int}")]
+    public async Task<AppActionResult> UpdateCategory(int id)
+    {
+        return await _categoryService.DeleteCategory(id);
     }
 }

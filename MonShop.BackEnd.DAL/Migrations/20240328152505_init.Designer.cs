@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonShop.BackEnd.DAL.Data;
 
@@ -11,9 +12,10 @@ using MonShop.BackEnd.DAL.Data;
 namespace MonShop.BackEnd.DAL.Migrations
 {
     [DbContext(typeof(MonShopContext))]
-    partial class MonShopContextModelSnapshot : ModelSnapshot
+    [Migration("20240328152505_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

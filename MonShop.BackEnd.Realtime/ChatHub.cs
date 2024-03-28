@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace MonShop.BackEnd.Realtime
-{
+namespace MonShop.BackEnd.Realtime;
 
-    public class ChatHub : Hub
-    {
-       
-    }
+public class ChatHub : Hub
+{
 }
