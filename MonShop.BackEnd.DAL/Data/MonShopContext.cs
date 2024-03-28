@@ -10,9 +10,6 @@ namespace MonShop.BackEnd.DAL.Data;
 
 public class MonShopContext : IdentityDbContext<ApplicationUser>, IDbContext
 {
-    public MonShopContext()
-    {
-    }
 
     public MonShopContext(DbContextOptions<MonShopContext> options)
         : base(options)
