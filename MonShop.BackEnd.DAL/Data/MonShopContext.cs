@@ -8,7 +8,7 @@ using MonShop.BackEnd.DAL.Models;
 
 namespace MonShop.BackEnd.DAL.Data
 {
-    public partial class MonShopContext : IdentityDbContext<ApplicationUser>
+    public partial class MonShopContext : IdentityDbContext<ApplicationUser>,IDbcontext
     {
 
 
