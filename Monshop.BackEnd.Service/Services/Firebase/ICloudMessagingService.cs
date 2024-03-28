@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Monshop.BackEnd.Service.Services.Firebase;
 
-namespace Monshop.BackEnd.Service.Services.Firebase
+public interface ICloudMessagingService
 {
-    public interface ICloudMessagingService
-    {
-        Task<ResponseModel> SendNotification(NotificationModel notificationModel);
-
-    }
+    Task<ResponseModel> SendNotification(NotificationModel notificationModel);
 }

@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MonShop.BackEnd.DAL.Models
+namespace MonShop.BackEnd.DAL.Models;
+
+public class PaymentType
 {
-    public class PaymentType
-    {
-        [Key]
-        public int PaymentTypeId { get; set; }
-        public string Type { get; set; }
+    [Key] public int PaymentTypeId { get; set; }
 
-    }
+    public string Type { get; set; }
 }
