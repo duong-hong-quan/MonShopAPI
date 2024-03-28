@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MonShop.BackEnd.DAL.Models
+namespace MonShop.BackEnd.DAL.Models;
+
+public class Room
 {
-    public class Room
-    {
-        [Key]
+    [Key] public int RoomId { get; set; }
 
-        public int RoomId { get; set; }
-        public string? RoomName { get; set; }
-        public string? RoomImg { get; set; }
-
-    }
+    public string? RoomName { get; set; }
+    public string? RoomImg { get; set; }
 }

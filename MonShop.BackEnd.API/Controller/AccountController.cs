@@ -1,266 +1,158 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using MonShop.BackEnd.Utility.Utils;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using MonShop.BackEnd.API.Model;
-using MonShop.BackEnd.DAL.Repository.IRepository;
-using MonShop.BackEnd.DAL.DTO;
+using Microsoft.AspNetCore.Mvc;
+using MonShop.BackEnd.Common.Dto.Request;
 using MonShop.BackEnd.DAL.Models;
+using Monshop.BackEnd.Service.Contracts;
 
-namespace MonShop.BackEnd.API.Controller
+namespace MonShop.BackEnd.API.Controller;
+
+[Route("account")]
+[ApiController]
+public class AccountController : ControllerBase
 {
-    [Route("Account")]
-    [ApiController]
-    public class AccountController : ControllerBase
+    private readonly IAccountService _accountService;
+    private readonly IConfiguration _configuration;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+
+    public AccountController(
+        IAccountService accountService,
+        SignInManager<ApplicationUser> signInManager,
+        IConfiguration configuration)
     {
-        private readonly IAccountRepository _accountRepository;
-        private readonly ResponseDTO _response;
-        private TokenModel _loginRespone;
-        private readonly IJwtGenerator _jwtGenerator;
-        public AccountController(IAccountRepository accountRepository, IJwtGenerator jwtGenerator)
-        {
-            _accountRepository = accountRepository;
-            _response = new ResponseDTO();
-            _loginRespone = new TokenModel();
-            _jwtGenerator = jwtGenerator;
-        }
-
-        [HttpPost]
-        [Route("Login")]
-        public async Task<ResponseDTO> Login(LoginRequest userLogin)
-        {
-            try
-            {
-                _loginRespone = await _accountRepository.Login(userLogin);
-                if (_loginRespone.Token != null)
-                {
-
-                    _response.Data = _loginRespone;
-                }
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
-        }
-
-        [HttpPost]
-        [Route("SignUp")]
-        public async Task<ResponseDTO> SignUp(SignUpRequest accountDTO)
-        {
-            try
-            {
-                _response.Data = await _accountRepository.SignUp(accountDTO);
-                _response.Message = "Sign up sucessfully";
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
-        }
-        [Authorize]
-        [HttpPut("UpdateAccount")]
-        public async Task<ResponseDTO> UpdateAccount(ApplicationUser userDto)
-        {
-            try
-            {
-                await _accountRepository.UpdateAccount(userDto);
-                _response.Data = true;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-        [Authorize]
-        [HttpDelete("DeleteAccount")]
-        public async Task<ResponseDTO> DeleteAccount(ApplicationUser user)
-        {
-            try
-            {
-                await _accountRepository.DeleteAccount(user);
-                _response.Data = true;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
-        }
-
-
-        [HttpGet("GetAccountById/{accountId}")]
-        public async Task<ResponseDTO> GetAccountById(string accountId)
-        {
-            try
-            {
-                _response.Data = await _accountRepository.GetAccountById(accountId);
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-
-            }
-            return _response;
-        }
-
-        [Authorize]
-        [HttpGet("GetAllAccount")]
-        public async Task<ResponseDTO> GetAllAccount()
-        {
-            try
-            {
-                var list = await _accountRepository.GetAllAccount();
-                _response.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-
-        [HttpPost("AssignRole")]
-        public async Task<ResponseDTO> AssignRole(string userId, string roleName)
-        {
-            try
-            {
-                await _accountRepository.AssignRole(userId, roleName);
-                _response.Data = true;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-        [Authorize(Roles = "Admin")]
-
-        [HttpGet("GetAllRole")]
-        public async Task<ResponseDTO> GetAllRole()
-        {
-            try
-            {
-                var list = await _accountRepository.GetAllRole();
-                _response.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-
-        [HttpPost("AddRole")]
-        public async Task<ResponseDTO> AddRole(string role)
-        {
-            try
-            {
-                await _accountRepository.AddRole(role);
-                _response.Data = true;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-        [Authorize(Roles = "Admin")]
-
-        [HttpPut("UpdateRole")]
-        public async Task<ResponseDTO> UpdateRole(IdentityRole roleDto)
-        {
-            try
-            {
-                await _accountRepository.UpdateRole(roleDto);
-                _response.Data = true;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-        [Authorize(Roles = "Admin")]
-
-        [HttpDelete("DeleteRole")]
-        public async Task<ResponseDTO> DeleteRole(IdentityRole roleDto)
-        {
-            try
-            {
-                await _accountRepository.DeleteRole(roleDto);
-                _response.Data = true;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-        [HttpGet("GetRoleForUserId/{accountId}")]
-        public async Task<ResponseDTO> GetRoleForUserId(string accountId)
-        {
-            try
-            {
-                var list = await _accountRepository.GetRoleForUserId(accountId);
-                _response.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-
-
-        [HttpGet("GetNewToken")]
-        public async Task<ResponseDTO> GetNewToken(string refreshToken, string accountId)
-        {
-            try
-            {
-                var token = await _jwtGenerator.GetNewToken(refreshToken, accountId);
-                _loginRespone = token;
-                _response.Data = _loginRespone;
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
+        _accountService = accountService;
+        _signInManager = signInManager;
+        _configuration = configuration;
     }
 
+
+    [HttpPost("create-account")]
+    public async Task<AppActionResult> CreateAccount(SignUpRequestDto request)
+    {
+        return await _accountService.CreateAccount(request, false);
+    }
+
+    [HttpPost("login")]
+    public async Task<AppActionResult> Login(LoginRequestDto request)
+    {
+        return await _accountService.Login(request);
+    }
+
+    [HttpPut("update-account")]
+    public async Task<AppActionResult> UpdateAccount(ApplicationUser request)
+    {
+        return await _accountService.UpdateAccount(request);
+    }
+
+    [HttpGet("get-account-by-id/{id}")]
+    public async Task<AppActionResult> UpdateAccount(string id)
+    {
+        return await _accountService.GetAccountByUserId(id);
+    }
+
+    [HttpPost("get-all-account")]
+    //  [Authorize(Roles = Permission.MANAGEMENT)]
+    public async Task<AppActionResult> GetAllAccount(int pageIndex, int pageSize, IList<SortInfo> sortInfos)
+    {
+        return await _accountService.GetAllAccount(pageIndex, pageSize, sortInfos);
+    }
+
+    [HttpPut("change-password")]
+    public async Task<AppActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        return await _accountService.ChangePassword(dto);
+    }
+
+    [HttpPost("get-accounts-with-searching")]
+    public async Task<AppActionResult> GetAccountWithSearching(BaseFilterRequest baseFilterRequest)
+    {
+        return await _accountService.SearchApplyingSortingAndFiltering(baseFilterRequest);
+    }
+
+    [HttpPut("assign-role-for-userId")]
+    public async Task<AppActionResult> AssignRoleForUserId(string userId, IList<string> roleId)
+    {
+        return await _accountService.AssignRoleForUserId(userId, roleId);
+    }
+
+    [HttpPut("remove-role-for-userId")]
+    public async Task<AppActionResult> RemoveRoleForUserId(string userId, IList<string> roleId)
+    {
+        return await _accountService.RemoveRoleForUserId(userId, roleId);
+    }
+
+
+    [HttpPost("get-new-token")]
+    public async Task<AppActionResult> GetNewToken([FromBody] string refreshToken, string userId)
+    {
+        return await _accountService.GetNewToken(refreshToken, userId);
+    }
+
+    [HttpPut("forgot-password")]
+    public async Task<AppActionResult> ForgotPassword(ForgotPasswordDto dto)
+    {
+        return await _accountService.ForgotPassword(dto);
+    }
+
+    [HttpPut("active-account")]
+    public async Task<AppActionResult> ActiveAccount(string email, string verifyCode)
+    {
+        return await _accountService.ActiveAccount(email, verifyCode);
+    }
+
+    [HttpPost("send-email-forgot-password/{email}")]
+    public async Task<AppActionResult> SendEmailForgotPassword(string email)
+    {
+        return await _accountService.SendEmailForgotPassword(email);
+    }
+
+
+    [HttpGet("login-google")]
+    public IActionResult ExternalLogin()
+    {
+        var redirectUrl = Url.Action("ExternalLoginCallback", "Account",
+            new { ReturnUrl = _configuration["Domain:FE"] });
+
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+        return Challenge(properties, "Google");
+    }
+
+    [AllowAnonymous]
+    [HttpGet("external-login-google-callback")]
+    public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
+    {
+        var info = await _signInManager.GetExternalLoginInfoAsync();
+        if (info == null)
+        {
+            return Redirect($"{returnUrl}/failed");
+            ;
+        }
+
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        var code = await _accountService.GenerateVerifyCode(email);
+        if (code == string.Empty)
+        {
+            var requestDto = new SignUpRequestDto
+            {
+                Email = email,
+                FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
+                Password = "Abc123@",
+                RoleName = new List<string> { "trainee" }
+            };
+            await _accountService.CreateAccount(requestDto, true);
+            code = await _accountService.GenerateVerifyCodeGoogle(email);
+            await _accountService.ActiveAccount(email, code);
+        }
+
+        return Redirect($"{returnUrl}/success/{email}/{code}");
+    }
+
+    [AllowAnonymous]
+    [HttpPost("verify-login-google/{email}/{verifyCode}")]
+    public async Task<AppActionResult> VerifyLoginGoogle(string email, string verifyCode)
+    {
+        return await _accountService.VerifyLoginGoogle(email, verifyCode);
+    }
 }

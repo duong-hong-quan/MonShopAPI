@@ -1,29 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>b052ade0-bb61-4a3f-bc2c-cf0afa173aaa</UserSecretsId>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>b052ade0-bb61-4a3f-bc2c-cf0afa173aaa</UserSecretsId>
+        <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21"/>
+        <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MonShop.BackEnd.DAL\MonShop.BackEnd.DAL.csproj" />
-    <ProjectReference Include="..\MonShop.BackEnd.Payment\MonShop.BackEnd.Payment.csproj" />
-    <ProjectReference Include="..\MonShop.BackEnd.Realtime\MonShop.BackEnd.Realtime.csproj" />
-    <ProjectReference Include="..\MonShop.BackEnd.Utility\MonShop.BackEnd.Utility.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\MonShop.BackEnd.Realtime\MonShop.BackEnd.Realtime.csproj"/>
+        <ProjectReference Include="..\Monshop.BackEnd.Service\Monshop.BackEnd.Service.csproj"/>
+    </ItemGroup>
 
 </Project>
